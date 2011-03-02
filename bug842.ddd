@@ -1,0 +1,62 @@
+import "interpolate.xl"
+
+Logo  -> 0.0
+LogoT -> 0.0
+
+key "Right" -> skip 1
+key "Left" -> skip -1
+
+writeln "Eval"
+page "XL et Taodyne 1",
+    writeln "P1"
+    text "Hello page 1"
+page "XL et Taodyne 1 bis",
+    writeln "P2"
+    text "Hello page 1 bis"
+
+base_slide "XL et Taodyne 2",
+    text "Hello page 2"
+
+slide "XL et Taodyne 3",
+    text "Hello page 3"
+
+title_slide "XL et Taodyne", 
+    text "Hello page 4"
+writeln "End"
+
+foo ->
+    subtitle_layout theme, 
+        zero N:integer -> if N < 10  then "0" & text N else text N
+        time_text -> (text hours & ":" & zero minutes & ":" & zero seconds)
+        highlight_font theme
+        align 1.0
+        paragraph "Comment commercialiser du logiciel libre?"
+        story_font theme
+        align 1.0
+        paragraph "Commission Open-Source Telecom Valley"
+        paragraph "3 mars 2011 - " & time_text
+    color "white"
+    LogoT := step mod 2.0
+    interpolate 0.1, LogoT, Logo
+    locally
+        show Logo
+        translate 400, 400, 1000
+        image 0, 0, 40%, 40%, "Taodyne_Logo.svg"
+        translatez 200
+        text_box 50, -120, 500, 100, 
+            highlight_font theme
+            align 0.5
+            text "Développez vos idées"
+    locally
+        show 1.0 - Logo
+        translate -400, 400, 1000
+        image -200, 0, 30%, 30%, "XLLogo.png"
+        translatez 200
+        align 0.0
+        text_box 180, -30, 400, 400, 
+            font "Hoefler Text", 60
+            color ocean "Tao"
+            vertical_align 0.5
+            paragraph "The art of"
+            paragraph "turning ideas"
+            paragraph "into code"

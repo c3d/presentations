@@ -1,0 +1,125 @@
+// ****************************************************************************
+//  problem-example.ddd                                             Tao project
+// ****************************************************************************
+//
+//   File Description:
+//
+//    Illustration of the problem with programming
+//
+//
+//
+//
+//
+//
+//
+//
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2011 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2011 Taodyne SAS
+// ****************************************************************************
+
+base_slide "Le concept n'est pas le code"."Concept is not code",
+// ----------------------------------------------------------------------------
+//    Title slide
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    title_image "Stuck.jpg"
+    center_title theme, page_label
+    subtitle_layout theme,
+        highlight_font theme
+        at 2
+        paragraph "Il est si facile de se retrouver coincé..."."It's so easy to be stuck"
+        at 4
+        paragraph "sans même en être conscient!"."without even knowing it"
+
+slide "Concept simple : ""Maximum"""."Simple concept : ""Maximum""",
+    * "Définition mathématique bien connue"."Well known mathematical definition"
+    - "Nécessite une relation d'ordre"."Requires an order relation"
+    - "Notation "."Notation "
+    italic "max(a1, a2, ... an)"
+    * "Pas exactement un nouveau problème"."Not exactly a new problem"
+    paragraph_break
+    * "Donc ça devrait être simple!"."So it should be simple"
+
+failed_slide T:text, Body ->
+    base_slide T,
+        story theme, Body
+        locally
+            if page_time < 0.1 then skip_to 0.0
+            compute_smooth_step
+            translate 400, -200, 2000 + 12000 * step_scale 1
+            show fade_in(page_time, 1.0)
+            font "Arial", 85
+            rotatez  20
+            locally
+                line_color red "Tao"
+                line_width 8
+                color "transparent"
+                rectangle 0, 0, 400, 100
+            text_box 0, 0, 400, 100,
+                align 0.5
+                vertical_align 0.5
+                color red "Tao"
+                text "Raté!"."Failed"
+        title theme, T
+
+failed_slide "Maximum en C (structuré?)"."Maximum in C (structured?)",
+    * "Généralement une macro"."Generally a macro"
+    - "Exemple "
+    code_font "#define max(x,y) ((x) < (y) ? (y) : (x))"
+    - "Ou bien "
+    code_font "#define max(x,y) ((y) >= (x) ? (x) : (y))"
+    separator
+
+    * "Problèmes avec cette version"."Problems with this version"
+    - "Pourquoi toutes les parenthèses?"."Why all the parentheses"
+    - "Que se passe-t-il dans "."What happens in "
+    code_font "max(f(a++),c--)"
+    text "?"
+    - "Impossible d'écrire "."We cannot write "
+    code_font "max(a, b, c, d)"
+
+
+failed_slide "Maximum en Java (objets?)"."Maximum in Java (objects?)",
+    * "Fonction générique"."Generic function"
+    - "Définie dans "."Defined in "
+    code_font "java.util.Collections"
+    - "Quand Java imite C++, ça donne "."When Java mimics C++, you get "
+    line_break
+    code_font "public static <T extends Object & Comparable<? super T>> T max(Collection<? extends T> coll)"
+    - "On peut comparer plus de deux objets"."Cannot compare more than two objects"
+
+    * "De nouveaux problèmes"."New class of problems"
+    - "Toujours pas de max(x,y,z,t)"."Still no max(x,y,z,t)"
+    - "Il faut créer une collection"."Need to create a collection"
+    - "On utilise "."Compare with "
+    code_font "e1.compareTo(e2) < 0"
+    text " au lieu de "." instead of "
+    code_font "e1 < e2"
+    - "Erreurs à l'exécution (exceptions)"."Runtime errors (exceptions)"
+
+
+code_slide "Maximum en XL"."Maximum in XL", "maximum.xl",
+// ----------------------------------------------------------------------------
+//   Slide showing the "maximum" example in XL
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    * "Fonction générique"."Generic function"
+    - "S'adapte à tout type ordonné"."Adapts to any ordered type"
+    - "Types génériques"."Generic types"
+    at 5
+    * "Variadique"."Variadics"
+    - "Tout nombre d'arguments"."Any number of arguments"
+    - "Pas de coût d'exécution"."No runtime cost"
+    at 10
+    * "Généricité validée"."Validated generics"
+    - "Détection des erreurs"."Error detection"
+    - "Surcharge possible"."Overload is possible"
+
+
+
+key "Right"  -> skip 1
+key "Left"   -> skip -1
+key "Return" -> skip_to 0

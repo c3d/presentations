@@ -1,0 +1,42 @@
+translation XLSemantics
+    when
+        return 'Value'
+    then
+        return DoReturn(input, Value)
+
+    when
+        return
+    then
+        return DoReturn(input, nil)
+
+    when
+        yield
+    then
+        return DoYield(input)
+
+    when
+        if 'Cond' then 'TrueCase'
+    then
+        return DoIf(Cond, TrueCase, nil)
+    when
+        if 'Cond' then 'TrueCase' else 'FalseCase'
+    then
+        return DoIf(Cond, TrueCase, FalseCase)
+
+    when
+        loop 'Body'
+    then
+        return DoLoop(Body)
+
+    when
+        while 'Test' loop 'Body'
+    then
+        return DoConditionalLoop(Test, Body, true, false)
+    when
+        until 'Test' loop 'Body'
+    then
+        return DoConditionalLoop(Test, Body, false, false)
+    when
+        loop 'Body' while 'Test'
+    then
+        return DoConditionalLoop (Test, Body, true, true)

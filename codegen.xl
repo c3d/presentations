@@ -1,0 +1,10 @@
+// Builtins module (xl.builtins)
+to Add(in out X : integer; in Y : integer)                  written X+=Y                    is XL.BYTECODE.adds_int
+function Add(X, Y : integer) return integer                 written X+Y                     is XL.BYTECODE.add_int
+function Subtract(X, Y : integer) return integer            written X-Y                     is XL.BYTECODE.sub_int
+
+
+// Bytecode file (xl.bytecode)
+adds_int        "$1 = $1 + $2;"
+add_int         "$1 = $2 + $3;"
+sub_int         "$1 = $2 - $3;"

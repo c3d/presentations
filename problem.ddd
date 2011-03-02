@@ -1,0 +1,275 @@
+// ****************************************************************************
+//  problem.ddd                                                     Tao project
+// ****************************************************************************
+//
+//   File Description:
+//
+//     Prezi-like effect to show Moore's law
+//
+//
+//
+//
+//
+//
+//
+//
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2011 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2011 Taodyne SAS
+// ****************************************************************************
+
+import Animate
+
+X1 -> 0.0
+Y1 -> 0.0
+Z1 -> 0.0
+S1 -> 0.0
+
+CX -> 0.0
+CY -> 0.0
+CZ -> 0.0
+CS -> 0.0
+
+set_arrow s0:symbol, s1:symbol -> endpoints_style s0, s1
+
+base_slide "Simplifier la programmation"."Simplify programming",
+// ----------------------------------------------------------------------------
+//   Illustration basee sur la loi de Moore
+// ----------------------------------------------------------------------------
+    locally
+        adjust_view_point
+        move_speed -> if current_view_point > 8 then 0.05 else 0.15
+        interpolate_scale move_speed, S1, CS
+        interpolate_position move_speed, X1, Y1, Z1, CX, CY, CZ
+        locally
+            line_width 8
+            color "transparent"
+            line_color "red"
+            path
+                coord N:integer -> line_to 20*N, 70*exp(N*0.05), 0
+                coord with 0..50
+                set_arrow none, arrowhead
+
+        locally
+            color "transparent"
+            line_color orange "Tao"
+            line_width 3
+            translate -50, 50, 0
+            line_arrow -30, 0, none, 1200, 0, arrowhead
+            line_arrow 0, -30, none, 0, 800, arrowhead
+            font "Gentium Plus", 30
+            line_width 0
+            color orange "Tao"
+            text_box 1200, -50, 200, 200,
+                text "Temps"."Time"
+            rotatez 90
+            text_box 750, -50, 200, 200,
+                text "Complexité"."Complexity"
+
+        abstraction N:integer ->
+            locally
+                if N >= current_view_point then show -0.1
+                if current_view_point > 7 then show -0.1
+                translate 20*(8*N+5), 70*exp((8*N+5)*0.05), 150
+                align 0.0
+                locally
+                    line_width 4
+                    line_color navy "Tao", 30%
+                    color "transparent"
+                    path
+                        move_to -130, 0, 0
+                        line_to 130, 0, 0
+                        set_arrow none, arrowhead
+                text_box 0, 25, 250, 50,
+                    vertical_align 1.0
+                    font "Gentium Plus", 20, bold
+                    text abstraction_language N
+                text_box 0, -25, 250, 50,
+                    vertical_align 0.0
+                    font "Gentium Plus", 12
+                    text abstraction_description N
+                if N+1 = current_view_point then
+                    show -1
+                    locally
+                        color "white", 50%
+                        line_color navy "Tao", 20%
+                        line_width 1
+                        rounded_rectangle 0, -50, 310, 70, 5
+                    text_box 0, -50, 300, 60,
+                        vertical_align 0.5
+                        font "Menlo", 9
+                        color green "Tao"
+                        text abstraction_code N
+
+        locally
+            color navy "Tao"
+            abstraction with 0..5
+
+        if current_view_point > 7 then
+            translate -CX, -CY, 80
+            locally
+                line_width 1
+                color "white", 70%
+                line_color navy "Tao", 20%
+                circle 0, 0, 110
+                rotatez -40 * time
+                translatez 500
+                line_color red "Tao"
+                color yellow "Tao"
+                star_polygon 0, 0, 30, 30, 5, 4
+            locally
+                if CX > -20*(8*3+5) then
+                    text_box 0, 55, 160, 100,
+                        font "Gentium Plus", 18
+                        color green "Tao"
+                        align 0.0
+                        vertical_align 1.0
+                        paragraph "Productif"
+                        font "Gentium Plus", 12
+                        paragraph "Outils adaptés"."Tools work"
+                        paragraph "Deux gars dans un garage"."Two guys in a garage"
+                        paragraph "Argent facile"."Easy money"
+                else if current_view_point < 10 then
+                    text_box 0, -55, 160, 100,
+                        font "Gentium Plus", 18
+                        color red "Tao"
+                        align 1.0
+                        vertical_align 0.0
+                        paragraph "Coûteux"
+                        font "Gentium Plus", 12
+                        paragraph "Outils dépassés"."Tools are outdated"
+                        paragraph  "Besoins de main d'oeuvre"."Need more hands"
+                        paragraph "Délais et coûts explosent"."Delays and costs overrun"
+                else if current_view_point < 11 then
+                    text_box 0, -65, 160, 100,
+                        font "Gentium Plus", 18
+                        color orange "Tao"
+                        align 0.5
+                        vertical_align 0.0
+                        paragraph "Nous sommes ici"."You are here"
+                        font "Gentium Plus", 12
+                        paragraph "Multitude de langages"."Many languages"
+                        paragraph  "Equipes en Inde"."Work sent to India"
+                        paragraph "75% des projets échouent"."75% of projects fails"
+                else
+                    text_box 0, 65, 160, 100,
+                        font "Gentium Plus", 18
+                        color green "Tao"
+                        align 0.5
+                        vertical_align 0.8
+                        paragraph "Le rêve XL"."The XL dream"
+                        font "Gentium Plus", 12
+                        paragraph "Langage à la demande"."On-demand language"
+                        paragraph "Ecosystème de DSL"."DSL ecosystem"
+                        paragraph "Loi de Moore bénéfique"."Moore's law helps"
+
+    title theme, page_label
+
+abstraction_language    0 -> "Fortran, Basic"
+abstraction_description 0 -> "Symboles et expressions"."Symbols and expressions"
+abstraction_code        0 ->
+<<10 FOR X = 0 TO 100 STEP 0.1
+20 Y = SIN(X) * COS(10 * X)
+30 GOSUB 1000 : REM Plot X, Y
+40 NEXT X >>
+
+abstraction_language    1 -> "Pascal, C, Ada, Modula"
+abstraction_description 1 -> "Programmation structurée"."Structured programming"
+abstraction_code        1 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot(x, sin(x) * cos(10*x)); >>
+
+abstraction_language    2 -> "C++, Smalltalk, Eiffel"
+abstraction_description 2 -> "Objets"."Objects"
+abstraction_code        2 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot.addDataPoint(x, sin(x) * cos(10*x));
+ plot.draw(); >>
+
+abstraction_language    3 -> "Java"
+abstraction_description 3 -> "Programmes distribués"."Distributed programs"
+abstraction_code        3 ->
+<<String plotDriver = "com.jnetdirect.jsql.JSQLDriver";
+Class.forName(plotDriver);
+PlotManager.connect(url, user, password);>>
+
+abstraction_language    4 -> "Python, XML"
+abstraction_description 4 -> "Composants logiciel"."Software components"
+abstraction_code        4 -> "<plot source=""$URL"" x_axis=""x"" y_axis=""y""/>"
+
+abstraction_language    5 -> "XL"
+abstraction_description 5 -> "Notations sur demande"."On-demand notations"
+abstraction_code        5 ->
+    << plot (x -> sin x * cos(10*x)) >>
+
+view_set ax:real, ay:real, az:real, as:real ->
+    X1 := ax
+    Y1 := ay
+    Z1 := az
+    S1 := as
+
+view_point_zoom N:integer -> view_set -20*(8*N+5), -70*exp((8*N+5)*0.05), -150, 5.0
+view_point 1            -> view_point_zoom 0
+view_point 2            -> view_point_zoom 1
+view_point 3            -> view_point_zoom 2
+view_point 4            -> view_point_zoom 3
+view_point 5            -> view_point_zoom 4
+view_point 6            -> view_point_zoom 5
+view_point 7            -> view_set -500.0, -500.0, 0.0, 1.0
+view_point 8            -> view_set -20*(8*3+5) + 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 9            -> view_set -20*(8*3+5) - 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 10           -> view_set -20*(8*3+5) - 350, -70*exp((8*3+5)*0.05) - 250, -150, 3.0
+view_point 11           -> view_set -800, -680, -150, 3.0
+
+view_point 12           -> view_set -900, -680, -150, 3.0
+view_point 13           -> view_set -900, -800, -150, 3.0
+view_point 14           -> view_set -950, -800, -150, 3.0
+view_point 15           -> view_set -950, -900, -150, 3.0
+
+
+view_point N:integer    -> view_set -500.0, -500.0, 0.0, 1.0
+
+current_view_point -> 0
+adjust_view_point ->
+    if page_time < 0.1 then
+        skip_to 0
+    current_view_point := integer (step)
+    view_point current_view_point
+
+
+base_slide "En résumé"."Bottom line",
+// ----------------------------------------------------------------------------
+//    Résumé du problème
+// ----------------------------------------------------------------------------
+    story theme,
+        * "Le logiciel suit la loi de Moore"."Software follows Moore's law"
+        * "Besoin client, pas désir technologique"."Demand of clients, not tech lust"
+        * "Le cerveau des programmeurs ne suit pas"."Programmers' brains can't keep up"
+        * "Nouveaux paradigmes = Repartir à zéro"."New paradigms = rewrite everything"
+        paragraph " "
+        paragraph " "
+        * "Il faut inventer un modèle "."We need a model that "
+        color red "Tao"
+        text "évolutif"."evolves"
+
+    title theme, page_label
+
+    locally
+        display N:integer -> text text (N + integer (page_time^3 * 20))
+        rotatez -20 + 10 * sin (0.1 * page_time)
+        translatez -200
+        text_box 0, 0, 2800, 2800,
+            font "Menlo", 80
+            align 0.0
+            vertical_align 0.5
+            color grey "Tao", 5% + 2% * sin time
+            if page_time < 20 then
+                display with 1..integer(page_time * 10)
+            else
+                display with 1..200
+
+key "Right"  -> skip 1
+key "Left"   -> skip -1
+key "Return" -> skip_to 0

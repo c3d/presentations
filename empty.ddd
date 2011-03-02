@@ -1,0 +1,5 @@
+rectangle 0, 0, 100, 100 
+shape 
+    //color "line"
+    line_color "line" 
+    line_arrow 47, -152, none, -230, -137, arrowhead 

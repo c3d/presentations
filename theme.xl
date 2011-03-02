@@ -1,0 +1,182 @@
+// ****************************************************************************
+//  theme.xl                                                        Tao project
+// ****************************************************************************
+//
+//   File Description:
+//
+//     Theme for the imagina presentation
+//
+//
+//
+//
+//
+//
+//
+//
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 1992-2010 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2010 Jérôme Forissier <jerome@taodyne.com>
+//  (C) 2010 Catherine Burvelle <cathy@taodyne.com>
+//  (C) 2010 Lionel Schaffhauser <lionel@taodyne.com>
+//  (C) 2010 Taodyne SAS
+// ****************************************************************************
+
+
+
+// ============================================================================
+//
+//    Initializations
+//
+// ============================================================================
+
+// Theme style name
+theme -> "XLTalk"
+
+// Disable the glyph cache for better font smoothing
+theme_init "XLTalk"                     -> enable_glyph_cache false
+
+// Background position and image
+background_picture "XLTalk"             -> "background.png"
+background_width "XLTalk"               -> 1920.0
+background_height "XLTalk"              -> 1080.0
+background_z "XLTalk"                   -> -30000
+foreground_z "XLTalk"                   -> 3000
+start_time -> 0.0
+
+lang -> "fr"
+Fr:text | En:text -> if lang = "en" then En else Fr
+Fr:text . En:text -> if lang = "en" then En else Fr
+language L:text -> lang := L; refresh 0.1
+
+background "XLTalk"                     ->
+    picture_background
+    locally
+        translate -700, -480, 500
+        color "red", 20%
+        ellipse_arc 0, 0, 40, 30, 0, 360 * page_number / page_count
+
+        if start_time = 0.0 then start_time := time
+        color "green", 20%
+        ellipse_arc 0, 0, 35, 25, 0, 360 * (time - start_time) / (40 * 60)
+
+    if show_logo page_label then
+        locally
+            translate 550, -480, 500
+            color "white"
+            image 0, 0, 20%, 20%, "Taodyne_Logo.svg"
+background_stretch "XLTalk"             -> true
+background_color "XLTalk"               -> color_hsv 3*time, 15%,100%,100%
+
+show_logo "XL et Taodyne" -> false
+show_logo "La programmation par concepts" -> false
+show_logo "Petite histoire de XL" -> false
+show_logo "Merci" -> false
+show_logo N -> true
+
+// Taodyne logo colors
+red "Tao"                               -> "#AA0022"
+orange "Tao"                            -> "#DD3311"
+yellow "Tao"                            -> "#EEAA11"
+green "Tao"                             -> "#88BB00"
+ocean "Tao"                             -> "#229988"
+sky "Tao"                               -> "#3399FF"
+navy "Tao"                              -> "#003366"
+purple "Tao"                            -> "#CC0099"
+grey "Tao"                              -> "#555"
+
+// Colors for this theme
+title_color    "XLTalk"                 -> color grey "Tao"
+highlight_color "XLTalk"                -> color orange "Tao"
+story_color    "XLTalk", Level          -> color navy "Tao"
+bullet_color "XLTalk", Level            -> color red "Tao"
+
+// Title information for this theme
+title_layout "XLTalk", Body            -> text_box 0, 460, 1200, 300,  Body
+subtitle_layout "XLTalk", Body         -> text_box 0, -300, 1200, 300, Body
+story_layout "XLTalk", Body            -> text_box 0, 0, 1200, 800,    Body
+left_layout "XLTalk", Body             -> text_box -320, 0, 600, 800,  Body
+right_layout "XLTalk", Body            -> text_box 320, 0, 600, 800,   Body
+code_layout "XLTalk", Body             -> text_box -160, 0, 900, 800,  Body
+
+title_image Name ->
+// ----------------------------------------------------------------------------
+//   Draw an image next to the title
+// ----------------------------------------------------------------------------
+    locally
+        translate 550, 350, 200
+        rotatez -5
+        scale 60%, 60%, 60%
+
+        color "black", 5%
+        shadow N:integer -> rounded_rectangle N*4, -N*4, 584, 512, 10
+        shadow with 1..5
+
+        color "white"
+        texture Name
+        rectangle 0, 0, 584, 512
+
+title_font "XLTalk" ->
+    font "DejaVu Sans", 85
+    title_color theme
+    align 0.5
+    vertical_align 0.5
+
+story_font "XLTalk" ->
+    font "Gentium Plus", 45
+    story_color theme, 0
+    align 0.0
+    vertical_align 0.3
+
+highlight_font "XLTalk" ->
+    font "Tangerine", 85
+    highlight_color theme
+    align 0.9
+    vertical_align 0.3
+
+bullet_size "XLTalk", Level:integer -> 80 * exp((1 - Level) * 0.35)
+bullet_font "XLTalk", Level:integer ->
+    font "Gentium Plus"
+    font_size bullet_size (theme, Level)
+    story_color theme, Level
+
+bullet_picture "XLTalk", Level:integer ->
+    color yellow "Tao"
+    line_color orange "Tao"
+    draw S:real -> circle -50% * S, 30% * S, 15% * S
+    draw bullet_size (theme, Level)
+
+italic T:text ->
+    font "Gentium Plus", italic
+    text T
+    font "Gentium Plus"
+
+code_font T:text ->
+    font "Menlo", 42
+    color "darkgreen"
+    text T
+    bullet_font theme, 2
+
+
+stars_background ->
+// ----------------------------------------------------------------------------
+//   Scaled stars background
+// ----------------------------------------------------------------------------
+    locally
+        color 70%, 70%, 70%, 1
+        texture "Stars.jpg"
+        translate 0, 0, -3000
+        rotatey 0.01 * time + 90
+        scale 1, -1, 1
+        texture_wrap true, true
+        texture_transform
+            scale 15, 15, 15
+        sphere 0, 0, 0, 25000
+
+
+separator -> paragraph_break; text " "
+
+zero N:integer -> if N < 10  then "0" & text N else text N
+
+import "theme-common.xl"

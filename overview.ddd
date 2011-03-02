@@ -1,0 +1,139 @@
+// ****************************************************************************
+//  overview.ddd                                                    Tao project
+// ****************************************************************************
+//
+//   File Description:
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2011 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2011 Taodyne SAS
+// ****************************************************************************
+
+import "interpolate.xl"
+import ObjectLoader 1.0
+
+
+title_slide "Programmation par concepts"."Concept programming",
+// ----------------------------------------------------------------------------
+//    Slide sur la programmation par concepts
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    title_image "Light.jpg"
+    center_title theme, page_label
+    subtitle_layout theme,
+        highlight_font theme
+        at 2
+        paragraph "Passer du concept au code"."Go from concept to code"
+        at 4
+        paragraph "de façon systématique"."in a systematic way"
+
+
+base_slide "La programmation par concepts"."Concept programming ",
+// ----------------------------------------------------------------------------
+//   Programmation par concepts
+// ----------------------------------------------------------------------------
+    scale 170%, 170%, 170%
+    if page_time > 25 then
+        rotatex 5 * fade_in(page_time - 25, 20)
+    stars_background
+    locally
+        light 0
+        light_position -400, 0, 2000
+        color "white"
+        rotatex -5
+        translate 400, 200, 2000 * (30 - page_time)
+        rotatez 90
+        rotatey 90
+        if page_time > 28 then
+            scale3 x:real -> scale x, x, x
+            scale3 fade_out(page_time - 28, 15)
+            object 0, 0, 0, 800, 800, 800, "models/FinalCapital/CapitalShip.3ds"
+
+    vertical_align 0.0
+    locally
+        color 100%, 80%, 20%, 90% + 90% * expm1 (25 - (page_time mod 60))
+        line_color 100%, 80%, 20%, 90% + 90% * expm1 (25 - (page_time mod 60))
+        line_width 0.05
+        font "Arial Narrow", 64, bold
+        translate 0, -384, 0
+        rotatex -65
+        translatey -1000 + 70 * (page_time mod 60)
+        + X:text -> { line_break; text X }
+        text_box 0, 0, 1000, 2000,
+            align 0.5, 1.0
+            text "LE RETOUR DES IDÉES"."THE RETURN OF IDEAS"
+            + " "
+            align 0.0, 1.0
+            + "Programmer, c'est prendre des idées et les transformer en code, en éléments concrets."."Programming means turning ideas into code, into concrete artifacts."
+            + " "
+            + "Les langages existants limitent les notations disponibles, par exemple fonctions, objets, tags XML. Du coup, certaines idées ne peuvent être décrites."."Existing programming languages limit available notations, e.g. functions, objects, XML tags. As a result, some ideas cannot be expressed."
+            + " "
+            + "La programmation par concept, c'est de commencer par les notations. Adapter le langage aux besoins plutôt que l'inverse : un nouvel élan pour les programmeurs...."."Concept pogramming means starting with notations. Adjust the language to needs instead of the other way round: a new hope for programmers...."
+
+    locally
+        color "white"
+        texture "earth.bmp"
+        texture_wrap true, true
+        texture_transform
+            scale 3, 3, 3
+        translate 0,-3000-100 * expm1(25 - page_time),-2200
+        rotatex -60
+        rotatez 27
+        rotatey 0.03 * time
+        sphere 0, 0, 0, 5000,5000,5000,100,100
+
+        texture "clouds.png"
+        texture_transform
+            scale 4, 1, 3
+        color "white"
+        sphere 0, 0, 0, 5052,5052,5052,100,100
+
+
+slide "Pseudo-métriques"."Pseudo-metrics",
+// ----------------------------------------------------------------------------
+//    Slide sur les pseudo-métriques
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    T:text is U:text ->
+        - ""
+        font "Gentium Plus", italic
+        text T
+        font "Gentium Plus", roman
+        text " : ".": "
+        text U
+
+    * "Evaluer le rapport entre concept et code"."Evaluate how code and concepts relate"
+    at_step 1
+    "Bruit syntaxique"."Syntactic noise" is "écart concernant l'apparence du code"."discrepancy regarding appearance"
+    at_step 2
+    "Bruit sémantique"."Semantic noise" is "écart concernant le sens du code"."discrepancy regarding meaning"
+    at_step 3
+    "Bande passante"."Bandwidth" is "capacité de couverture du code"."how much of the domain is covered"
+    at_step 4
+    "Rapport signal/bruit"."Signal/noise ratio" is "fraction du code qui est utile"."how much of the code is useful"
+
+    separator
+
+
+    at_step 5
+    * "Ce ne sont pas des métriques calculables"."These metrics cannot be computed"
+    at_step 6
+    - "On ne peut pas mesurer les concepts dans la tête"."You cannot compute concepts in one's head"
+    at_step 7
+    - "Ce qui est bruit pour l'un peut être musique pour l'autre"."What is music to me may be noise to you"
+
+
+key "Right" -> skip 1
+key "Left" -> skip -1

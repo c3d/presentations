@@ -1,0 +1,51 @@
+slide "Axes de recherche",
+   * "Inférence de type"
+   - "Système de types basé sur la forme des arbres"
+   - "Fonctions retournant des types?"
+   - "Problème : Pas formalisé, pas publié"
+
+   * "Optimisations"
+   - "Génération de code machine par réécriture"
+   - "Accès direct à LLVM"
+   - "Accès direct aux fonctions C"
+
+
+title_slide "Merci",
+    subtitle_layout theme,
+        time_text -> (text hours & ":" & zero minutes & ":" & zero seconds)
+        highlight_font theme
+        align 1.0
+        story_font theme
+        align 1.0
+        paragraph "Journées Méditerranéennes du Logiciel Libre 2012"
+        paragraph "23 novembre 2012 - " & time_text
+
+        align 0.0
+        code_font "http://xlr.sourceforge.net"
+        paragraph " "
+        code_font "contact@taodyne.com"
+    color "white"
+    LogoT := step mod 2.0
+    interpolate 0.1, LogoT, Logo
+    locally
+        show Logo
+        translate 400, 400, 1000
+        image 0, 0, 40%, 40%, "Taodyne_Logo.svg"
+        translatez 200
+        text_box 50, -120, 500, 100,
+            highlight_font theme
+            align 0.5
+            text "Développez vos idées"
+    locally
+        show 1.0 - Logo
+        translate -400, 400, 1000
+        image -200, 0, 30%, 30%, "XLLogo.png"
+        translatez 200
+        align 0.0
+        text_box 180, -30, 400, 400,
+            font "Hoefler Text", 60
+            color ocean "Tao"
+            vertical_align 0.5
+            paragraph "The art of"
+            paragraph "turning ideas"
+            paragraph "into code"

@@ -1,0 +1,89 @@
+// ****************************************************************************
+//  title.ddd                                                       Tao project
+// ****************************************************************************
+// 
+//   File Description:
+// 
+//     Title slide introducing XL
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2011 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2011 Taodyne SAS
+// ****************************************************************************
+
+import "interpolate.xl"
+
+Logo  -> 0.0
+LogoT -> 0.0
+
+key "Right" -> skip 1
+key "Left" -> skip -1
+
+
+page "Blank",
+// ----------------------------------------------------------------------------
+//   Blank parking page
+// ----------------------------------------------------------------------------
+    clear_color 0, 0, 0, 1
+    text_box 0, 0, 800, 600,
+        color "white"
+        align 0.5
+        vertical_align 0.5
+        font "Arial", 80
+        text "Inventer le langage de l'Internet des Objets"
+        paragraph_break
+        font "Arial", 40
+        text "SophiaConf  - " & day & "/" & month & "/" & year & " " & hours & ":" & zero minutes & ":" & zero seconds
+
+
+
+title_slide "XL: un langage extensible"."XL: an extensible language", 
+// ----------------------------------------------------------------------------
+//    Main title page
+// ----------------------------------------------------------------------------
+    if page_time < 1 then
+        old_camera_settings
+    subtitle_layout theme, 
+        zero N:integer -> if N < 10  then "0" & text N else text N
+        time_text -> (text hours & ":" & zero minutes & ":" & zero seconds)
+        highlight_font theme
+        align 1.0
+        paragraph "Un langage qui évolue avec vos besoins?"."A language that adjusts to your needs?"
+        story_font theme
+        align 1.0
+        paragraph "Journées Méditerranéennes du Logiciel Libre 2012"."JM2L 2012"
+        paragraph "23 novembre 2012 - "."November 23rd, 2012" & time_text
+    color "white"
+    LogoT := step mod 2.0
+    interpolate 0.1, LogoT, Logo
+    locally
+        show Logo
+        translate 400, 300, 1000
+        image 0, 0, 40%, 40%, "Taodyne_Logo.svg"
+        translatez 200
+        text_box 50, -120, 500, 100, 
+            highlight_font theme
+            align 0.5
+            text "Développez vos idées"."Develop your ideas"
+    locally
+        show 1.0 - Logo
+        translate -400, 300, 1000
+        image -200, 0, 30%, 30%, "XLLogo.png"
+        translatez 200
+        align 0.0
+        text_box 180, -30, 400, 400, 
+            font "Hoefler Text", 60
+            color ocean "Tao"
+            vertical_align 0.5
+            paragraph "The art of"
+            paragraph "turning ideas"
+            paragraph "into code"

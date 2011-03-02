@@ -1,0 +1,18 @@
+import Animate
+import RemoteControl
+
+rc_hook 0, 06560
+
+import "title.ddd"
+import "problem.ddd"
+import "problem-example.ddd"
+import "overview.ddd"
+import "solution.ddd"
+import "discussion.ddd"
+
+key "Right"  -> skip 1
+key "Left"   -> skip -1
+key "Return" -> skip_to 0
+key "r"      -> start_time := time
+key "e"      -> language "en"
+key "f"      -> language "fr"

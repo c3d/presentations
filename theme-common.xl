@@ -1,0 +1,300 @@
+// ****************************************************************************
+//  theme-common.xl                                                 Tao project
+// ****************************************************************************
+// 
+//   File Description:
+// 
+//     Common functions for themes
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 1992-2010 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2010 Jérôme Forissier <jerome@taodyne.com>
+//  (C) 2010 Catherine Burvelle <cathy@taodyne.com>
+//  (C) 2010 Lionel Schaffhauser <lionel@taodyne.com>
+//  (C) 2010 Taodyne SAS
+// ****************************************************************************
+// ============================================================================
+// 
+//    Generally useful stuff
+// 
+// ============================================================================
+min x:real, y:real -> if x < y then x else y 
+max x:real, y:real -> if x > y then x else y 
+abs x:real -> if x >= 0.0 then x else -x 
+excited x:real -> if x < 0.25 then x * sin (50 * x) * x else 1 + (x - 1.25) ^ 9 
+X:real in A:real .. B:real -> A + X mod (B - A) 
+X:real <= Y:real <= Z:real -> X <= Y and Y <= Z 
+get_x x:real, y:real, z:real -> x 
+get_y x:real, y:real, z:real -> y 
+get_z x:real, y:real, z:real -> z 
+get_w w:real, h:real -> w 
+get_h w:real, h:real -> h 
+fade_in Value:real, Duration:real -> -expm1 ( -5 * Value / Duration) 
+fade_out Value:real, Duration:real -> 1 + expm1 ( -5 * Value / Duration) 
+
+
+
+// ============================================================================
+// 
+//   Transitions
+// 
+// ============================================================================
+step -> 1.0 
+smooth_step -> 0.0975 
+step_scale N:integer -> fade_in ( (smooth_step - N) ^ 2, 1) 
+compute_smooth_step -> 
+    if page_time < 0.5 then 
+        step := 0.0 
+        smooth_step := 0.0 
+        refresh 0.01 
+    smooth_step := smooth_step * 0.95 + step * 0.05 
+
+skip S:real -> step := step + S; refresh 0.01 
+skip_to S:real -> step := S; refresh 0.01 
+
+fade_at X:real, N:real -> 0.5 + atan (100 * (X - N + 0.5) ) / pi 
+at N:real -> show fade_at (page_time, N) 
+at_step N:real -> show fade_at (smooth_step, N) 
+disabled Body -> false 
+
+language -> "French" 
+french Body -> if language = "French" then Body 
+english Body -> if language = "English" then Body 
+
+scheduled_duration -> 30.0 
+page_duration Duration:real, Name:text -> 
+    scheduled_duration := Duration 
+    if page_time > Duration then 
+        goto_page Name 
+page_duration Duration:real, Page:integer -> 
+    page_duration Duration, page_name Page 
+page_duration Duration:real -> page_duration Duration, page_number + 1 
+
+
+
+// ============================================================================
+// 
+//    Background
+// 
+// ============================================================================
+// Background and scaling
+picture_background -> 
+// ----------------------------------------------------------------------------
+//   Show a picture backround
+// ----------------------------------------------------------------------------
+    min_w_h -> min window_width, window_height 
+    cam_z -> camera_position at 3 
+    bg_z -> background_z theme 
+    bg_w -> background_width theme 
+    bg_h -> background_height theme 
+    bg_zscale -> 110% * (1.0 - bg_z / cam_z) 
+    bg_sx -> bg_zscale * window_width / bg_w 
+    bg_sy -> bg_zscale * window_height / bg_h 
+    win_scale -> min window_height / bg_h, window_width / bg_w 
+    bg_scale -> max window_height / bg_h, window_width / bg_w 
+
+    locally 
+        translatez bg_z 
+        background_color theme 
+        if background_stretch theme then 
+            image 0.0, 0.0, bg_sx, bg_sy, background_picture theme 
+        else 
+            image 0.0, 0.0, bg_scale, bg_scale, background_picture theme 
+
+    scale win_scale, win_scale, win_scale 
+
+
+background_item Body -> 
+// ----------------------------------------------------------------------------
+//   Put something on the background
+// ----------------------------------------------------------------------------
+    locally 
+        reset_transform 
+        bg_w -> background_width theme 
+        bg_h -> background_height theme 
+        win_scale -> min window_height / bg_h, window_width / bg_w 
+        scale win_scale, win_scale, win_scale 
+        Body 
+
+
+slide T:text, Body -> 
+// ----------------------------------------------------------------------------
+//    Create a slide with title T and body B
+// ----------------------------------------------------------------------------
+    base_slide T, 
+        story theme, Body 
+        title theme, T 
+
+
+base_slide T:text, Body -> 
+// ----------------------------------------------------------------------------
+//    Create a slide without a title and story
+// ----------------------------------------------------------------------------
+    page T, 
+        // Rescale and draw background
+        theme_init theme 
+        background theme 
+        Body 
+
+
+title_slide T:text, Body -> 
+// ----------------------------------------------------------------------------
+//    Create a slide without a title and story
+// ----------------------------------------------------------------------------
+    base_slide T, 
+        Body 
+        center_title theme, T 
+
+
+*T:text -> bullet theme, 1, T 
+-T:text -> bullet theme, 2, T 
++T:text -> bullet theme, 3, T 
+// ----------------------------------------------------------------------------
+//   Display a third-level bullet
+// ----------------------------------------------------------------------------
+
+paragraph T:text -> 
+// ----------------------------------------------------------------------------
+//  Show a paragraph
+// ----------------------------------------------------------------------------
+    text T 
+    paragraph_break 
+
+
+title Theme, Title -> 
+// ----------------------------------------------------------------------------
+//   Default implementation of title
+// ----------------------------------------------------------------------------
+    title_layout Theme, 
+        title_font Theme 
+        text Title 
+
+
+center_title Theme, Title -> 
+// ----------------------------------------------------------------------------
+//   Default implementation of title
+// ----------------------------------------------------------------------------
+    locally 
+        translatez 2000 
+        story_layout Theme, 
+            title_font Theme 
+            text Title 
+
+
+story Theme, Body -> 
+// ----------------------------------------------------------------------------
+//   Default implementation of a story
+// ----------------------------------------------------------------------------
+    story_layout Theme, 
+        story_font Theme 
+        Body 
+
+
+bullet Theme, Level, Text -> 
+// ----------------------------------------------------------------------------
+//   Draw a bullet point with a given text
+// ----------------------------------------------------------------------------
+    margins -bullet_size (Theme, Level) , -bullet_size (Theme, Level) 
+    paragraph_break 
+    anchor 
+        bullet_picture Theme, Level 
+    bullet_font Theme, Level 
+    text Text 
+
+
+
+// ============================================================================
+// 
+//   Code formatting
+// 
+// ============================================================================
+code_box X, Y, W, H, Code -> 
+// ----------------------------------------------------------------------------
+//   Create a code box at given coordinates, showing given code
+// ----------------------------------------------------------------------------
+    locally 
+        color "lightblue", 20% 
+        line_width 2 
+        line_color "red" 
+        rounded_rectangle X, Y, W + 10, H + 10, 20 
+    locally 
+        page_time 
+        frame_texture W, H, 
+            translatey smooth_step * 50 - 1530 + H / 2 
+            text_box 0, 0, W, 3000, 
+                vertical_align 0.0 
+                align 0 
+                font "Menlo", 32 
+                color "white" 
+                text Code 
+        color "darkblue" 
+        rounded_rectangle X, Y, W, H, 15 
+
+
+code_title_box X, Y, W, H, Title -> 
+// ----------------------------------------------------------------------------
+//   File information above a code box
+// ----------------------------------------------------------------------------
+    locally 
+        color "white", 80% 
+        line_width 2 
+        line_color "red" 
+        rounded_rectangle X, Y + H / 2, W * 0.75 + 2, 42, 5 
+    locally 
+        text_box X, Y + H / 2, W * 0.75, 40, 
+            vertical_align 0.5 
+            align 0.5 
+            color "darkgreen" 
+            font "Arial", 30 
+            text "Fichier: " 
+            bold 
+            text Title 
+
+
+code_file_box X, Y, W, H, File -> 
+// ----------------------------------------------------------------------------
+//   Combines code_box and file_box
+// ----------------------------------------------------------------------------
+    code_box X, Y, W, H, load_text File 
+    code_title_box X, Y, W, H, File 
+
+
+code_slide Title, File, Body -> 
+// ----------------------------------------------------------------------------
+//   A slide holding code with some explanations
+// ----------------------------------------------------------------------------
+    base_slide Title, 
+        left_layout theme, 
+            story_font theme 
+            Body 
+        locally 
+            translate 450, -30, 80 
+            rotatez -5 
+            rotatey -30 
+            code_file_box 0, 0, 1000, 800, File 
+        title theme, Title 
+
+
+code_slide2 Title, File, Body -> 
+// ----------------------------------------------------------------------------
+//   A slide holding code with some explanations
+// ----------------------------------------------------------------------------
+    base_slide Title, 
+        code_layout theme, 
+            story_font theme 
+            Body 
+        locally 
+            translate 500, -30, 80 
+            rotatez -5 
+            rotatey -30 
+            code_file_box 0, 0, 600, 800, File 
+        title theme, Title 

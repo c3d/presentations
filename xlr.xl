@@ -1,0 +1,13 @@
+// Factorielle
+0! -> 1
+N! -> N * (N-1)!
+
+// Tests
+if true then X else Y  -> X
+if false then X else Y -> Y
+
+// Slides
+slide T:text, Body -> 
+    base_slide T,
+        story theme, Body
+        title theme, T

@@ -1,0 +1,38 @@
+translate expr
+
+    when ('K') where K.kind <= PT.xlINTEGER then
+        return parse_tree(0.0)
+
+    when ('X') where X.kind = PT.xlNAME then
+        Xname : X as PT.name_tree
+        if Xname.value = dv then
+            return parse_tree(1.0)
+        else
+            return parse_tree(0.0)
+
+    when (('X')) then
+        X := Differentiate (X, dv)
+        return parse_tree(('X'))
+
+    when (-'X') then
+        X := Differentiate (X, dv)
+        return parse_tree(-'X')
+
+    when (+'X') then
+        X := Differentiate (X, dv)
+        return parse_tree(+'X')
+
+    when ('X' + 'Y') then
+        X := Differentiate(X, dv)
+        Y := Differentiate(Y, dv)
+        return parse_tree('X' + 'Y')
+
+    when ('X' - 'Y') then
+        X := Differentiate(X, dv)
+        Y := Differentiate(Y, dv)
+        return parse_tree('X' - 'Y')
+
+    when ('X' * 'Y') then
+        dX : PT.tree := Differentiate(X, dv)
+        dY : PT.tree := Differentiate(Y, dv)
+        return parse_tree('dX' * 'Y' + 'X' * 'dY')

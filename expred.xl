@@ -1,0 +1,17 @@
+// Définition simple d'un opérateur
+function Fac(N:integer) return integer written N! is
+    if N = 0 then
+        return 1
+    else
+        return N * (N-1)!
+
+// Définition de combinaisons d'opérateurs
+function MLA(A,B,C:mat) return mat written A+B*C
+
+// Définition de types génériques
+generic [Size : integer; type item]
+type array written array[Size] of item
+
+// Conversions implicites
+function ConvertBoolean (X : integer) return boolean written X is
+    return X <> 0

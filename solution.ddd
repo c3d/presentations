@@ -1,0 +1,331 @@
+// ****************************************************************************
+//  solution.ddd                                                    Tao project
+// ****************************************************************************
+// 
+//   File Description:
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// ****************************************************************************
+// This document is released under the GNU General Public License.
+// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
+//  (C) 2011 Christophe de Dinechin <christophe@taodyne.com>
+//  (C) 2011 Jérôme Forissier <jerome@taodyne.com>
+//  (C) 2011 Catherine Burvelle <cathy@taodyne.com>
+//  (C) 2011 Taodyne SAS
+// ****************************************************************************
+
+at N, Body -> 
+    if smooth_step > N - 1 then 
+        show smooth_step - N + 1 
+    else 
+        show 0.0 
+    Body 
+
+base_slide "Compiler des idées?",
+// ----------------------------------------------------------------------------
+//    Title slide
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    title_image "XLLogo.png"
+    center_title theme, page_label
+    subtitle_layout theme,
+        highlight_font theme
+        at 2
+        paragraph "Compilation par réécriture d'arbres"
+        at 4
+        paragraph "jusqu'au langage machine"
+
+
+base_slide "XL en quelques points clef", 
+// ----------------------------------------------------------------------------
+//   Description générale de XL
+// ----------------------------------------------------------------------------
+    compute_smooth_step 
+    story theme, 
+        * "Une seule syntaxe, deux styles" 
+        - "XL2: impératif, statique" 
+        - "XLR, fonctionnel, dynamique" 
+        at 2, 
+            * "Homoiconique, mais syntaxe lisible" 
+            - "Arbre syntaxique simple et documenté" 
+            - "Syntaxe utilisant l'indentation" 
+        at 4, 
+            * "Evolution continue depuis 15 ans" 
+            - "A commencé comme un Ada simplifié" 
+            - "Au moins 6 réécritures complètes" 
+    title theme, page_label 
+    at 1, 
+        active_widget
+            translate 450 * step_scale 1, 0, 2000 - 2300 * step_scale 1
+            rotatey -20 * step_scale 1
+            color "white"
+            url 0, 0, 1000, 1000, "http://xlr.sourceforge.net/" 
+    at 3,
+        active_widget
+            translate 400 * step_scale 3, 0, 2000 - 2250 * step_scale 3
+            rotatey -20 * step_scale 3
+            color "white"
+            scale 130%, 130%, 130%
+            url 0, 0, 600, 800, "http://xlr.git.sourceforge.net/git/gitweb.cgi?p=xlr/xlr;a=blob;f=xl2/native/TESTS/10.Generics/minimax_vararg_generic.xl"
+
+    at 5,
+        active_widget
+
+            translate 350 * step_scale 5, 0, 2000 - 2200 * step_scale 5
+            rotatey -20 * step_scale 5
+            color "white"
+            scale 110%, 110%, 110%
+            url 0, 0, 1000, 1000, "http://mozart-dev.sourceforge.net/moka.html"
+
+
+base_slide "Syntaxe : Lire comme nous?",
+// ----------------------------------------------------------------------------
+//   Slide sure les règles de parsing
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    story theme,
+        * "Arbre syntaxique normalisé"
+        - "Feuilles : Entier, Réel, Symbole, Texte"
+        - "Composés : Infixe, Préfixe, Postfixe, Bloc"
+        separator
+
+        at_step 1
+        * "Sommes nous très logiques?"
+        at_step 2
+        - "Précédence : "; code_font "write sin x, sin y"
+        at_step 3
+        - "Espaces : "; code_font "write -A; X := B"
+
+    title theme, page_label
+
+    locally
+        translate 500, 150, 100
+        scale 1.4, 1.4, 1.4
+        tree_kind integer(page_time / 3) mod 8
+        tree_kind N:integer ->
+            locally
+                color_hsv N * 45, 1, 1, 10%
+                line_color_hsv N * 45, 0.9, 0.6, 80%
+                line_width 3
+                tree_shape N
+            locally
+                text_box 0, 0, 160, 100,
+                    color "black", 40%
+                    font "Arial Black", 32
+                    align 0.5
+                    vertical_align 0.5
+                    text tree_name N
+            locally
+                text_box 0, -140, 250, 180,
+                    color "darkblue"
+                    font "Menlo", 32
+                    align 0.5
+                    vertical_align 0.5
+                    tree_example N
+
+        tree_name    0 -> "INTEGER"
+        tree_shape   0 -> ellipse 0, 0, 220, 100
+        tree_example 0 -> paragraph "153"; paragraph "16#3FF_0FF"
+
+        tree_name    1 -> "REAL"
+        tree_shape   1 -> rotatez 15; ellipse 0, 0, 220, 100
+        tree_example 1 -> paragraph "1.28"; paragraph "16#3F.FFF_FFF#e-3"
+
+        tree_name    2 -> "TEXT"
+        tree_shape   2 -> rotatez -15; ellipse 0, 0, 220, 100
+        tree_example 2 -> paragraph """ABC"""; paragraph "<<Long text>>"
+
+        tree_name    3 -> "NAME"
+        tree_shape   3 -> rounded_rectangle 0, 0, 220, 100, 10
+        tree_example 3 -> paragraph "ABC"; paragraph "<="
+
+        tree_name    4 -> "INFIX"
+        tree_shape   4 -> rectangle 0, 0, 220, 100
+        tree_example 4 -> paragraph "A+B"; paragraph "A and B"
+
+        tree_name    5 -> "PREFIX"
+        tree_shape   5 -> rotatez 15; rectangle 0, 0, 220, 100
+        tree_example 5 -> paragraph "+A"; paragraph "not A"
+
+        tree_name    6 -> "POSTFIX"
+        tree_shape   6 -> rotatez -15; rectangle 0, 0, 220, 100
+        tree_example 6 -> paragraph "20%"; paragraph "40cm"
+
+        tree_name    7 -> "BLOCK"
+        tree_shape   7 -> rotatez 45; rectangle 0, 0, 160, 160
+        tree_example 7 -> paragraph "(A)"; paragraph "[indent]"
+
+
+code_slide "XL2 : Traitement sémantique", "translation.xl",
+// ----------------------------------------------------------------------------
+//    Explain how we deal with semantics
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    * "Réécriture d'arbres"
+    - "Basé sur la forme des arbres"
+    - "Classement des candidats"
+    - "Le plus spécialisé gagne"
+    separator
+
+    at_step 1
+    * "Phases nommées"
+    - "Standard : macros, sémantique"
+    - "Sur demande : plug-ins"
+    separator
+
+    at_step 2
+    * "Écriture simplifiée"
+    - "Plug-in " ; code_font "translation"; text " spécialisé"
+    - "Écriture non-locale (""Aspect"")"
+
+
+code_slide "XL2 : réduction d'expression", "expred.xl",
+// ----------------------------------------------------------------------------
+//   Describe an example of plug-in
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    * "Définir des notations"
+    - "Définies par "; code_font "written"
+    - "Ajouté aux réécritures"
+    - "Surcharge basée sur les types"
+    separator
+
+    * "Expressions de types"
+    - "Types génériques"
+    - "Combinaisons (constructeurs)"
+
+
+code_slide "XL2 : compilateur extensible", "plugin.xl",
+// ----------------------------------------------------------------------------
+//   Describe an example of plug-in
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    * "Extension sémantique"
+    - "Options : "; code_font "xl +diff f.xl"
+    - "Pragmas : "; code_font "{diff} dsin(x^3)/dx"
+    - "Chaînables : "; code_font "xl +diff +cstfold"
+    separator
+
+    * "Extension syntaxique"
+    - "Fichier de syntaxe : "; code_font "xl.syntax"
+    - "Flexible, mais globale"
+
+
+code_slide "XL2 : génération de code", "codegen.xl",
+// ----------------------------------------------------------------------------
+//   Describe an example of plug-in
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    * "Opérateurs de base"
+    - "Module "; code_font "xl_builtins"
+    - "Fichier "; code_font "xl.bytecode"
+    - "Un répertoire par cible"
+    separator
+
+    * "Runtime C ou Java"
+    - "Option : "; code_font "xl -r java f.xl"
+    - "Dynamique : XLR"
+
+
+code_slide2 "XLR : version fonctionnelle", "xlr.xl",
+// ----------------------------------------------------------------------------
+//   Describe XLR
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+
+    * "À l'origine un backend XL2"
+    - "Interface avec LLVM"
+    - "Compilateur JIT"
+    - "Accès à des primitives machine"
+
+    * "Langage fonctionnel simple"
+    - "Un peu similaire à Pure"
+    - "Fermetures, macros hygiéniques..."
+    - "Approche originale : passage d'arguments"
+
+    * "Inférence de types en cours"
+    - "Fibonacci : 12% plus lent que gcc -O3"
+
+
+
+
+
+rotating_text_position n:integer, o:real -> 
+    translate 0, -500 * sin o, 2500 * cos o 
+    if cos o > 0.95 then 
+        color 20 * (1 - cos o) , 1, 20 * (1 - cos o) , 55% + 45% * cos o 
+    else 
+        color 1, 1, 1, 55% + 45% * cos o 
+
+rotating_text n:integer, T:text ->
+    font "Arial", 32
+    locally
+        rotating_text_position n, (n - smooth_step) * pi / 15
+        align 0.5
+        vertical_align 0.5
+        text_box 0, 0, 1000, 200,
+            text T
+
+base_slide "Petite histoire de XL",
+// ----------------------------------------------------------------------------
+//    Effet rotatif pour l'histoire de XL
+// ----------------------------------------------------------------------------
+    old_camera_settings
+    locally
+        scale 1.7, 1.7, 1.7
+        stars_background
+    locally
+        translate 800, -100, -2000
+        rotatez -23.27
+        rotatey 0.3 * time
+
+        texture_wrap true, true
+        color "white"
+        texture "earth.bmp"
+        sphere 0, 0, 0, 800
+
+        color "white"
+        texture "clouds.png"
+        sphere 0, 0, 0, 810
+    
+    if page_time < 0.1 then skip_to 0
+    compute_smooth_step
+    rotating_text 0, "1993-1995: Premières ébauches de description basées sur Ada"
+    rotating_text 1, "1996: Hello World en 'LX' généré en assembleur 68000"
+    rotating_text 2, "1998: Equipe HP C++ Californie (Daveed Vandevoorde), projet Xroma"
+    rotating_text 3, "1999: Daveed quitte HP, Création du projet Open Source Mozart"
+    rotating_text 4, "2000: Writeln générique généré par le compilateur LX"
+    rotating_text 5, "2000: Réduction d'expressions en LX"
+    rotating_text 6, "2001: Moka, un compilateur extensible pour Java"
+    rotating_text 7, "2002: Langage renommé en XL"
+    rotating_text 8, "2003: Reboot: réécriture avec parse tree à 8 noeuds, bootstrappé"
+    rotating_text 9, "2004: Plug-in calculant des dérivées symboliques"
+    rotating_text 10, "2006: Le compilateur 'natif' est le meilleur XL créé"
+    rotating_text 11, "2008: Runtime 'Java'"
+    rotating_text 12, "Début 2009: Lancement de la version fonctionnelle, XLR"
+    rotating_text 13, "Fin 2009: Utilisation de XLR pour preuve de concept Tao"
+    rotating_text 14, "Début 2010: Lancement du projet Taodyne"
+    rotating_text 15, "Début 2011: Démonstration de Tao Presentations à Imagina"
+    rotating_text 16, "Mai 2011: Lancement de Tao Presentations beta"
+
+    locally
+        translate -450, 400, 400
+        rotatey 50
+        text_box 0, 0, 800, 150,
+            align 0.5
+            vertical_align 0.5
+            font "Impact", 90
+            color "yellow"
+            text page_label
