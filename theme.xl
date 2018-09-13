@@ -1,0 +1,772 @@
+import Slides
+import Animate
+import Charts
+import VLCAudioVideo
+import ObjectLoader
+import RegExp
+import Filters
+
+
+theme "RedHat"
+
+presentation_title X -> presentation_title := X
+presentation_title -> "Presentation title not set"
+
+presentation_logo X -> presentation_logo := X
+presentation_logo -> "XLLogo.png"
+
+presentation_url X -> presentation_url := X
+presentation_url -> "https://github.com/c3d/redhat-template"
+
+presentation_tao X -> presentation_tao := X
+presentation_tao -> "https://github.com/c3d/redhat-template.git"
+
+presentation_author X -> presentation_aythor := X
+presentation_author -> "Christophe de Dinechin (dinechin@redhat.com, IRC c3d)"
+
+
+// ============================================================================
+//
+//    Customizations for the slides
+//
+// ============================================================================
+//    This should be kept sorted with the more specific patterns at the top
+
+theme_align "RedHat", "main", "title"           -> align_left
+theme_align "RedHat", "main", "subtitle"        -> align_left
+theme_color "RedHat", "main", Theme             -> color "white"
+theme_color "RedHat", "section", Theme          -> color "white"
+
+theme_font  "RedHat", Master, "title"           -> font "Overpass", weight 300
+theme_size  "RedHat", Master, "title"           -> 65
+theme_font  "RedHat", Master, "subtitle"        -> font "Overpass"
+theme_size  "RedHat", Master, "subtitle"        -> 35
+theme_color "RedHat", Master, "subtitle"        -> color "#A21400"
+theme_font  "RedHat", Master, "code"            -> font "Menlo", 40
+theme_color "RedHat", Master, "code"            -> color "#003388"
+theme_font  "RedHat", Master, "boxtitle"        -> font "Overpass", bold, 40
+theme_align "RedHat", Master, "boxtitle"        -> align 80%
+
+theme_align "RedHat", Master,"story",1          -> margins 40, 0; paragraph_space 0, 20
+theme_align "RedHat", Master,"story",N          -> margins 40*N, 0
+theme_color "RedHat", Master,"story",N          -> color "black", 0.99-0.2*N
+theme_size  "RedHat", Master,"story",N          -> 36 - N * 2
+
+theme_color "RedHat", Master,"picture"          -> color "white"
+theme_font  "RedHat", Master,"story"            -> font "Overpass", "Arial"
+theme_size  "RedHat", Master,"story"            -> 40
+
+theme_font  "RedHat", Master, Theme             -> font "Overpass", "Arial"
+theme_color "RedHat", Master,Style              -> color "black"
+
+
+
+// ============================================================================
+//
+//    Charts
+//
+// ============================================================================
+
+// Chart colors
+theme_color "RedHat", Master:text, "line", N:integer -> line_color_hsv (336.0 * N) / chart_datasets_count, 0.3, 1.0, 1.0
+theme_color "RedHat", "pie", Style:text, N:integer -> color_hsv (336.0 * N) / (chart_count chart_first), 0.3, 1.0, 1.0
+theme_color "RedHat", "area", Style:text, N:integer -> theme_color "RedHat", "bar", Style, N
+theme_color "RedHat", "line", Style:text, N:integer -> theme_color "RedHat", "bar", Style, N
+theme_color "RedHat", "bar", Style:text, N:integer -> color_hsv (336.0 * N) / chart_datasets_count, 0.3, 1.0, 1.0
+
+// No boxes for charts components (except title)
+theme_box "RedHat",Master:text,"chart_legend", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"area", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"bar", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"line", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"pie", X:real,Y:real,W:real,H:real -> false
+
+// No boxes for pictures either
+theme_box "RedHat",Master:text,"picture", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"leftpic", X:real,Y:real,W:real,H:real -> false
+theme_box "RedHat",Master:text,"rightpic", X:real,Y:real,W:real,H:real -> false
+
+
+// ============================================================================
+//
+//    Theme definition
+//
+// ============================================================================
+
+theme_slide_width  "RedHat" -> 1920
+theme_slide_height "RedHat" -> 1080
+
+redhat_red1     -> "#8F1000"
+redhat_red2     -> "#B21600"
+redhat_red3     -> "#CC1B00"
+
+redhat_blue1    -> "#10008F"
+redhat_green1   -> "#008F10"
+
+
+theme_background "RedHat", "main" ->
+// ----------------------------------------------------------------------------
+//   Draw the triangles in the background
+// ----------------------------------------------------------------------------
+    clear_color "#A21400"
+
+    background -250,
+        translate_y -120
+        shader_show "shaders/clouds.fs",
+            shader_resolution
+            if mouse_x > 0 then
+                shader_atime
+            else
+                shader_set iGlobalTime := seconds_time * 0.01 mod 813
+            shader_depth 100%
+            shader_channel 0, "tex11.png"
+
+    background -200,
+        blend_function_separate "dst_color", "src_color", "src_alpha", "dst_alpha"
+        color "#D20400", 80%
+        rotate_z 45
+        rectangle 3000, 1600
+
+    background -100,
+        blend_function_separate "dst_color", "src_color", "src_alpha", "dst_alpha"
+        color redhat_red1, 70%
+        rotate_z 45
+        rectangle 0, 700, 1800, 100
+    background -50,
+        blend_function_separate "dst_color", "dst_color", "src_alpha", "dst_alpha"
+        translate 510, -510, 0
+        frame_texture 80, 80,
+            line_color "white"
+            color "transparent"
+            line_width 2
+            for I in 0..8 loop
+                rectangle 10 * I, 10 * I
+        texture_transform
+            translate -seconds_time * 0.2 mod 1, 0.0, 0
+            scale 20 + 10 * sin (0.1 * seconds_time)
+        texture_wrap true, true
+        color redhat_red2, 80%
+        redhat_triangle 800, 880
+        redhat_triangle A, B ->
+            path
+                move_to -B, -B
+                line_to  B,  B
+                line_to  B,  A
+                line_to -A, -B
+                line_to -B, -B
+
+    contents -10,
+        color "white"
+        image -370, 200, 150%, 150%, "RedHat-WhiteText.png"
+
+
+theme_background "RedHat", "section" ->
+// ----------------------------------------------------------------------------
+//   Same as section
+// ----------------------------------------------------------------------------
+    theme_background "RedHat", "main"
+
+
+theme_background "RedHat", Master ->
+// ----------------------------------------------------------------------------
+//   Draw the triangles in the background
+// ----------------------------------------------------------------------------
+    clear_color "white"
+    time
+    background -200,
+        frame_texture 80, 80,
+            line_color "white"
+            color "transparent"
+            line_width 2
+            for I in 0..8 loop
+                rectangle 10 * I, 10 * I
+        texture_transform
+            translate -seconds_time * 0.2 mod 1, 0.0, 0
+            scale 20 + 10 * sin (0.1 * seconds_time)
+        texture_wrap true, true
+        color "lightgray", 30%
+        locally
+            translate 620, -620, 0
+            redhat_triangle 800, 860
+        locally
+            translate -620, 620, 0
+            redhat_triangle 800, 860
+        redhat_triangle A, B ->
+            path
+                move_to -B, -B
+                line_to  B,  B
+                line_to  B,  A
+                line_to -A, -B
+                line_to -B, -B
+    contents -100,
+        color "lightgray"
+        rectangle 0, -480, 1700, 2
+    contents -50,
+        color "white"
+        image 800, -510, 100%, 100%, "RedHat-BlackText.png"
+    contents -50,
+        box -790, -510, 120, 50,
+            vertical_align 0.5
+            font_size 22
+            text "Page " & page_number
+            if step > 0 then text "." & step
+            on "pageentry",
+                refresh 0.1
+    contents 0,
+        box 0, -510, 1400, 50,
+            vertical_align 0.5
+            font_size 22
+            text presentation_title
+    contents -20,
+        box 0, -510, 1400, 50,
+            vertical_align 0.5
+            font_size 22
+            align_right
+            text month & "/" & day & "/" & year & " - " & hours & ":" & zero minutes & ":" & zero seconds
+    zero N -> if N < 10 then "0" & N else N
+
+
+
+theme_boxstyle "RedHat",Master:text,Style:text->
+// ----------------------------------------------------------------------------
+//   Style for text boxes
+// ----------------------------------------------------------------------------
+    color "black"
+
+
+theme_box "RedHat",Master:text,Style:text, X:real,Y:real,W:real,H:real ->
+// ----------------------------------------------------------------------------
+//   Draw the background box for text and flows
+// ----------------------------------------------------------------------------
+    false
+
+
+
+// ============================================================================
+//
+//    Layout for the various kind of pages
+//
+// ============================================================================
+
+theme_layout "RedHat", "main" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 100,    0, 1000, 200, "title"
+    flow 100, -200, 1000, 250, "subtitle"
+
+
+theme_layout "RedHat", "section" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 0, 50, 1800, 250, "title"
+    flow 0, -100, 1800, 150, "subtitle"
+
+
+theme_layout "RedHat", "blank" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 0, 0, 1800, 750, "story"
+
+
+theme_layout "RedHat", Master:text ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flows   0,  400, 1800, 220, "title", "subtitle"
+    flow    0,  -80, 1800, 700, "story"
+    flow -475,  -80,  850, 700, "left"
+    flow  475,  -80,  850, 700, "right"
+
+
+
+slide_picture Picture:text -> slide_picture Picture, 0%
+slide_picture Picture:text, Round:real ->
+// ----------------------------------------------------------------------------
+//   Show a picture in a slide
+// ----------------------------------------------------------------------------
+    contents 100,
+        translate 800, 420, 0
+        texture Picture
+        color "white"
+        scale min(200.0 / texture_width, 200.0 / texture_height)
+        rounded_rectangle 0, 0, texture_width, texture_height, Round * max(texture_width, texture_height)
+
+title_slide_logo ->
+// ----------------------------------------------------------------------------
+//   The logo on the title slides
+// ----------------------------------------------------------------------------
+    picture
+        translate 600, 450, 20
+        rotate_z -8
+        texture presentation_logo
+        color "white"
+        scale min(300.0 / texture_width, 300.0 / texture_height)
+        rounded_rectangle 0, 0, texture_width, texture_height, 80
+
+
+
+// ============================================================================
+//
+//    Utilities
+//
+// ============================================================================
+
+current_step -> 1
+
+stepping ->
+// ----------------------------------------------------------------------------
+//   A body where each bullet is at a given step
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    current_step := 1
+    on "pageentry",
+        skip_directly_to 0
+        highest_step := 0
+
+
+at_current_step ->
+// ----------------------------------------------------------------------------
+//   Show something at the current step
+// ----------------------------------------------------------------------------
+    at_step current_step
+    current_step := current_step + 1
+
+
+only_at N:integer..M:integer, Body ->
+// ----------------------------------------------------------------------------
+//   Show something at step N only
+// ----------------------------------------------------------------------------
+    if smooth_step in N-1..M+1 then
+        locally
+            show 1.3*fade_between(smooth_step, N, M)
+            Body
+
+
+only_at N:integer, Body ->
+// ----------------------------------------------------------------------------
+//   Show something at step N only
+// ----------------------------------------------------------------------------
+    if smooth_step in N-1..N+1 then
+        locally
+            show 1.3*fade_between(smooth_step, N, N)
+            Body
+
+
+*    Body -> at_current_step; bullet 1, Body
+**   Body -> at_current_step; bullet 2, Body
+***  Body -> at_current_step; bullet 3, Body
+**** Body -> at_current_step; bullet 4, Body
+
+$    -> $ " "
+$ X  -> paragraph X
+
+top_left     Body -> box -475,  150, 900, 350, { render Body }
+top_right    Body -> box  475,  150, 900, 350, { render Body }
+bottom_left  Body -> box -475, -250, 900, 350, { render Body }
+bottom_right Body -> box  475, -250, 900, 350, { render Body }
+// ----------------------------------------------------------------------------
+//   Draw a box in the four quadrants
+// ----------------------------------------------------------------------------
+
+
+! Body ->
+// ----------------------------------------------------------------------------
+//   Highlight a given bullet point
+// ----------------------------------------------------------------------------
+    * { color_hsv 32.3 * seconds, 0.4, 1; render Body }
+
+
+red     Body -> text_span { color "#AA0022";    render Body }
+green   Body -> text_span { color "#006633";  render Body }
+blue    Body -> text_span { color "#003399";   render Body }
+yellow  Body -> text_span { color "#EEAA11"; render Body }
+gray    Body -> text_span { color "#777";   render Body }
+code    Body -> text_span { font "Menlo"; blue Body }
+concept Body -> text_span { font "Amaze", 64; green Body }
+// ----------------------------------------------------------------------------
+//   Draw something in red, green or blue
+// ----------------------------------------------------------------------------
+
+
+code_box X:real, Y:real, W:real, H:real, Title, Body ->
+// ----------------------------------------------------------------------------
+//    A text box showing a code example
+// ----------------------------------------------------------------------------
+    background -50,
+        line_color "lightblue", 0.5
+        linear_gradient 128, 0, 128, 256, 256, 256,
+            gradient_color 0%, "lightgray", 80%
+            gradient_color 100%, "white", 0%
+        color "white"
+        rectangle X, Y, W+50, H+50
+    locally
+        frame_texture W, H,
+            text_box 0, 0, W, H,
+                style "boxtitle"
+                anchor
+                    linear_gradient 32, 64, 32, 0, 64, 64,
+                        gradient_color   0%, "lightgray", 70%
+                        gradient_color  10%, "darkgray",  90%
+                        gradient_color 100%, "white", 0%
+                    color "lightblue"
+                    rectangle 0, -25, 5 * W, 65
+                paragraph Title
+                style "code"
+                render Body
+        color "white"
+        rectangle X, Y, W, H
+code_box Title, Body -> code_box 600, 120, 500, 650, Title, Body
+
+
+code_box_at_step N, Title, Body ->
+// ----------------------------------------------------------------------------
+//   Draw a code box only at given step
+// ----------------------------------------------------------------------------
+    picture
+        only_at N,
+            code_box Title, Body
+
+
+image_box X:real, Y:real, W:real, H:real, Body ->
+// ----------------------------------------------------------------------------
+//    An image box with a cached frame texture
+// ----------------------------------------------------------------------------
+    background -50,
+        line_color "lightblue", 0.5
+        linear_gradient 128, 0, 128, 256, 256, 256,
+            gradient_color 0%, "lightgray", 80%
+            gradient_color 100%, "white", 0%
+        color "white"
+        rectangle X, Y, W+50, H+50
+    locally
+        frame_texture W, H,
+            render Body
+        color "white"
+        rectangle X, Y, W, H
+
+
+stamp Color, Body ->
+// ----------------------------------------------------------------------------
+//    Display a stamp with the given color
+// ----------------------------------------------------------------------------
+    locally
+        rotate_z 30
+        text_box -80, 250, 400, 80,
+            font "Impact", 90
+            color Color, sin(5 * page_time)^4
+            render Body
+
+
+image_only_at N, Body ->
+// ----------------------------------------------------------------------------
+//   Draw an image at the given step
+// ----------------------------------------------------------------------------
+    only_at N,
+        locally
+            color "white"
+            Body
+
+
+images N:integer, X, Y ->
+// ----------------------------------------------------------------------------
+//   Display the images in a list one after the other
+// ----------------------------------------------------------------------------
+    images N, X
+    images N+1, Y
+images N:integer, X ->
+    image_only_at N,
+        rotate_z 7 * sin (2 * N)
+        texture X
+        scale min(850.0 / texture_width, 640.0 / texture_height)
+        rectangle texture_width, texture_height
+images List -> images 1, List
+
+
+colored_boxes N:integer, X, Y ->
+// ----------------------------------------------------------------------------
+//   Display the texts in imbricated colored boxes, one after the other
+// ----------------------------------------------------------------------------
+    colored_boxes N+1, Y
+    colored_boxes N, X
+colored_boxes N:integer, X ->
+    locally
+        at_step N
+        locally
+            color_hsv 37 * N, 50%, 50%, 80%
+            line_color_hsv 37 * N, 70%, 80%, 100%
+            line_width 3
+            rectangle 0, 30 * N, 800 + 50 * N, 80 * N
+        text_box 0, 30 * N, 800 + 50 * N, 80 * N,
+            style "story"
+            align 50%
+            vertical_align 0%
+            color "white"
+            render X
+colored_boxes List ->
+    translate_y -200
+    colored_boxes 1, List
+
+
+math_eq Eq:text ->
+// ----------------------------------------------------------------------------
+//   Small utility to draw an equation
+// ----------------------------------------------------------------------------
+    image "http://latex.codecogs.com/png.latex?\dpi{600}\color{White}" & Eq
+
+
+
+// ============================================================================
+//
+//    Taodyne colors
+//
+// ============================================================================
+
+// Taodyne logo colors
+tao "red"                               -> "#AA0022"
+tao "orange"                            -> "#DD3311"
+tao "yellow"                            -> "#EEAA11"
+tao "green"                             -> "#006633"
+tao "ocean"                             -> "#229988"
+tao "sky"                               -> "#3399FF"
+tao "navy"                              -> "#003388"
+tao "purple"                            -> "#CC0099"
+tao "grey"                              -> "#555"
+
+
+// ============================================================================
+//
+//   Timer
+//
+// ============================================================================
+
+TOTAL_DURATION -> 2100 // 20 minutes
+START_TIME     -> 0.0
+
+key "Right" -> skip 1
+key "Space" -> skip 1
+key "Left"  -> skip -1
+seconds_time -> hours * 3600 + minutes * 60 + seconds
+key "Backspace" ->
+    START_TIME := seconds_time
+    goto_page 1
+once
+    START_TIME := seconds_time
+
+contents 0,
+    color "lightgray"
+    rectangle 0, -482, 1700 * (seconds_time - START_TIME) / TOTAL_DURATION, 2
+    if page_count > 0 then
+        rectangle 0, -478, 1700 * page_number / page_count, 2
+
+
+// ============================================================================
+//
+//   Virtual laser pointer (activate with "l")
+//
+// ============================================================================
+
+key "l" -> laser := 1 - laser
+key "L" -> show_coordinates := 1 -  show_coordinates
+laser -> 0
+show_coordinates -> 0
+contents 500,
+    if show_coordinates > 0 then
+        text_box mouse_x + 90, mouse_y + 40, 150, 90,
+            color "red", 80%
+            font "Arial", 35, bold
+            paragraph "X=" & integer mouse_x
+            paragraph "Y=" & integer mouse_y
+
+locally
+    translate_z 500
+    color "red", 80% * laser
+    rectangle mouse_x, 0, 1, 10000
+    rectangle 0, mouse_y, 10000, 1
+    circle mouse_x, mouse_y, 3
+    line_color "red", 80% * laser
+    color "red", 10% * laser
+    circle mouse_x, mouse_y, 10
+
+
+// ============================================================================
+//
+//    Shader display
+//
+// ============================================================================
+
+viewpoint_delta_base -> 0.01
+viewpoint_delta -> viewpoint_delta_base * eye_distance
+
+shader_x        -> 0.0
+shader_y        -> 0.0
+shader_scale    -> 1.0
+shader_scale S  -> shader_scale := S
+shader_rscale   -> 1.0
+shader_rrate    -> 60.0
+shader_autoscale-> 0
+
+shader_show File, Arguments ->
+// ----------------------------------------------------------------------------
+//   Display a shader with the given file name
+// ----------------------------------------------------------------------------
+  locally
+    if page_time < 0.1 then shader_speed 1
+    shader_rscale := shader_scale / sqrt(stereo_viewpoints)
+    WIDTH  := window_width  * shader_rscale
+    HEIGHT := window_height * shader_rscale
+    color "white"
+    shader_x := mouse_x
+    shader_y := mouse_y
+
+    if shader_autoscale > 0 then
+        nonzero 0.0 -> 1e5
+        nonzero X -> X
+        shader_rrate := 0.95 * shader_rrate + 0.05 / nonzero refresh_time
+        if shader_rrate < 15 then
+            shader_scale := shader_scale * 0.99
+        else if shader_rrate >= 20 and shader_scale < 1 then
+            shader_scale := shader_scale * 1.001
+
+    for I in 0..stereo_viewpoints-1 loop
+        stereo_viewpoints 2^I,
+            frame_texture WIDTH, HEIGHT,
+                clear_color 0, 0, 0, 1
+                shader_program
+                    fragment_shader_file File
+                Arguments
+                shader_set iViewpoint := I * viewpoint_delta
+                color "white"
+                rectangle WIDTH, HEIGHT
+            color "white"
+            rectangle 0, 120, slide_width, slide_height
+
+
+    if shader_autoscale > 0 then
+        contents 0,
+            color "darkgreen", 0.5
+            ellipse_sector -800, -400, 180, 180, 180, -180 * shader_scale
+            color "darkred", 0.5
+            ellipse_sector -800, -400, 200, 200, 180, -180 * shader_rrate / 60
+    on "key:r",
+        shader_scale := 1.0
+    on "key:a",
+        shader_autoscale := 1 - shader_autoscale
+
+
+shader_speed       -> 1.0
+shader_speed S     -> shader_speed := S
+shader_resolution  -> shader_set iResolution := WIDTH, HEIGHT, 1
+shader_time        -> shader_set iGlobalTime := page_time * shader_speed
+shader_gtime       -> shader_set iGlobalTime := (time+7200) mod 86400 * shader_speed
+shader_atime       -> shader_set iGlobalTime := time mod 813 * shader_speed
+shader_htime       -> shader_set iGlobalTime := time mod 997 * shader_speed
+shader_mouse       -> shader_set iMouse := shader_x+slide_width/2, shader_y+slide_height/2, mouse_buttons and 1, mouse_buttons and 2
+shader_depth X:real -> viewpoint_delta_base := 0.01 * X
+shader_channel 0,T -> shader_chantex 0, T; shader_set iChannel0 := 0
+shader_channel 1,T -> shader_chantex 1, T; shader_set iChannel1 := 1
+shader_channel 2,T -> shader_chantex 2, T; shader_set iChannel2 := 2
+shader_channel 3,T -> shader_chantex 3, T; shader_set iChannel3 := 3
+shader_chanres 0 ->
+    shader_set iChannelResolution0 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 1 ->
+    shader_set iChannelResolution1 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 2 ->
+    shader_set iChannelResolution2 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 3 ->
+    shader_set iChannelResolution3 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chantex N,T ->
+    texture_unit N
+    if T contains ".mp4" or T contains "youtube" then
+        movie_texture T
+        on "pageexit",
+            movie_drop T
+        texture_wrap true, true
+    else if T contains "#" then
+        cube_map 512,
+            cube_map_flip false, false
+            cube_map_face 0, text_replace(T, "#", "1")
+            cube_map_face 1, text_replace(T, "#", "2")
+            cube_map_face 2, text_replace(T, "#", "3")
+            cube_map_face 3, text_replace(T, "#", "4")
+            cube_map_face 4, text_replace(T, "#", "5")
+            cube_map_face 5, text_replace(T, "#", "6")
+    else if T contains "cross" then
+        cube_map_cross T
+    else
+        texture T
+        texture_wrap true, true
+shader_date     -> shader_set iDate := year, month, day, time mod 86400
+
+
+
+// ============================================================================
+//
+//    Display artist information
+//
+// ============================================================================
+
+description T ->
+// ----------------------------------------------------------------------------
+//   Display information about the artist
+// ----------------------------------------------------------------------------
+    locally
+        show fade_out_at(page_time, 5)
+        texture ""
+        translate 0, -100, 200
+        rotate_y -30
+        light 0
+        light_position 100, 100, 1000
+        text_box 0, 0, 1600, 200,
+            style "story"
+            font "Cherry Cream Soda", bold, 60
+            extrude_depth 25
+            align 1
+            vertical_align 1
+            text T
+    locally
+        show_news -> 0
+        if show_news > 0 then
+            rtn_newsfeed
+        on "key:i",
+            show_news := 1 - show_news
+
+artist T -> description T
+
+
+
+// ============================================================================
+//
+//    Per-display size adjustments
+//
+// ============================================================================
+
+WIDTH -> 1920.0
+HEIGHT -> 1080.0
+
+adjust_width "alioscopy" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "united_entertain" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_ml" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_mv" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_mp" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "hsplit" ->
+    WIDTH := window_width*0.2
+    HEIGHT := window_width*0.4
+adjust_width "vsplit" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_width*0.2
+adjust_width Other ->
+    WIDTH := window_width
+    HEIGHT := window_height
