@@ -43,6 +43,7 @@ theme_font  "RedHat", Master, "subtitle"        -> font "Overpass"
 theme_size  "RedHat", Master, "subtitle"        -> 35
 theme_color "RedHat", Master, "subtitle"        -> color "#A21400"
 theme_font  "RedHat", Master, "code"            -> font "Menlo", 40
+theme_size  "RedHat", Master, "code"            -> 20
 theme_color "RedHat", Master, "code"            -> color "#003388"
 theme_font  "RedHat", Master, "boxtitle"        -> font "Overpass", bold, 40
 theme_align "RedHat", Master, "boxtitle"        -> align 80%
@@ -294,6 +295,27 @@ slide_picture Picture:text, Round:real ->
         scale min(200.0 / texture_width, 200.0 / texture_height)
         rounded_rectangle 0, 0, texture_width, texture_height, Round * max(texture_width, texture_height)
 
+slide_shader Shader:text -> slide_shader Shader, false
+slide_shader Shader:text, Body ->
+// ----------------------------------------------------------------------------
+//   Show a picture in a slide
+// ----------------------------------------------------------------------------
+    contents 100,
+        translate 800, 400, 0
+        frame_texture 256, 256,
+            clear_color "transparent"
+            shader_program
+                fragment_shader_file Shader
+            shader_set iViewpoint := 0
+            shader_set iGlobalTime := page_time
+            shader_set iResolution := 256, 256, 1
+            shader_channel 0, "tex04.jpg"
+            Body
+            color "white"
+            rectangle 256, 256
+        color "white"
+        rectangle 256, 256
+
 title_slide_logo ->
 // ----------------------------------------------------------------------------
 //   The logo on the title slides
@@ -385,7 +407,7 @@ blue    Body -> text_span { color "#003399";   render Body }
 yellow  Body -> text_span { color "#EEAA11"; render Body }
 gray    Body -> text_span { color "#777";   render Body }
 code    Body -> text_span { font "Menlo"; blue Body }
-concept Body -> text_span { font "Amaze", 64; green Body }
+concept Body -> bold { italic { green Body } }
 // ----------------------------------------------------------------------------
 //   Draw something in red, green or blue
 // ----------------------------------------------------------------------------
@@ -416,9 +438,10 @@ code_box X:real, Y:real, W:real, H:real, Title, Body ->
                 paragraph Title
                 style "code"
                 render Body
+                vertical_align 10%
         color "white"
         rectangle X, Y, W, H
-code_box Title, Body -> code_box 600, 120, 500, 650, Title, Body
+code_box Title, Body -> code_box 0, 120, 900, 650, Title, Body
 
 
 code_box_at_step N, Title, Body ->
