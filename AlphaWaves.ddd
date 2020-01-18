@@ -1,0 +1,537 @@
+// ============================================================================
+main_title_slide "Alpha Waves",
+// ============================================================================
+    title page_label
+    subtitle "Le tout premieur jeu de plateforme 3D de l'histoire!" en "The very first 3D platform game in history"
+    stepping
+    picture
+        text_box 0, -400, 1600, 200,
+            style "story"
+            color "white"
+            align 100%
+            font_size 35
+            text "(C) 2019-2020 Christophe de Dinechin"
+
+        translate 510, 270, -200
+        rotate_z -4
+        image 0, 0, 200%, 200%, "Alpha Waves cover.jpg"
+
+
+base_slide "Demo",
+    title page_label
+    subtitle "La meilleur façon de comprendre un jeu, c'est encore d'y jouer" en "The best way to understand a game is still to play it!"
+    picture
+        image 0, 60, 400%, 400%, "Alpha Waves demo.gif"
+    on "key:Return",
+        writeln "Launching Hatari"
+        run_process "/usr/local/bin/hatari", "/Users/ddd/Hatari/alpha_waves_unprotected.st"
+    on "pageexit",
+        drop_process "/usr/local/bin/hatari"
+
+
+// ============================================================================
+section_slide "Une époque formidable" en "What a wonderful time!",
+// ============================================================================
+    title page_label
+    subtitle "Les jeux 3D de l'époque, c'est pas encore ça" en "3D games at the time were not quite there yet"
+    picture
+        texture "Alpha Waves intro.gif"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 350%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+movie_slide "Starglider II", "movies/Starglider 2.mp4##start-time=140",
+    subtitle "La source d'inspiration pour le moteur 3D" en "The inspiration source for the 3D engine"
+    movie_highlight 145..155, 0, 100, 1400, 600, "Une zone d'affichage 3D très limitée" en "A very limited area for 3D display"
+    movie_highlight 158..168, 0, 100, 1400, 600, "Tout petit nombre d'objets sur l'écran" en "A small number of items on screen"
+    movie_highlight 170..180, 0, 100, 1400, 600, "Toutes les interactions sont à distance (missiles, ...)" en "Only remote interactions, e.g. missiles"
+    movie_highlight 185..195, 0, 100, 1400, 600, "Pas de vraies ombres, palette de couleurs limitée" en "No real shadows, limited color palette"
+
+
+movie_slide "Hovertank 3D", "movies/Hovertank 3D.mp4##start-time=30",
+    subtitle """Le premier jeu 3D sur PC"" (de John Carmack)" en """The first 3D game on a PC"" (by John Carmack)"
+    movie_highlight 35..42, 0, 130, 1600, 600, "Une zone d'affichage 3D encore limitée" en "Another very limited 3D display area"
+    movie_highlight 45..52, 0, 130, 1600, 600, "Fausse 3D, un seul axe de rotation, icônes qui vous regardent tout le temps" en "Not really 3D, single rotation axis, icons looking at you"
+
+
+movie_slide "Falcon (1988)", "movies/Falcon - Atari ST.mp4##start-time=90",
+    subtitle "Simulateur de vol très réaliste, probablement la meilleure 3D de l'époque" en "Realistic flight simulator, probably the best 3D at the time"
+    movie_highlight 96..103, 0, 200, 1200, 360, "Zone 3D limitée par défaut, mais pas mal d'objets pour l'époque" en "3D area limited by default, but many objects by standards of the time"
+    movie_highlight 105..112, 0, 0, 1200, 720, "Possibilité d'afficher en plein écran (plus saccadé)" en "Full screen is possible, if slow"
+    movie_highlight 115..122, 0, 0, 600, 400, "Simulation d'ombre projetée" en "Simulated projection shadow"
+
+
+base_slide "La place d'Alpha Waves dans l'histoire du jeu vidéo" en "How Alpha Waves fits in video game history",
+    title page_label
+    subtitle "Le premier vrai jeu de plateforme en 3D" en "First platform game, first interactive 3D"
+    picture
+        image 0, 0, 80%, 80%, "Earliest 3D Platformer.png"
+        text_box 0, 350, 1600, 80,
+            style "story"
+            paragraph "Article ""Platform Game"" sur Wikipedia" en "See ""Platform Game"" article on Wikipedia"
+
+
+// ============================================================================
+section_slide "La genèse" en "Early genesis",
+// ============================================================================
+    title page_label
+    subtitle "De Starglider II aux schtroumpfs" en "From Starglider II to smurfs"
+    picture
+        texture "Le Cube Informatique.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 165%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+base_slide "L'effet Starglider II" en "The Starglider II effect",
+    title page_label
+    subtitle "Jeu 3D en faces cachées sur Atari ST" en "Atari ST 3D game with filled polygons"
+    stepping
+    story
+        * "Wow!"
+        * "Comment ils font ça?" en "How did they do that?"
+        * "Comment ça marche?" en "How does it work?"
+        * "Comment aller plus vite?" en "How can you go faster?"
+        * "Mais je vais carrément plus vite!" en "Hey, but that IS much faster!"
+    right_picture
+        images "starglider-ii_5.png", "starglider-2-20081031043253303-2630159.jpg", "Polygon Drawing.gif"
+        only_at 3,
+            texture_mag_filter "nearest"
+            frame_texture 32, 32,
+                texture_mag_filter "nearest"
+                color "red"
+                line_color "blue"
+                line_width 1
+                rotate_x 20 * seconds
+                rotate_y 30 * seconds
+                rotate_z 50 * seconds
+                cube 0, 0, 0, 16, 16, 16
+            color "white"
+            translate -500, 0,  200
+            rectangle 600, 600
+        only_at 4,
+            texture_mag_filter "nearest"
+            frame_texture 32, 32,
+                texture_mag_filter "nearest"
+                color "red"
+                line_color "blue"
+                line_width 1
+                rotate_x 20 * integer(page_time * 8) / 8.0
+                rotate_y 30 * integer(page_time * 8) / 8.0
+                rotate_z 50 * integer(page_time * 8) / 8.0
+                cube 0, 0, 0, 16, 16, 16
+            color "white"
+            translate -500, 0,  200
+            rectangle 600, 600
+        only_at 5,
+            texture_mag_filter "nearest"
+            for I in 1..25 loop
+                frame_texture 32, 32,
+                    texture_mag_filter "nearest"
+                    color_hsv 131 * I, 1, 1
+                    line_color "blue"
+                    line_width 1
+                    rotate_x (20+I) * integer(page_time * 8) / 8.0
+                    rotate_y (30+I) * integer(page_time * 8) / 8.0
+                    rotate_z (50+I) * integer(page_time * 8) / 8.0
+                    cube 0, 0, 0, 16, 16, 16
+                color "white"
+                locally
+                    translate 300 * sin I, 300 * cos (3.2*I),  200
+                    rectangle 300, 300
+
+base_slide "Deuxième visite chez Infogrames" en "Revisiting Infogrames",
+    title page_label
+    subtitle "7000F pour un ""stage"" sur le projet Cube d'Infogrames" en "7000FRF ($1000) for a ""training period"" on Infogrames Cube project"
+    stepping
+    left_column
+        * "Infogrames s'entiche de systèmes experts" en "Infogrames fancies expert systems"
+        * "Retour chez Infogrames un an après" en "Returning to Infogrames with a vengeance"
+        * "Mes petits jeux les font bâiller" en "My little games make them yawn"
+        * "Le prototype 3D les impressionne" en "The 3D prototype impresses them"
+        * "Ils me donnent un contrat ""standard""" en "They give me what they call a ""standard"" contract"
+        * "Des mois de négociation assez féroce" en "Months of ferocious negociations"
+        * "Je finis par obtenie des royalties" en "I finally get some royalties"
+    right_picture
+        images "The Incredible Machine.jpg", "rambo210.jpg", "TimeBandit.jpg", "jeune-intrus-fou-14387124.jpg", "Arnaque.jpg", "loup_agneau_walckenaer_ed_1821.jpg", "end-well-this-will-not_o_582935.jpg"
+
+// ============================================================================
+section_slide "Marketing",
+// ============================================================================
+    title page_label
+    subtitle "Infogrames lance la collection Crystal, thème New Age" en "Infogrames launches the Crystal collection, with a New Age theme"
+    picture
+        texture "Infogrames 1993.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 55%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+base_slide "La couverture" en "The front cover",
+    title page_label
+    subtitle "Infogrames se lâche sur des textes déjantés" en "Infogrames goes all out on crazy texts"
+    picture
+        adjust_picture_at -400, mouse_x, mouse_y, 60%, 40%, 40%, "Alpha Waves front cover.jpg"
+        adjust_picture_at  400, mouse_x, mouse_y, 60%, 40%, 40%, "Alpha Waves back cover.jpg"
+
+base_slide "La collection Crystal" en "The Crystal collection",
+    title page_label
+    subtitle "Le jeu est assez inventif pour qu'Infogrames lance une ""collection""" en "That game was innovative enough for Infogrames to start a ""collection"""
+    stepping
+    picture
+        translate_x -2000 * smooth_step
+        image 0, 60, 80%, 80%, "Collection Crystal - fr.jpg"
+        image 2000, 60, 80%, 80%, "Collection Crystal - en.jpg"
+        image 4000, 60, 80%, 80%, "Welltris.jpg"
+        image 6000, 60, 80%, 80%, "The light corridor.jpg"
+        image 8000, 60, 80%, 80%, "Drakken.jpg"
+        image 10000, 60, 80%, 80%, "North and South.jpg"
+        image 12000, 60, 80%, 80%, "Sim City.jpg"
+        at_step 6
+
+base_slide "Continuum - La version US" en "Continuum - The US version",
+    title page_label
+    subtitle "Je ne saurai jamais si j'ai touché des royalties dessus" en "Will I ever know if I received any royalties for it?"
+    stepping
+    picture
+        adjust_picture mouse_x, mouse_y, 30%, 60%, 190%, "Continuum.png"
+
+base_slide "La presse se demande ce que j'ai fumé" en "The press wonders what kind of drugs I used",
+    title page_label
+    subtitle "Thèmes communs: cool, bizarre, difficile, inventif, nouveau" en "Common themes: cool, strange, hard, innovative, new"
+    stepping
+    picture
+        translate_x -2000 * smooth_step
+        adjust_picture mouse_x, mouse_y, 55%, 125%, 100%, "Article ST Format.jpg"
+        adjust_picture_at 2000, mouse_x, mouse_y, 30%, 65%, 170%, "Article Computer Gaming World.png"
+
+base_slide "Merci Internet" en "Thank you Internet",
+    title page_label
+    subtitle "Ce jeu est encore assez facile à trouver aujourd'hui" en "The game remains easy to find today"
+    stepping
+    picture
+        translate_x -2000 * smooth_step
+        adjust_picture mouse_x, mouse_y, 30%, 85%, 180%, "Atarimania.png"
+        adjust_picture_at 2000, mouse_x, mouse_y, 30%, 35%, 140%, "Wikipedia.png"
+        adjust_picture_at 4000, mouse_x, mouse_y, 40%, 40%, 120%, "Abandonware.png"
+        image 6000, 60, 80%, 80%, "Version allemande.png"
+        image 8000, 60, 50%, 50%, "Version russe.png"
+        at_step 4
+
+// ============================================================================
+section_slide "Influence",
+// ============================================================================
+    title page_label
+    subtitle "Alpha Waves a appris la 3D à Infogrames" en "The game that taught 3D to Infogrames"
+    picture
+        texture "Alone In The Dark.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 150%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+base_slide "Frederick Raynal",
+    title page_label
+    subtitle "Il a porté Alpha Waves sur PC" en "He ported Alpha Waves to the PC"
+    stepping
+    right_picture
+        image 0, 60, 70%, 70%, "Frederick Raynal.jpg"
+    left_column
+        * "Consulte le code source pour Infogrames" en "Reviews source code for Infogrames"
+        * "Va voir son chef: ""Je peux le porter""" en "Tells his boss that he can port it to PC"
+        * "En tirera l'idée du moteur 3D d'Alone in the Dark" en "Devises a 3D engine for Alone in the Dark"
+        * "Se fâchera ensuite avec Infogrames" en "Will then clash with Infogrames"
+
+movie_slide "Alone in the Dark", "movies/AloneInTheDark.mp4",
+    subtitle "Le titre qui va faire exploser Infogrames" en "The title that will make Infogrames take off"
+
+
+// ============================================================================
+section_slide "Technologie" en "Technology",
+// ============================================================================
+    title page_label
+    subtitle
+        paragraph "C'était un peu le début de tout" en "It was the beginning of everything"
+        paragraph "c'est à dire qu'on n'avait rien" en "meaning in the end we had nothing"
+    picture
+        texture "Primitive Technology.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 85%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+milestone "1990", "Atari ST et Amiga" en "Atari ST and Amiga",
+    subtitle "La démocratisation des 32-bits" en "32-bits for everyone"
+    science     "Amiga et Atari ST" en "Amiga et Atari ST", "Motorola 68000, 8MHz, 512K RAM, 320x200 pixels, 16 couleurs sur 512" en "Motorola 68000, 8MHz, 512K RAM, 320x200 pixels, 16 colors out of 512"
+    memory      512*1024*8
+    frequency   8e6, 2e6
+    power       15, "2kg", "$799"
+
+
+base_slide "Comment calculer la 3D" en "How do you compute 3D?",
+    title page_label
+    subtitle "Afficher en 3D avec un canif et un bout de bois" en "Displaying 3D with a silex and an abacus"
+    stepping
+    story
+        paragraph "Sur un Atari ST..." en "On an Atari ST..."
+        scratch "On dispose d'une puissante carte 3D accélérée" en "There is a powerful 3D accelerator"
+        scratch "Chaque pixel a la couleur qu'on veut" en "Each pixel has any color you want"
+        scratch "On peut addresser chaque pixel individuellement" en "You can access each pixel independantly"
+        scratch "Le tracé des polygones est accéléré par matériel" en "Polygon drawing is hardware-accelerated"
+        scratch "Le matériel sait calculer en virgule flottante" en "There is floating-point in hardware"
+        scratch "La division est rapide" en "Division is fast"
+        scratch "La multiplication est rapide" en "Multiplication is fast"
+        * "L'addition est ""pas trop lente""" en "Addition is not too slow"
+
+    right_picture
+        images "Graphic Card.png", "16-color animation.gif", "Bit planes.jpg", "Polygon Drawing.gif", "MC68882.jpg", "MC68K Division Timing.png", "MC68K Multiplication Timing.png", "MC68K Addition Timing.png"
+
+    scratch Text ->
+        line_break
+        anchor
+            color "red", 60%
+            rectangle 34 + 0.5 * text_width Text, -45, (5 + text_width Text) * fade_at(smooth_step, current_step + 1), 10
+        * Text
+
+base_slide "Calculer la 3D en 1989" en "3D computations in 1989",
+    title page_label
+    subtitle "Une solution simple, élégante et de bon goût" en "A simple, elegant  and tasteful solution"
+    stepping
+    picture
+        text_box 0, 120, 1600, 400,
+            font "Impact", 90
+            color "darkblue", 50% + 40% * sin(1.3 * time)
+            align 50%
+            vertical_align 10%
+            paragraph "Faire (presque) tous les calculs 3D" en "Do (almost) all 3D computations"
+            paragraph "uniquement avec des additions" en "using additions and only additions"
+        translate 550, 40, 30
+        rotate_z 2 * sin (1.8 * time) - 3.2
+        scale 200%
+        image "Bright Idea.png"
+
+base_slide "Étape 1: calculer les rotations" en "Step 1: Compute rotations",
+    title page_label
+    subtitle "Sinus et cosinus précalculés dans des tables" en "Precomputed sin and cos values stored in tables"
+    stepping
+    picture
+        table_at_time seconds + minutes * 60
+        locally
+            color "lightblue", 20%
+            line_color "darkblue", 80%
+            line_width 5
+            arrow -640, -200, 500, 90, 60, 60%
+            rectangle -390, -200, 4, 125
+        text_box -640, -200, 490, 80,
+            style "story"
+            align 50%
+            vertical_align 50%
+            color"darkred", 80%
+            paragraph "Addition"
+   table_at_time T:integer ->
+        locally
+            line_color tao "green", 80%
+            line_width 6
+            color "transparent"
+            path
+                for X in -15..15 loop
+                    line_to X * 70 - 35, integer(127 * sin((X+T) * pi * 0.05) + 128) * 3 - 260
+                    line_to X * 70 + 35, integer(127 * sin((X+T) * pi * 0.05) + 128) * 3 - 260
+
+        locally
+            for X in -15..15 loop
+                locally
+                    line_color "black", 80%
+                    color "white", 40%
+                    rectangle X * 70, -300, 70, 50
+                text_box X * 70, -300, 45, 25,
+                    style "story"
+                    align 50%
+                    vertical_align 50%
+                    paragraph_value integer(127 * sin((X+T) * pi * 0.05) + 128)
+                    paragraph_value K:integer ->
+                        paragraph K
+
+base_slide "Étape 2: pré-calculer la rotation des axes" en "Step 2: pre-compute axis rotations",
+    title page_label
+    subtitle "Pour chaque objet, rotation 3D d'axes unitaires X, Y et Z" en "For each object, 3D rotation of unitary X, Y, Z vectors"
+    stepping
+    picture
+        light 0
+        light_position 100, 100, 1000
+        rotate_x  0.08 * mouse_y
+        rotate_y -0.08 * mouse_x
+
+        color "grey"
+        sphere 50
+        locally
+            color "darkblue"
+            translate_x 250
+            draw_axis 500, 10
+        locally
+            color "darkgreen"
+            rotate_z 90
+            translate_x 250
+            draw_axis 500, 10
+        locally
+            color "darkred"
+            rotate_y -90
+            translate_x 250
+            draw_axis 500, 10
+    story
+        * "Ici, il y a des multiplications" en "There be multiplidragons"
+        * "Précalcule x 1, x 2, x 3, x 4, x 5, x 10" en "Precoumpute x2, x3, x4, x5 and x10"
+        * "Direction positive et négative" en "Can be used forward or backwards"
+        * "Nommés XP3, ZM5 dans le code" en "Named XP3 or ZM5 in the code"
+
+base_slide "Étape 3: Calculer la position des coins" en "Step 3: Compute edge positions",
+    title page_label
+    subtitle "Additions, additions, additions, plein d'additions" en "Add, add, add, add and add again"
+    stepping
+    left_column
+        tap T ->
+            show fade_at(smooth_step, current_step)
+            text_span
+                color_hsv 5 * fade_at(smooth_step, current_step) + 220 * fade_at(smooth_step, current_step + 1), 80%, 80%
+                text T
+            current_step := current_step + 1
+
+        current_step := 1
+        style "code"
+        font_size 32
+        text "dc.b "
+        tap "XM1"
+        tap ",XM2"
+        tap ",ORIG"
+        tap ",ZP5"
+        tap ",ZM4"
+        tap ",YM1"
+        line_break
+        text "dc.b "
+        tap "GO1"
+        tap ",ZM1"
+        tap ",XP1"
+        tap ",ZP1"
+        line_break
+        text "dc.b "
+        tap "GO2"
+        tap ",YM1"
+        tap ",ZM1"
+        tap ",XM2"
+        tap ",XP4"
+        line_break
+        text "dc.b "
+        tap "XM2"
+        tap ",YM1"
+        tap ",ZP2"
+        tap ",ZP4"
+        tap ",YP2"
+        line_break
+        text "dc.b "
+        tap "END"
+
+    picture
+        light 0
+        light_position 1000, 1000, 1000
+        rotate_x  0.08 * mouse_y
+        rotate_y -0.08 * mouse_x
+
+        locally
+            line_width 15
+            color "darkblue"
+            draw_axis 1500, 10
+            color "darkgreen"
+            rotate_z 90
+            draw_axis 800, 10
+            color "darkred"
+            rotate_y -90
+            draw_axis 1000, 10
+
+        current_step := 1
+        run_x -1
+        run_x 2
+        run_x -1
+        run_z 5
+        run_z -4
+        run_y -1
+        run_o -0.5, 1 + 0.5 * sin time, -1
+        run_z -1
+        run_x 1
+        run_z 1
+        run_o -0.5, 2 + 1.0 * sin time, 0
+        run_y -1
+        run_z -1
+        run_x -2
+        run_x 4
+        run_x -2
+        run_y -1
+        run_z 2
+        run_z 4
+        run_y 2
+
+        color "orange"
+        sphere 50
+
+    right_column
+        style "code"
+        font_size 24
+        text load_text "TheLamp.txt"
+
+    run_x N -> locally { run N }; run_o N, 0, 0
+    run_y N -> locally { rotate_z  -90; run N }; run_o 0, -N, 0
+    run_z N -> locally { rotate_y -90; run N }; run_o 0, 0, N
+    run N:real ->
+        run 100*N, fade_at(smooth_step, current_step), fade_at(smooth_step, current_step + 1)
+    run N:real, S:real, T:real ->
+        locally
+            translate_x 0.5 * N * S
+            locally
+                if N >= 0 then
+                    draw_axis N * S, 15 * S - 9 * T
+                else
+                    rotate_z 180
+                    draw_axis -N * S, 15 * S - 9 * T
+
+    run_o X:real, Y:real, Z:real ->
+        run_o X, Y, Z, 100 * fade_at(smooth_step, current_step)
+    run_o X:real, Y:real, Z:real, S:real ->
+        translate X*S, Y*S, Z*S
+        locally
+            color tao "orange"
+            sphere 0.4 * S
+        current_step := current_step + 1
+
+draw_axis Length, Width ->
+    locally
+        rotate_y 90
+        cylinder 0, 0, 0, Width, Width, Length-30
+        cone 0, 0, 0.5*Length-15, 2*Width, 2*Width, 60
+        translate_z -0.5 * Length+15
+        circle Width
+        translate_z Length-60
+        circle 2 * Width
+
+
+// ============================================================================
+section_slide "C'est fini!" en "That's all folks!",
+// ============================================================================
+    title page_label
+    subtitle
+        paragraph "Merci de votre attention" en "Thank you for listening to my rants"
+        paragraph "C'est le moment de poser des questions" en "If you have questions, now is a good time"
+    picture
+        texture "Informagie.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 15%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+    picture
+        texture "Informagie QR Code.png"
+        translate -350, 230, 20
+        rotate_z 4
+        scale 50%
+        rectangle texture_width, texture_height
