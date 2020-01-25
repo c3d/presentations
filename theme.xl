@@ -34,6 +34,8 @@ presentation_author -> "Christophe de Dinechin (dinechin@redhat.com, IRC c3d)"
 
 theme_align "RedHat", "main", "title"           -> align_left
 theme_align "RedHat", "main", "subtitle"        -> align_left
+theme_align "RedHat", "section", "title"        -> align_left
+theme_align "RedHat", "section", "subtitle"     -> align_left
 theme_color "RedHat", "main", Theme             -> color "white"
 theme_color "RedHat", "section", Theme          -> color "white"
 
@@ -48,15 +50,20 @@ theme_color "RedHat", "movie", "subtitle"       -> color "white"
 theme_align "RedHat", "movie", "subtitle"       -> align 50%; vertical_align 50%
 
 theme_font  "RedHat", Master, "title"           -> font "Overpass", weight 300
-theme_size  "RedHat", Master, "title"           -> 65
+theme_size  "RedHat", Master, "title"           -> 85
 theme_font  "RedHat", Master, "subtitle"        -> font "Overpass"
-theme_size  "RedHat", Master, "subtitle"        -> 35
+theme_size  "RedHat", Master, "subtitle"        -> 45
 theme_color "RedHat", Master, "subtitle"        -> color "#A21400"
 theme_font  "RedHat", Master, "code"            -> font "Menlo", 40
 theme_size  "RedHat", Master, "code"            -> 20
 theme_color "RedHat", Master, "code"            -> color "#003388"
 theme_font  "RedHat", Master, "boxtitle"        -> font "Overpass", bold, 40
 theme_align "RedHat", Master, "boxtitle"        -> align 80%
+
+theme_align "RedHat", Master, "caption-white"   -> align 50%; vertical_align 50%
+theme_font  "RedHat", Master, "caption-white"   -> font "Overpass", bold, 30
+theme_size  "RedHat", Master, "caption-white"   -> 30
+theme_color "RedHat", Master, "caption-white"   -> color "white"
 
 theme_align "RedHat", Master,"story",1          -> margins 40, 0; paragraph_space 0, 20
 theme_align "RedHat", Master,"story",N          -> margins 40*N, 0
@@ -68,7 +75,7 @@ theme_font  "RedHat", Master,"story"            -> font "Overpass", "Arial"
 theme_size  "RedHat", Master,"story"            -> 40
 
 theme_font  "RedHat", Master, Theme             -> font "Overpass", "Arial"
-theme_color "RedHat", Master,Style              -> color "black"
+theme_color "RedHat", Master, Style             -> color "black"
 
 
 
@@ -111,11 +118,19 @@ redhat_red1     -> "#8F1000"
 redhat_red2     -> "#B21600"
 redhat_red3     -> "#CC1B00"
 
+redhat_orange1  -> "#DF4600"
+redhat_orange2  -> "#E55520"
+redhat_orange3  -> "#F07520"
+redhat_orange4  -> "#DD3311"
+
 redhat_blue1    -> "#10008F"
+redhat_blue2    -> "#10206F"
+redhat_ocean1   -> "#8CF"
+
 redhat_green1   -> "#008F10"
+redhat_yellow1  -> "#FFBC33"
 
-
-theme_background "RedHat", "main" ->
+theme_main_background Body ->
 // ----------------------------------------------------------------------------
 //   Draw the triangles in the background
 // ----------------------------------------------------------------------------
@@ -166,16 +181,27 @@ theme_background "RedHat", "main" ->
                 line_to -A, -B
                 line_to -B, -B
 
+    Body
+
     contents -10,
         color "white"
-        image -370, 200, 150%, 150%, "RedHat-WhiteText.png"
+        image -350, 200, 40%, 40%, "RedHat-WhiteText.png"
+
+
+theme_background "RedHat", "main" ->
+// ----------------------------------------------------------------------------
+//   Draw the triangles in the background
+// ----------------------------------------------------------------------------
+    theme_main_background false
 
 
 theme_background "RedHat", "section" ->
 // ----------------------------------------------------------------------------
 //   Same as section
 // ----------------------------------------------------------------------------
-    theme_background "RedHat", "main"
+    theme_main_background
+        color "black", 20%
+        rectangle 0, -70, 2000, 250
 
 
 theme_background "RedHat", "movie" ->
@@ -190,7 +216,8 @@ theme_background "RedHat", Master ->
 //   Draw the triangles in the background
 // ----------------------------------------------------------------------------
     clear_color "white"
-    time
+    on "pageentry",
+        refresh 0.1
     background -200,
         frame_texture 80, 80,
             line_color "white"
@@ -221,7 +248,7 @@ theme_background "RedHat", Master ->
         rectangle 0, -480, 1700, 2
     contents -50,
         color "white"
-        image 800, -510, 100%, 100%, "RedHat-BlackText.png"
+        image 800, -510, 15%, 15%, "RedHat-BlackText.png"
     contents -50,
         box -790, -510, 120, 50,
             vertical_align 0.5
@@ -347,16 +374,16 @@ theme_layout "RedHat", "main" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow 100,    0, 1000, 200, "title"
-    flow 100, -200, 1000, 250, "subtitle"
+    flow 200,    0, 1200, 200, "title"
+    flow 200, -200, 1200, 250, "subtitle"
 
 
 theme_layout "RedHat", "section" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow 0, 50, 1800, 250, "title"
-    flow 0, -100, 1800, 150, "subtitle"
+    flow 100, -100, 1000, 250, "title"
+    flow 100, -250, 1000, 150, "subtitle"
 
 
 theme_layout "RedHat", "movie" ->
@@ -384,17 +411,52 @@ theme_layout "RedHat", Master:text ->
     flow  475,  -80,  850, 700, "right"
 
 
+slide_picture_at A..B, What ->
+// ----------------------------------------------------------------------------
+//   Show the "What" picture at time "When"
+// ----------------------------------------------------------------------------
+    only_at A..B,
+        slide_picture What
+
+
+slide_picture_at When, What ->
+// ----------------------------------------------------------------------------
+//   Show the "What" picture at time "When"
+// ----------------------------------------------------------------------------
+    only_at When,
+        slide_picture What
+
+
 slide_picture Picture:text -> slide_picture Picture, 0%
-slide_picture Picture:text, Round:real ->
+slide_picture Picture:text, Round:real -> slide_picture Picture, Round, 200
+slide_picture Picture:text, Round:real, Size:real ->
 // ----------------------------------------------------------------------------
 //   Show a picture in a slide
 // ----------------------------------------------------------------------------
     contents 100,
-        translate 800, 420, 0
+        translate 900-Size/2, 420, 0
         texture Picture
         color "white"
-        scale min(200.0 / texture_width, 200.0 / texture_height)
+        scale min(Size / texture_width, Size / texture_height)
         rounded_rectangle 0, 0, texture_width, texture_height, Round * max(texture_width, texture_height)
+
+
+slide_movie Movie:text -> slide_movie Movie, 0%
+slide_movie Movie:text, Round:real ->
+// ----------------------------------------------------------------------------
+//   Show a picture in a slide
+// ----------------------------------------------------------------------------
+    contents 100,
+        translate 700, 420, 0
+        movie_texture Movie
+        color "white"
+        rotate_z -3
+        if texture_width > 0 and texture_height > 0 then
+            scale min(300.0 / texture_width, 300.0 / texture_height)
+            rounded_rectangle 0, 0, texture_width, texture_height, Round * max(texture_width, texture_height)
+        on "pageexit",
+            movie_drop Movie
+
 
 slide_shader Shader:text -> slide_shader Shader, false
 slide_shader Shader:text, Body ->
@@ -422,11 +484,18 @@ title_slide_logo ->
 //   The logo on the title slides
 // ----------------------------------------------------------------------------
     picture
-        translate 600, 450, 20
+        translate 600, 320, 20
         texture presentation_logo
         color "white"
-        scale min(300.0 / texture_width, 300.0 / texture_height)
-        rounded_rectangle 0, 0, texture_width, texture_height, 0
+        title_slide_logo_internal texture_width, texture_height
+        title_slide_logo_internal 0, H -> false
+        title_slide_logo_internal W, 0 -> false
+        title_slide_logo_internal W:integer, H:integer ->
+            scale min(300.0 / W, 300.0 / H)
+            locally
+                texture ""
+                rounded_rectangle 0, 0, W*120%, H*120%, 60
+            rounded_rectangle 0, 0, W, H, 0
 
 
 
@@ -501,13 +570,89 @@ bottom_right Body -> box  475, -250, 900, 350, { render Body }
     * { color_hsv 32.3 * seconds, 0.4, 1; render Body }
 
 
-red     Body -> text_span { color "#AA0022";    render Body }
-green   Body -> text_span { color "#006633";  render Body }
-blue    Body -> text_span { color "#003399";   render Body }
+highlight       -> "none"
+highlight_start -> "none"
+highlight_end   -> "none"
+highlight S,E,H -> highlight_start := S; highlight_end := E; highlight := H
+highlight S, E  -> highlight S, E, "none"
+highlight H     -> highlight "none", "none", H
+highlighting    -> 0
+
+highlight_show Body -> text_span { color "#00CC99"; render Body }
+
+
+colorize_text T:text ->
+// ----------------------------------------------------------------------------
+//   Highlight or not depending on highlighting state
+// ----------------------------------------------------------------------------
+    if highlighting <> 0 then
+        highlight_show T
+    else
+        text T
+
+
+colorize_highlight T:text ->
+// ----------------------------------------------------------------------------
+//   Highlight names depending on highlight pattern
+// ----------------------------------------------------------------------------
+//   We must use a separate function to save the captured patten,
+//   since it would be overwritten by the regexp_match we do here
+    // writeln "Colorize [", T, "] h=", highlighting
+    if regexp_match(T, highlight) then
+        highlighting := 1
+    else if regexp_match(T, highlight_start) then
+        highlighting := -1
+    else if regexp_match(T, highlight_end) then
+        highlighting := 0
+    if highlighting <> 0 then
+        highlight_show T
+    else
+        text T
+    if highlighting > 0 then
+        highlighting := 0
+
+
+colorize Input:text ->
+// ----------------------------------------------------------------------------
+//   Render the given input using colorized text
+// ----------------------------------------------------------------------------
+    highlighting := 0
+    regexp_parse_all Input,
+        // Real numbers
+        "[0-9_]+([.][0-9_]+(e[+-]?[0-9_]+)?)?" ->
+            ocean regexp_captured 0
+        // Text
+        - "([""].*[""])|<<.*>>|'.*'" ->
+            purple regexp_captured 0
+        // Comments
+        - "(#.*\n)+" ->
+            red regexp_captured 0
+        // Command-line options and names
+        "[a-zA-Z0-9-_]+" ->
+            colorize_highlight regexp_captured 0
+        // Process spaces at once
+        " +" ->
+            colorize_highlight regexp_captured 0
+        "." ->
+            colorize_highlight regexp_captured 0
+    refresh 0.1
+    on "pageexit",
+        highlight "none"
+
+
+red     Body -> text_span { color "#AA0022"; render Body }
+orange  Body -> text_span { color "#DD3311"; render Body }
 yellow  Body -> text_span { color "#EEAA11"; render Body }
-gray    Body -> text_span { color "#777";   render Body }
-code    Body -> text_span { font "Menlo"; blue Body }
-concept Body -> bold { italic { green Body } }
+green   Body -> text_span { color "#006633"; render Body }
+ltblue  Body -> text_span { color "#0066CC"; render Body }
+blue    Body -> text_span { color "#003399"; render Body }
+ocean   Body -> text_span { color "#229988"; render Body }
+sky     Body -> text_span { color "#3399FF"; render Body }
+navy    Body -> text_span { color "#002266"; render Body }
+purple  Body -> text_span { color "#CC0099"; render Body }
+gray    Body -> text_span { color "#777";    render Body }
+code    Body -> text_span { font "Menlo";    blue   Body }
+concept Body -> text_span { font "Amaze";    green  Body }
 // ----------------------------------------------------------------------------
 //   Draw something in red, green or blue
 // ----------------------------------------------------------------------------
@@ -541,7 +686,44 @@ code_box X:real, Y:real, W:real, H:real, Title, Body ->
                 vertical_align 10%
         color "white"
         rectangle X, Y, W, H
-code_box Title, Body -> code_box 0, 120, 900, 650, Title, Body
+
+
+code_box Title, Body ->
+// ----------------------------------------------------------------------------
+//    Default location for the code box
+// ----------------------------------------------------------------------------
+    code_box code_x, code_y, code_w, code_h, Title, Body
+
+
+code_x ->   0.0
+code_y ->   0.0
+code_w -> 700.0
+code_h -> 800.0
+code_position X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//    Move the code at the given location
+// ----------------------------------------------------------------------------
+    code_x := X
+    code_y := Y
+    code_w := W
+    code_h := H
+
+
+code_move_default ->
+// ----------------------------------------------------------------------------
+//   Restore to default position
+// ----------------------------------------------------------------------------
+    code_move 0, 0, 700, 800
+
+
+code_move X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//    Move the code box smoothly
+// ----------------------------------------------------------------------------
+    interpolate 15%, X, code_x
+    interpolate 15%, Y, code_y
+    interpolate 15%, W, code_w
+    interpolate 15%, H, code_h
 
 
 code_box_at_step N, Title, Body ->
@@ -841,16 +1023,16 @@ START_TIME     -> 0.0
 key "Right" -> skip 1
 key "Space" -> skip 1
 key "Left"  -> skip -1
-key "1" -> skip_directly_to 1
-key "2" -> skip_directly_to 2
-key "3" -> skip_directly_to 3
-key "4" -> skip_directly_to 4
-key "5" -> skip_directly_to 5
-key "6" -> skip_directly_to 6
-key "7" -> skip_directly_to 7
-key "8" -> skip_directly_to 8
-key "9" -> skip_directly_to 9
-key "0" -> skip_directly_to 10
+key "1" -> skip_directly_to 1 ; refresh 0.1
+key "2" -> skip_directly_to 2 ; refresh 0.1
+key "3" -> skip_directly_to 3 ; refresh 0.1
+key "4" -> skip_directly_to 4 ; refresh 0.1
+key "5" -> skip_directly_to 5 ; refresh 0.1
+key "6" -> skip_directly_to 6 ; refresh 0.1
+key "7" -> skip_directly_to 7 ; refresh 0.1
+key "8" -> skip_directly_to 8 ; refresh 0.1
+key "9" -> skip_directly_to 9 ; refresh 0.1
+key "0" -> skip_directly_to 10; refresh 0.1
 
 seconds_time -> hours * 3600 + minutes * 60 + seconds
 key "Backspace" ->
@@ -1075,3 +1257,153 @@ adjust_width "vsplit" ->
 adjust_width Other ->
     WIDTH := window_width
     HEIGHT := window_height
+
+
+
+// ============================================================================
+//
+//   Quoting utility
+//
+// ============================================================================
+
+quote_step              -> 0.0
+quote_step S            -> quote_step := S
+quote_smooth_step       -> 0.0
+quote_index             -> 0
+quote_count             -> 1
+quote_cosR              -> 0.0
+
+
+quotes Body     ->
+// ----------------------------------------------------------------------------
+//    Present a list of quotes
+// ----------------------------------------------------------------------------
+    picture
+        quote_index := 0
+        interpolate 10%, quote_step, quote_smooth_step
+        font "Hoefler Text", italic, 60
+        align 50%
+        vertical_align 30%
+        Body
+        quote_count := quote_index
+
+
+quote_setup R:real -> quote_setup cos R, sin R
+quote_setup cosR:real, sinR:real ->
+// ----------------------------------------------------------------------------
+//   Setup the location for a quote
+// ----------------------------------------------------------------------------
+    translate 0, -300 * sinR, 2500 * cosR - 2200
+    color_hsv 170 + 31 * quote_index, cosR * 0.5, 60%
+    show 5% + ((1+cosR)/2)^8
+    quote_cosR := cosR
+
+
+quote Text, Author ->
+// ----------------------------------------------------------------------------
+//   Show a given quote
+// ----------------------------------------------------------------------------
+    locally
+        quote_setup (quote_index - quote_smooth_step) * 2 * pi / quote_count
+        if quote_cosR > 0.9 then
+            locally
+                translate_z -30
+                color "white", 90%
+                line_color "darkblue", (quote_cosR - 0.9) * 10
+                line_width 2
+                rounded_rectangle 0, 0, 1400, 550, 20
+        text_box 0, 0, 1150, 500,
+            paragraph Text
+            roman
+            align_right
+            paragraph Author
+        quote_image Author
+    quote_index := quote_index + 1
+
+
+quote_image Author:text ->
+// ----------------------------------------------------------------------------
+//   Show the picture for a given author
+// ----------------------------------------------------------------------------
+    locally
+        translate -670, 280, 15
+        color "white"
+        texture Author & ".jpg"
+        ellipse 0, 0, 260, 320
+
+quote_image Other -> false
+
+
+
+// ============================================================================
+//
+//   Diagramming
+//
+// ============================================================================
+
+soft_box X:real, Y:real, Color:text, Body ->
+// ----------------------------------------------------------------------------
+//   Soft box with preset width and height
+// ----------------------------------------------------------------------------
+    soft_box X, Y, 400, 200, Color, Body
+
+
+soft_box X:real, Y:real, W:real, H:real, Color:text, Body ->
+// ----------------------------------------------------------------------------
+//   Draw a software box
+// ----------------------------------------------------------------------------
+    color Color
+    rounded_rectangle X, Y, W, H, 40
+    text_box X, Y, W-5, H-5,
+        style "caption-white"
+        render Body
+
+
+anim_step               -> 0
+anim_step_selected      -> 0.0
+anim_step Step:integer  ->
+// ----------------------------------------------------------------------------
+//   Change the animation step
+// ----------------------------------------------------------------------------
+    if Step <> anim_step then
+        anim_step := Step
+        refresh 0.1
+
+anim X:real -> X
+anim X:real, Values ->
+// ----------------------------------------------------------------------------
+//    Compute animated value
+// ----------------------------------------------------------------------------
+    anim_step_selected := X
+    anim_select X, Values
+    if X in anim_step_selected-0.1..anim_step_selected+0.1 then
+        X := anim_step_selected
+    else
+        interpolate 10%, anim_step_selected, X
+    X + 0.0
+
+
+anim_select X:real, S:integer = TX:real ->
+// ----------------------------------------------------------------------------
+//   Compute an animated value that sets X to TX at step S
+// ----------------------------------------------------------------------------
+    if anim_step >= S then
+        anim_step_selected := TX
+    X + 0.0
+
+
+anim_select X:real, S:integer = TX:real, Rest ->
+// ----------------------------------------------------------------------------
+//   Compute animated value in a list
+// ----------------------------------------------------------------------------
+    anim_select X, S = TX
+    anim_select X, Rest
+
+
+check_refresh ->
+// ----------------------------------------------------------------------------
+//   Check if we have overly-eager refresh
+// ----------------------------------------------------------------------------
+    counter -> 0
+    writeln "Refresh ", counter, " step=", smooth_step
+    counter := counter + 1
