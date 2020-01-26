@@ -1,0 +1,15 @@
+[hypervisor.qemu]
+path = "/usr/bin/qemu-kvm"
+kernel = "/var/cache/kata-containers/vmlinuz.container"
+initrd = "/var/cache/kata-containers/kata-containers-initrd.img"
+#image = "/var/cache/kata-containers/kata-containers.img"
+machine_type = "q35"
+
+# Optional space-separated list of options to pass to the guest kernel.
+# For example, use `kernel_params = "vsyscall=emulate"` if you are having
+# trouble running pre-2.15 glibc.
+kernel_params = "systemd.unified_cgroup_hierarchy=0"
+
+# Path to the firmware.
+# If you want that qemu uses the default firmware leave this option empty
+firmware = ""

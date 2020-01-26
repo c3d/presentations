@@ -1,0 +1,66 @@
+cdb310e0de Apparently, vhost-scsi is still needed for kata-runtime
+1433fd30da Integrate fix to correctly emit CONFIG_ variables
+8c9b4d28f6 Move the lines where the configuration patch is applied
+78b315d9cb Fix arch test for --enable-fdt
+53b15c0e9c Switch to config target
+0a48a048e5 Use big hammer to enable virtio-serial and virtio-net in mini configuration
+f4dc5cbd51 Enable fdt for Power as well
+eb5fae7b15 Fix aarch64 build
+f9b3f8c0f8 Fix ppc64 build
+1d3b4fb4ee Add back vhost-net
+642a1bc0d2 Remove extra token (a comment) reported during builds
+9303fb0b4f Remove duplicate licenses (leave them only in godocs)
+67f57a87c0 Bump release number, add change log
+a0157ed705 Add documentation about future use of %gobuildflags
+d9450f0105 Move defaults under /usr/share/kata-containers/defaults
+fc5ec487d8 Use the same variables for make build and make install
+1796c2fc74 Use %make_build and %make_install
+4f54feb0b8 Rephrase the comment about %{goname}
+19fa2414b3 Remove useless BuildRequire: go-rpm-macros
+c95ff896a7 Add a comment regarding godocs and golicense
+f52a8737f7 Revert change regarding moving stuff to libexec
+920570c491 Add reference to documentation identified by go2rpm
+674baab61c Remove environment variables that, upon inspection, seem useless
+d4989f688d Indicate reason for not using %gobuild and %gopkginstall
+2b86f6f912 Add %gopkg
+e27f9dafc8 Use %{gourl} and %{gosource}
+8a86cf651b Add %golicense and %godocs
+54dceeebb1 Introduce %gometa
+da3cd53045 Do not duplicate summary
+b33f7a85ae Added go-rpm-macros dependency
+2f26dba56c Change to use %{tag}
+c0a785159a Bump release number and add change log
+9720d3a1af Update machine type and kernel parameters
+75ec780622 Apply changes to configuration file
+2ebb269089 Replace not_version_check internal variable with SKIP_GO_VERSION_CHECK
+f83cb04ee0 For the F30 version, only depend on golang.
+046a4f555e Clarify the dependency versions
+13b807b21e Add dependency on kata-osbuilder >= 1.8.0
+047c0fc829 Remove dependency on kata-ksm-throttler
+f1312d80b6 Remove % macros in comments
+fcc4397dfb Remove dependency on nonexistent packages
+01d4edc8f9 Update to 1.8.2 release
+997cfca124 Move binaries to libexec directory
+4ef5436c4f Remove shebang in bash completion script to make rpmlint happy
+3fb855aa79 Remove %check
+8224bd936a Add dependency of qemu-mini on core package
+3cc016cc02 Add change log
+f1b259bc96 First version that builds correctly on x86 including man pages and the rest
+f93531d6d7 Save temporary state
+a3aaae5ae6 Update to qemu 4.1.0-4.fc32
+b32fa8cae9 Update to latest qemu
+8052158567 Import original qemu configuration
+f896aa194f Address review comments in BZ#1590425
+af6d31a097 Upgrade to 1.8.0 release
+4cbc52730c Update change log
+7a4118e0f7 Update to kata-containers 1.7.3, cleanup the .spec file
+cfa9be3263 Update kata-shim to 1.7.3, some cleanup of the .spec file
+a7bdfc9c7e Updated kata-proxy to 1.7.3, cleanup spec file
+dde403ab4d Update kata-osbuilder to 1.7.3, cleanup the spec file
+b9875801d7 Switch to kata-%{repo} for consistency across .spec files
+df32686143 Add macro to switch package name when building OpenSuse packages
+0f94d4ead4 An additional pass at .spec file cleanup for review
+5e494c3abd Disable version checking to remove dependency to yq
+9cdbc6ae36 A little bit of cleanup of the various RPM globals
+73f0380a63 Build with qemu-kvm instead of arch-specific name
+909b697e0b Build kata-runtime version 1.7.3 on Fedora 30

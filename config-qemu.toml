@@ -1,0 +1,22 @@
+[hypervisor.qemu]
+path = "/usr/bin/qemu-kvm"
+kernel = "/var/cache/kata-containers/vmlinuz.container"
+initrd = "/var/cache/kata-containers/kata-containers-initrd.img"
+#image = "/var/cache/kata-containers/kata-containers.img"
+machine_type = "q35"
+kernel_params = "systemd.unified_cgroup_hierarchy=0"
+shared_fs = "virtio-fs" # virtio-9p
+virtio_fs_daemon = "/usr/bin/virtiofsd"
+virtio_fs_cache_size = 1024
+virtio_fs_extra_args = [] # virtiofsd -h
+virtio_fs_cache = "always" # none|auto|always
+block_device_driver = "virtio-scsi" # virtio-scsi|virtio-blk|nvdimm
+firmware = ""
+machine_accelerators=""
+default_vcpus = 1
+default_maxvcpus = 0
+default_bridges = 1
+default_memory = 2048
+memory_slots = 10
+memory_offset = 0
+enable_iothreads = false

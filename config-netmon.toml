@@ -1,0 +1,14 @@
+[netmon]
+# If enabled, the network monitoring process gets started when the
+# sandbox is created. This allows for the detection of some additional
+# network being added to the existing network namespace, after the
+# sandbox has been created.
+# (default: disabled)
+#enable_netmon = true
+
+# Specify the path to the netmon binary.
+path = "/usr/libexec/kata-containers/kata-netmon"
+
+# If enabled, netmon messages will be sent to the system log
+# (default: disabled)
+#enable_debug = true

@@ -1,0 +1,37 @@
+[factory]
+# VM templating support. Once enabled, new VMs are created from template
+# using vm cloning. They will share the same initial kernel, initramfs and
+# agent memory by mapping it readonly. It helps speeding up new container
+# creation and saves a lot of memory if there are many kata containers running
+# on the same host.
+#
+# When disabled, new VMs are created from scratch.
+#
+# Note: Requires "initrd=" to be set ("image=" is not supported).
+#
+# Default false
+#enable_template = true
+
+# Specifies the path of template.
+#
+# Default "/run/vc/vm/template"
+#template_path = "/run/vc/vm/template"
+
+# The number of caches of VMCache:
+# unspecified or == 0   --> VMCache is disabled
+# > 0                   --> will be set to the specified number
+#
+# VMCache is a function that creates VMs as caches before using it.
+# It helps speed up new container creation.
+# The function consists of a server and some clients communicating
+# through Unix socket.  The protocol is gRPC in protocols/cache/cache.proto.
+# The VMCache server will create some VMs and cache them by factory cache.
+# It will convert the VM to gRPC format and transport it when gets
+# requestion from clients.
+# Factory grpccache is the VMCache client.  It will request gRPC format
+# VM and convert it back to a VM.  If VMCache function is enabled,
+# kata-runtime will request VM from factory grpccache when it creates
+# a new sandbox.
+#
+# Default 0
+#vm_cache_number = 0
