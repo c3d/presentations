@@ -8,6 +8,7 @@ Image and movie files not included (they don't belong on GitHub)
 
 You can find Tao3D at https://tao3d.sourceforge.net.
 
+![snapshot-11:36:03.png](./snapshot-11:36:03.png)
 
 ![snapshot-11:36:12.png](./snapshot-11:36:12.png)
 
@@ -31,8 +32,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:36:28.png](./snapshot-11:36:28.png)
 
-![snapshot-11:36:3.png](./snapshot-11:36:3.png)
-
 ![snapshot-11:36:46.png](./snapshot-11:36:46.png)
 
 ![snapshot-11:36:48.png](./snapshot-11:36:48.png)
@@ -49,9 +48,17 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:36:59.png](./snapshot-11:36:59.png)
 
-![snapshot-11:37:0.png](./snapshot-11:37:0.png)
+![snapshot-11:37:00.png](./snapshot-11:37:00.png)
 
-![snapshot-11:37:1.png](./snapshot-11:37:1.png)
+![snapshot-11:37:01.png](./snapshot-11:37:01.png)
+
+![snapshot-11:37:02.png](./snapshot-11:37:02.png)
+
+![snapshot-11:37:03.png](./snapshot-11:37:03.png)
+
+![snapshot-11:37:05.png](./snapshot-11:37:05.png)
+
+![snapshot-11:37:06.png](./snapshot-11:37:06.png)
 
 ![snapshot-11:37:10.png](./snapshot-11:37:10.png)
 
@@ -65,11 +72,7 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:37:19.png](./snapshot-11:37:19.png)
 
-![snapshot-11:37:2.png](./snapshot-11:37:2.png)
-
 ![snapshot-11:37:20.png](./snapshot-11:37:20.png)
-
-![snapshot-11:37:3.png](./snapshot-11:37:3.png)
 
 ![snapshot-11:37:30.png](./snapshot-11:37:30.png)
 
@@ -89,15 +92,21 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:37:49.png](./snapshot-11:37:49.png)
 
-![snapshot-11:37:5.png](./snapshot-11:37:5.png)
-
 ![snapshot-11:37:51.png](./snapshot-11:37:51.png)
 
 ![snapshot-11:37:53.png](./snapshot-11:37:53.png)
 
 ![snapshot-11:37:57.png](./snapshot-11:37:57.png)
 
-![snapshot-11:37:6.png](./snapshot-11:37:6.png)
+![snapshot-11:38:02.png](./snapshot-11:38:02.png)
+
+![snapshot-11:38:03.png](./snapshot-11:38:03.png)
+
+![snapshot-11:38:04.png](./snapshot-11:38:04.png)
+
+![snapshot-11:38:06.png](./snapshot-11:38:06.png)
+
+![snapshot-11:38:08.png](./snapshot-11:38:08.png)
 
 ![snapshot-11:38:11.png](./snapshot-11:38:11.png)
 
@@ -111,15 +120,11 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:38:19.png](./snapshot-11:38:19.png)
 
-![snapshot-11:38:2.png](./snapshot-11:38:2.png)
-
 ![snapshot-11:38:20.png](./snapshot-11:38:20.png)
 
 ![snapshot-11:38:22.png](./snapshot-11:38:22.png)
 
 ![snapshot-11:38:24.png](./snapshot-11:38:24.png)
-
-![snapshot-11:38:3.png](./snapshot-11:38:3.png)
 
 ![snapshot-11:38:30.png](./snapshot-11:38:30.png)
 
@@ -134,8 +139,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 ![snapshot-11:38:38.png](./snapshot-11:38:38.png)
 
 ![snapshot-11:38:39.png](./snapshot-11:38:39.png)
-
-![snapshot-11:38:4.png](./snapshot-11:38:4.png)
 
 ![snapshot-11:38:40.png](./snapshot-11:38:40.png)
 
@@ -161,11 +164,17 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:38:58.png](./snapshot-11:38:58.png)
 
-![snapshot-11:38:6.png](./snapshot-11:38:6.png)
+![snapshot-11:39:00.png](./snapshot-11:39:00.png)
 
-![snapshot-11:38:8.png](./snapshot-11:38:8.png)
+![snapshot-11:39:03.png](./snapshot-11:39:03.png)
 
-![snapshot-11:39:0.png](./snapshot-11:39:0.png)
+![snapshot-11:39:04.png](./snapshot-11:39:04.png)
+
+![snapshot-11:39:06.png](./snapshot-11:39:06.png)
+
+![snapshot-11:39:07.png](./snapshot-11:39:07.png)
+
+![snapshot-11:39:08.png](./snapshot-11:39:08.png)
 
 ![snapshot-11:39:10.png](./snapshot-11:39:10.png)
 
@@ -185,8 +194,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:39:27.png](./snapshot-11:39:27.png)
 
-![snapshot-11:39:3.png](./snapshot-11:39:3.png)
-
 ![snapshot-11:39:30.png](./snapshot-11:39:30.png)
 
 ![snapshot-11:39:32.png](./snapshot-11:39:32.png)
@@ -194,8 +201,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 ![snapshot-11:39:36.png](./snapshot-11:39:36.png)
 
 ![snapshot-11:39:39.png](./snapshot-11:39:39.png)
-
-![snapshot-11:39:4.png](./snapshot-11:39:4.png)
 
 ![snapshot-11:39:41.png](./snapshot-11:39:41.png)
 
@@ -213,13 +218,17 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:39:57.png](./snapshot-11:39:57.png)
 
-![snapshot-11:39:6.png](./snapshot-11:39:6.png)
+![snapshot-11:40:01.png](./snapshot-11:40:01.png)
 
-![snapshot-11:39:7.png](./snapshot-11:39:7.png)
+![snapshot-11:40:03.png](./snapshot-11:40:03.png)
 
-![snapshot-11:39:8.png](./snapshot-11:39:8.png)
+![snapshot-11:40:05.png](./snapshot-11:40:05.png)
 
-![snapshot-11:40:1.png](./snapshot-11:40:1.png)
+![snapshot-11:40:07.png](./snapshot-11:40:07.png)
+
+![snapshot-11:40:08.png](./snapshot-11:40:08.png)
+
+![snapshot-11:40:09.png](./snapshot-11:40:09.png)
 
 ![snapshot-11:40:10.png](./snapshot-11:40:10.png)
 
@@ -247,8 +256,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:40:29.png](./snapshot-11:40:29.png)
 
-![snapshot-11:40:3.png](./snapshot-11:40:3.png)
-
 ![snapshot-11:40:30.png](./snapshot-11:40:30.png)
 
 ![snapshot-11:40:31.png](./snapshot-11:40:31.png)
@@ -275,8 +282,6 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:40:48.png](./snapshot-11:40:48.png)
 
-![snapshot-11:40:5.png](./snapshot-11:40:5.png)
-
 ![snapshot-11:40:50.png](./snapshot-11:40:50.png)
 
 ![snapshot-11:40:52.png](./snapshot-11:40:52.png)
@@ -289,13 +294,15 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:40:58.png](./snapshot-11:40:58.png)
 
-![snapshot-11:40:7.png](./snapshot-11:40:7.png)
+![snapshot-11:41:00.png](./snapshot-11:41:00.png)
 
-![snapshot-11:40:8.png](./snapshot-11:40:8.png)
+![snapshot-11:41:02.png](./snapshot-11:41:02.png)
 
-![snapshot-11:40:9.png](./snapshot-11:40:9.png)
+![snapshot-11:41:03.png](./snapshot-11:41:03.png)
 
-![snapshot-11:41:0.png](./snapshot-11:41:0.png)
+![snapshot-11:41:06.png](./snapshot-11:41:06.png)
+
+![snapshot-11:41:08.png](./snapshot-11:41:08.png)
 
 ![snapshot-11:41:10.png](./snapshot-11:41:10.png)
 
@@ -305,15 +312,11 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:41:18.png](./snapshot-11:41:18.png)
 
-![snapshot-11:41:2.png](./snapshot-11:41:2.png)
-
 ![snapshot-11:41:21.png](./snapshot-11:41:21.png)
 
 ![snapshot-11:41:23.png](./snapshot-11:41:23.png)
 
 ![snapshot-11:41:24.png](./snapshot-11:41:24.png)
-
-![snapshot-11:41:3.png](./snapshot-11:41:3.png)
 
 ![snapshot-11:41:30.png](./snapshot-11:41:30.png)
 
@@ -347,11 +350,15 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:41:59.png](./snapshot-11:41:59.png)
 
-![snapshot-11:41:6.png](./snapshot-11:41:6.png)
+![snapshot-11:42:01.png](./snapshot-11:42:01.png)
 
-![snapshot-11:41:8.png](./snapshot-11:41:8.png)
+![snapshot-11:42:04.png](./snapshot-11:42:04.png)
 
-![snapshot-11:42:1.png](./snapshot-11:42:1.png)
+![snapshot-11:42:06.png](./snapshot-11:42:06.png)
+
+![snapshot-11:42:08.png](./snapshot-11:42:08.png)
+
+![snapshot-11:42:09.png](./snapshot-11:42:09.png)
 
 ![snapshot-11:42:10.png](./snapshot-11:42:10.png)
 
@@ -369,18 +376,10 @@ You can find Tao3D at https://tao3d.sourceforge.net.
 
 ![snapshot-11:42:24.png](./snapshot-11:42:24.png)
 
-![snapshot-11:42:4.png](./snapshot-11:42:4.png)
+![snapshot-11:43:03.png](./snapshot-11:43:03.png)
 
-![snapshot-11:42:6.png](./snapshot-11:42:6.png)
-
-![snapshot-11:42:8.png](./snapshot-11:42:8.png)
-
-![snapshot-11:42:9.png](./snapshot-11:42:9.png)
+![snapshot-11:43:07.png](./snapshot-11:43:07.png)
 
 ![snapshot-11:43:11.png](./snapshot-11:43:11.png)
 
 ![snapshot-11:43:12.png](./snapshot-11:43:12.png)
-
-![snapshot-11:43:3.png](./snapshot-11:43:3.png)
-
-![snapshot-11:43:7.png](./snapshot-11:43:7.png)
