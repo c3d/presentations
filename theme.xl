@@ -68,7 +68,7 @@ theme_color "RedHat", Master, "caption-white"   -> color "white"
 theme_align "RedHat", Master,"story",1          -> margins 40, 0; paragraph_space 0, 20
 theme_align "RedHat", Master,"story",N          -> margins 40*N, 0
 theme_color "RedHat", Master,"story",N          -> color "black", 0.99-0.2*N
-theme_size  "RedHat", Master,"story",N          -> 36 - N * 2
+theme_size  "RedHat", Master,"story",N          -> 40 - N * 2
 
 theme_color "RedHat", Master,"picture"          -> color "white"
 theme_font  "RedHat", Master,"story"            -> font "Overpass", "Arial"
@@ -375,7 +375,7 @@ theme_layout "RedHat", "main" ->
 //    Centered flows
 // ----------------------------------------------------------------------------
     flow 200,    0, 1200, 200, "title"
-    flow 200, -200, 1200, 250, "subtitle"
+    flow 200, -200, 1200, 350, "subtitle"
 
 
 theme_layout "RedHat", "section" ->
@@ -1017,7 +1017,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 1200 // 20 minutes
+TOTAL_DURATION -> 2700 // 20 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
