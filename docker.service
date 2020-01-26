@@ -1,0 +1,10 @@
+# the default is not to use systemd for cgroups
+# because the delegate issues still
+# exists and systemd currently does not support
+# the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd \
+          --host=fd:// \
+          --exec-opt native.cgroupdriver=systemd \
+          --add-runtime kata-runtime=/usr/bin/kata-runtime \
+          $OPTIONS

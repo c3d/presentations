@@ -1,0 +1,29 @@
+[runtime]
+# If enabled, the runtime will log additional debug messages to the
+# system log
+# (default: disabled)
+#enable_debug = true
+#
+# Internetworking model
+# Determines how the VM should be connected to the
+# the container network interface
+# Options:
+#
+#   - bridged (Deprecated)
+#     Uses a linux bridge to interconnect the container interface to
+#     the VM. Works for most cases except macvlan and ipvlan.
+#     ***NOTE: This feature has been deprecated with plans to remove this
+#     feature in the future. Please use other network models listed below.
+#
+#   - macvtap
+#     Used when the Container network interface can be bridged using
+#     macvtap.
+#
+#   - none
+#     Used when customize network. Only creates a tap device. No veth pair.
+#
+#   - tcfilter
+#     Uses tc filter rules to redirect traffic from the network interface
+#     provided by plugin to a tap interface connected to the VM.
+#
+internetworking_model="tcfilter"
