@@ -1,0 +1,6 @@
+* Vaisseau "THE LAMP"
+V4.D    dc.b    XM1,XP2,ORIG,ZP5,ZM4,YM1     Pied
+        dc.b    GO1,ZM1,XP1,ZP1              Milieu
+        dc.b    GO2,YM1,ZM1,XM2,XP4          Arriere tete
+        dc.b    XM2,YM1,ZP2,ZP4,YP2          Avant tete
+        dc.b    END

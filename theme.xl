@@ -804,7 +804,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 2400 // 40 minutes
+TOTAL_DURATION -> 900 // 40 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -828,6 +828,7 @@ disabled
 
 LANG -> "en"
 English fr French -> if LANG="fr" then French else English
+French en English -> if LANG="en" then English else French
 english Body -> if LANG="en" then Body
 french  Body -> if LANG="fr" then Body
 key "f" -> LANG := "fr"; refresh 0

@@ -1,3 +1,4 @@
+HATARI -> "/Applications/hatari.app/Contents/MacOS/hatari"
 // ============================================================================
 main_title_slide "Alpha Waves",
 // ============================================================================
@@ -15,6 +16,9 @@ main_title_slide "Alpha Waves",
         translate 510, 270, -200
         rotate_z -4
         image 0, 0, 200%, 200%, "Alpha Waves cover.jpg"
+    on "key:Return",
+        writeln "Launching Hatari"
+        run_process HATARI, "/Users/ddd/Hatari/alpha_waves_unprotected.st"
 
 
 base_slide "Demo",
@@ -22,11 +26,6 @@ base_slide "Demo",
     subtitle "La meilleur façon de comprendre un jeu, c'est encore d'y jouer" en "The best way to understand a game is still to play it!"
     picture
         image 0, 60, 400%, 400%, "Alpha Waves demo.gif"
-    on "key:Return",
-        writeln "Launching Hatari"
-        run_process "/usr/local/bin/hatari", "/Users/ddd/Hatari/alpha_waves_unprotected.st"
-    on "pageexit",
-        drop_process "/usr/local/bin/hatari"
 
 
 // ============================================================================
@@ -34,6 +33,8 @@ section_slide "Une époque formidable" en "What a wonderful time!",
 // ============================================================================
     title page_label
     subtitle "Les jeux 3D de l'époque, c'est pas encore ça" en "3D games at the time were not quite there yet"
+    on "pageentry",
+        drop_process HATARI
     picture
         texture "Alpha Waves intro.gif"
         translate 350, 230, 20
@@ -383,7 +384,7 @@ base_slide "Étape 2: pré-calculer la rotation des axes" en "Step 2: pre-comput
             draw_axis 500, 10
     story
         * "Ici, il y a des multiplications" en "There be multiplidragons"
-        * "Précalcule x 1, x 2, x 3, x 4, x 5, x 10" en "Precoumpute x2, x3, x4, x5 and x10"
+        * "Précalcule x 1, x 2, x 3, x 4, x 5, x 10" en "Precompute x2, x3, x4, x5 and x10"
         * "Direction positive et négative" en "Can be used forward or backwards"
         * "Nommés XP3, ZM5 dans le code" en "Named XP3 or ZM5 in the code"
 
@@ -513,6 +514,56 @@ draw_axis Length, Width ->
         circle Width
         translate_z Length-60
         circle 2 * Width
+
+
+base_slide "Remplissage des polygones" en "Polygon filling",
+    title page_label
+    subtitle "Polygones faits main" en "Hand-made polyfill code"
+    stepping
+    right_picture
+        image 0, 60, 150%, 150%, "Polygon Drawing.gif"
+    left_column
+        * "Essentiel pour la performance" en "Critical to performance"
+        * "Algorithme de Bresenham" en "Uses Bresenham's line drawing algorithm"
+        * "Étendu aux ellipses" en "Extended to ellipses"
+        * "Infogrames voudra utiliser leur code" en "Infogrames will ask me to use their code"
+        * "... qui ne marchait pas sur TT" en "... which broke on the TT"
+        * "Réécrit avec ""Duff's device"", 30% plus rapide" en "Rewritten using ""Duff's device"", 30% faster"
+
+
+base_slide "Musique" en "Music",
+    title page_label
+    subtitle "Composée par Frederic Mentzen" en "Composed by Frederic Mentzen"
+    stepping
+    right_picture
+        image 60, 300, 150%, 150%, "Frederic Mentzen.png"
+        image 0, -150, 150%, 150%, "Music Playlist.png"
+    TITLE_TRACK -> "music/Title Screen.mp4"
+    on "pageentry",
+        movie_texture TITLE_TRACK
+    on "pageexit",
+        movie_drop TITLE_TRACK
+    left_column
+        * "Atari ST: Musique seulement pendant l'intro" en "Atari ST had music only during intro"
+        * "Stockée sur la deuxième face" en "It was stored on second side of floppy disk"
+        * "Un magazine a distribué Alpha Waves sur floppy simple face" en "A magazine shared Alpha Waves on single-side floppies"
+        * "Ça crashait sur 1040 ST (et ils le savaient)" en "It crashed on 1040ST (and they blamed it on me)"
+        * "Sur PC: musique AdLib de très haute qualité" en "On PC, high-quality AdLib music"
+        * "J'ai une cassette avec l'original synté" en "I have a K7 with the original synth music"
+
+
+base_slide "Code source" en "Source code",
+    title page_label
+    subtitle "Et article explicatif" fr "and article about Alpha Waves"
+    stepping
+    picture
+        image -400, 0, 200%, 200%, "QR-SourceCode.png"
+        image  400,  0, 200%, 200%, "QR-BlogArticle.png"
+    DREAM_TRACK -> "music/Dream.mp4"
+    on "pageentry",
+        movie_texture DREAM_TRACK
+    on "pageexit",
+        movie_drop DREAM_TRACK
 
 
 // ============================================================================
