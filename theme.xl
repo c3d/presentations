@@ -864,6 +864,20 @@ locally
     circle mouse_x, mouse_y, 10
 
 
+key "t" ->
+    screenshot "snapshots/snapshot-" & (zerofy snapshot_counter) & ".png"
+    snapshot_counter := snapshot_counter + 1
+
+snapshot_counter -> 1
+zerofy N:integer ->
+    if N < 10 then
+        "00" & N
+    else if N < 100 then
+        "0" & N
+    else
+        "" & N
+
+
 // ============================================================================
 //
 //    Shader display
