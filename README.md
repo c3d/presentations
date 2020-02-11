@@ -1,12 +1,12 @@
-Alpha Waves Talk, Replay Festival 2019 (Mouans-Sartoux)
-=======================================================
+Alpha Waves Talk, FOSDEM 2020
+=============================
 
-Ceci est une présentation sur Alpha Waves donnée durant le Festival
-Replay 2019 à Mouans-Sartoux.
+This is a talk about Alpha Waves given at FOSDEM 2020.
 
-Images et films non inclus.
+Movies and pictures not included.
 
-Vous pouvez télécharger Tao3D at https://tao3d.sourceforge.net.
+Tao3D is available at https://tao3d.sourceforge.net (but
+at the moment does not work well on Linux)
 
 ![snapshot-001.png](snapshots/snapshot-001.png)
 
