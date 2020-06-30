@@ -1,7 +1,7 @@
 presentation_title "Kata Containers and QEMU Mini on Fedora"
 presentation_logo "KataContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations/blob/devconf.cz-2019/Kata%2BQemuMini.ddd"
+presentation_tao "https://github.com/c3d/presentations/blob/sophiaconf-2020/Kata%2BQemuMini.ddd"
 presentation_author "Christophe de Dinechin (dinechin@redhat.com, IRC c3d)"
 
 // ----------------------------------------------------------------------------

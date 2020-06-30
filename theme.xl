@@ -1017,7 +1017,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 2700 // 20 minutes
+TOTAL_DURATION -> 1800 // 35 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
