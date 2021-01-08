@@ -1,0 +1,11 @@
+// Simple numerical constants
+pi is 3.1415926535
+
+// Data structures
+identity is [ [ 1, 0, 0 ],
+              [ 0, 1, 0 ],
+              [ 0, 0, 1 ] ]
+
+// 'self' stops evaluation
+true  is self
+false is self

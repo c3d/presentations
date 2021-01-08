@@ -1,18 +1,667 @@
-import Animate
-import RemoteControl
+// ============================================================================
+//
+main_title_slide "XL",
+//
+// ============================================================================
+    title page_label
+    subtitle "Un langage extensible" en "An extensible language"
+    stepping
+    picture
+        text_box 0, -400, 1600, 200,
+            style "story"
+            color "white"
+            align 100%
+            font_size 35
+            text "(C) 2019-2020 Christophe de Dinechin"
 
-rc_hook 0, 06560
+        translate 510, 270, -200
+        rotate_z -4
+        image 0, 0, 80%, 80%, "XLLogo.png"
 
-import "title.ddd"
-import "problem.ddd"
-import "problem-example.ddd"
-import "overview.ddd"
-import "solution.ddd"
-import "discussion.ddd"
 
-key "Right"  -> skip 1
-key "Left"   -> skip -1
-key "Return" -> skip_to 0
-key "r"      -> start_time := time
-key "e"      -> language "en"
-key "f"      -> language "fr"
+
+// ============================================================================
+section_slide "Problem statement",
+// ============================================================================
+    title page_label
+    subtitle "What problem is XL trying to solve?"
+    picture
+        texture "how-to-create-your-own-programming-language.png"
+        translate 350, 250, 20
+        rotate_z -2
+        scale 165%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Greenspun's tenth rule",
+// ----------------------------------------------------------------------------
+    subtitle "Everybody knows what is wrong with software"
+    left_picture
+        box 0, 0, 850, 800,
+            style "quote"
+            font_size 60
+            align 50%
+            paragraph "Any sufficiently complicated C or Fortran program contains an ad-hoc, informally-specified, bug-ridden, slow implementation of half of Common Lisp."
+    right_picture
+        translate_y 60
+        rotate_z 5.0
+        scale 60%
+
+        movie_texture "movies/RubeGoldberg.mp4"
+        rectangle texture_width, texture_height
+        on "pageexit",
+            movie_drop "movies/RubeGoldberg.mp4"
+
+
+// ============================================================================
+//
+//    Fighting Moore's law
+//
+// ============================================================================
+
+X1 -> 0.0
+Y1 -> 0.0
+Z1 -> 0.0
+S1 -> 0.0
+
+CX -> 0.0
+CY -> 0.0
+CZ -> 0.0
+CS -> 0.0
+
+set_arrow s0:symbol, s1:symbol -> endpoints_style s0, s1
+
+body_slide "Problem: Why so many languages?",
+// ----------------------------------------------------------------------------
+//   Illustration basee sur la loi de Moore
+// ----------------------------------------------------------------------------
+    subtitle
+        text "How Moore's law applies to software"
+        at_step 11
+        text ", and how to use it"
+    picture
+        scale 80%
+        adjust_view_point
+        move_speed -> if current_view_point > 8 then 0.05 else 0.15
+        interpolate_scale move_speed, S1, CS
+        interpolate_position move_speed, X1, Y1, Z1, CX, CY, CZ
+        locally
+            line_width 8
+            color "transparent"
+            line_color "red"
+            path
+                coord N:integer -> line_to 20*N, 70*exp(N*0.05), 0
+                coord with 0..50
+                set_arrow none, arrowhead
+
+        locally
+            color "transparent"
+            line_color tao "orange"
+            line_width 3
+            translate -50, 50, 0
+            line_arrow -30, 0, none, 1200, 0, arrowhead
+            line_arrow 0, -30, none, 0, 800, arrowhead
+            font "Gentium Plus", 30
+            line_width 0
+            color tao "orange"
+            text_box 1200, -50, 200, 200,
+                text "Time"
+            rotatez 90
+            text_box 750, -50, 200, 200,
+                text "Complexity"
+
+        abstraction N:integer ->
+            locally
+                if N >= current_view_point then show -0.1
+                if current_view_point > 7 then show -0.1
+                translate 20*(8*N+5), 70*exp((8*N+5)*0.05), 150
+                align 0.0
+                locally
+                    line_width 4
+                    line_color tao "navy", 30%
+                    color "transparent"
+                    path
+                        move_to -130, 0, 0
+                        line_to 130, 0, 0
+                        set_arrow none, arrowhead
+                text_box 0, 25, 250, 50,
+                    vertical_align 1.0
+                    font "Gentium Plus", 20, bold
+                    text abstraction_language N
+                text_box 0, -25, 250, 50,
+                    vertical_align 0.0
+                    font "Gentium Plus", 12
+                    text abstraction_description N
+                if N+1 = current_view_point then
+                    show -1
+                    locally
+                        color "white", 90%
+                        line_color tao "navy", 20%
+                        line_width 1
+                        rounded_rectangle 0, -50, 310, 70, 5
+                    text_box 0, -50, 300, 60,
+                        vertical_align 0.5
+                        font "Menlo", 9
+                        color tao "green"
+                        text abstraction_code N
+
+        locally
+            color tao "navy"
+            abstraction with 0..5
+
+        if current_view_point > 7 then
+            translate -CX, -CY, 80
+            locally
+                line_width 1
+                color "white", 70%
+                line_color tao "navy", 20%
+                circle 0, 0, 110
+                rotatez -40 * time
+                translatez 25
+                line_color tao "red"
+                color tao "yellow"
+                star_polygon 0, 0, 30, 30, 5, 4
+            locally
+                if CX > -20*(8*3+5) then
+                    text_box 0, 55, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "green"
+                        align 0.0
+                        vertical_align 1.0
+                        paragraph "Easy"
+                        font "Gentium Plus", 12
+                        paragraph "Tools work"
+                        paragraph "Two guys in a garage"
+                        paragraph "Easy money"
+                else if current_view_point < 10 then
+                    text_box 0, -55, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "red"
+                        align 1.0
+                        vertical_align 0.0
+                        paragraph "Hard"
+                        font "Gentium Plus", 12
+                        paragraph "Tools are outdated"
+                        paragraph  "Need more hands"
+                        paragraph "Delays and costs overrun"
+                else if current_view_point < 11 then
+                    text_box 0, -65, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "orange"
+                        align 0.5
+                        vertical_align 0.0
+                        paragraph "You are here"
+                        font "Gentium Plus", 12
+                        paragraph "Many languages"
+                        paragraph  "Work sent to India"
+                        paragraph "75% of projects fails"
+                else
+                    text_box 0, 65, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "green"
+                        align 0.5
+                        vertical_align 0.8
+                        paragraph "The XL dream"
+                        font "Gentium Plus", 12
+                        paragraph "On-demand language"
+                        paragraph "DSL ecosystem"
+                        paragraph "Moore's law helps"
+
+
+abstraction_language    0 -> "Fortran, Basic"
+abstraction_description 0 -> "Symbols and expressions"
+abstraction_code        0 ->
+<<10 FOR X = 0 TO 100 STEP 0.1
+20 Y = SIN(X) * COS(10 * X)
+30 GOSUB 1000 : REM Plot X, Y
+40 NEXT X >>
+
+abstraction_language    1 -> "Pascal, C, Ada, Modula"
+abstraction_description 1 -> "Structured programming"
+abstraction_code        1 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot(x, sin(x) * cos(10*x)); >>
+
+abstraction_language    2 -> "C++, Smalltalk, Eiffel"
+abstraction_description 2 -> "Objects"
+abstraction_code        2 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot.addDataPoint(x, sin(x) * cos(10*x));
+ plot.draw(); >>
+
+abstraction_language    3 -> "Java"
+abstraction_description 3 -> "Distributed programs"
+abstraction_code        3 ->
+<<String plotDriver = "com.jnetdirect.jsql.JSQLDriver";
+Class.forName(plotDriver);
+PlotManager.connect(url, user, password);>>
+
+abstraction_language    4 -> "Python, XML"
+abstraction_description 4 -> "Software components"
+abstraction_code        4 -> "<plot source=""$URL"" x_axis=""x"" y_axis=""y""/>"
+
+abstraction_language    5 -> "XL"
+abstraction_description 5 -> "On-demand notations"
+abstraction_code        5 ->
+    << plot (lambda x is sin x * cos(10*x)) >>
+
+view_set ax:real, ay:real, az:real, as:real ->
+    X1 := ax
+    Y1 := ay
+    Z1 := az
+    S1 := as
+
+view_point_zoom N:integer -> view_set -20*(8*N+5), -70*exp((8*N+5)*0.05), -150, 5.0
+view_point 0            -> view_set -500.0, -500.0, 0.0, 1.0
+view_point 1            -> view_point_zoom 0
+view_point 2            -> view_point_zoom 1
+view_point 3            -> view_point_zoom 2
+view_point 4            -> view_point_zoom 3
+view_point 5            -> view_point_zoom 4
+view_point 6            -> view_point_zoom 5
+view_point 7            -> view_set -500.0, -500.0, 0.0, 1.0
+view_point 8            -> view_set -20*(8*3+5) + 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 9            -> view_set -20*(8*3+5) - 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 10           -> view_set -20*(8*3+5) - 350, -70*exp((8*3+5)*0.05) - 250, -150, 3.0
+view_point 11           -> view_set -800, -680, -150, 3.0
+
+view_point 12           -> view_set -900, -680, -150, 3.0
+view_point 13           -> view_set -900, -800, -150, 3.0
+view_point 14           -> view_set -950, -800, -150, 3.0
+view_point 15           -> view_set -950, -900, -150, 3.0
+
+
+view_point N:integer    -> view_set -950.0, -950.0, -150, 0.5
+
+current_view_point -> 0
+adjust_view_point ->
+    if page_time < 0.1 then
+        skip_to 0
+    current_view_point := integer (step)
+    view_point current_view_point
+
+
+
+// ============================================================================
+//
+section_slide "Proposed solution",
+//
+// ============================================================================
+    title page_label
+    subtitle "Make it as small as possible, but not smaller"
+    picture
+        texture "XLLogo.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 95%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Saint Exupery's rule of Perfection",
+// ----------------------------------------------------------------------------
+    subtitle "A good rule of thumb when designing software"
+    left_picture
+        box 0, 0, 900, 800,
+            style "quote"
+            font_size 60
+            align 50%
+            paragraph "Perfection is achieved not when there is nothing to add, but when there is nothing to remove"
+    right_picture
+        image 0, 60, 100%, 100%, "Alto Mouse.png"
+
+
+
+// ----------------------------------------------------------------------------
+body_slide "Minimalist?",
+// ----------------------------------------------------------------------------
+    subtitle "XL once stood for ""Experimental language"", so that is settled"
+    story
+        * { text "A single operator, "; code "is" }
+        * "The rest is in the library"
+        * "Parser is 2Kloc"
+        * "Whole interpreter is 20Kloc"
+        * "At least 10 total rewrites"
+        * "At least four complete web sites"
+        $
+        * "One single lonely user"
+
+    right_picture
+        images "One Ring.png", "Library.jpg", "One Coke.png", "More Cokes.png", "Spiderman.png", "The Matrix.jpg", "Christophe.jpg"
+
+// ----------------------------------------------------------------------------
+body_slide "Overview...",
+// ----------------------------------------------------------------------------
+    subtitle "Question: Minimalist? Answer: Extensible!"
+    story
+        paragraph { text "The language with "; italic "one"; text " operator to define:" }
+        * "Constants"
+        * "Functions"
+        * "Operators"
+        * "Types"
+        * "Program constructs"
+        * "Notations"
+        * "Optimizations"
+        * "Generics"
+
+    right_picture
+        code_move -100, 0, 1100, 800
+        colorize_file_at 1, "Constants",                "constants.xl"
+        colorize_file_at 2, "Functions",                "functions.xl"
+        colorize_file_at 3, "Operators",                "operators.xl"
+        colorize_file_at 4, "Types",                    "types.xl"
+        colorize_file_at 5, "Program constructs",       "constructs.xl"
+        colorize_file_at 6, "Notations",                "notations.xl"
+        colorize_file_at 7, "Optimizations",            "optimizations.xl"
+        colorize_file_at 8, "Generics",                 "generics.xl"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Key ideas",
+// ----------------------------------------------------------------------------
+    subtitle "One idea every 8 years or so"
+    story
+        * "Around 2000: Simple parse tree with just 8 node types"
+        * "Around 2008: XL is just a parse tree rewrite engine"
+        * "Around 2016: A type system for machine code"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Simple parse tree with nodes",
+// ----------------------------------------------------------------------------
+    subtitle "This simple structure can represent tons of things"
+    picture
+        nt_x    -> -600
+        nt_y N  -> 420 - 100 * N - 40 * (N/4)
+        nt_w    -> 300
+        nt_h    -> 80
+        soft_box nt_x, nt_y 0, nt_w, nt_h, tao "red",    "Integer"
+        node_describe 0, "0", "42", "1_000_000", "16#FFF0_FFFF", "2#1101#e5"
+        soft_box nt_x, nt_y 1, nt_w, nt_h, tao "orange", "Real"
+        node_describe 1, "0.3", "3.141_592_653", "1.0e100", "16#F.0F", "2#1e-5"
+        soft_box nt_x, nt_y 2, nt_w, nt_h, tao "yellow", "Text"
+        node_describe 2, """Accentué""", """Տեղայնացվող տեքստ""", "'A'", "<<Long multi-line text>>"
+        soft_box nt_x, nt_y 3, nt_w, nt_h, tao "green",  "Symbol"
+        node_describe 3, "ABC", "Go_2_Market", "+", "->"
+
+        soft_box nt_x, nt_y 4, nt_w, nt_h, tao "ocean", "Infix"
+        node_describe 4, "A+B", "A and B"
+        soft_box nt_x, nt_y 5, nt_w, nt_h, tao "sky", "Prefix"
+        node_describe 5, "-5", "sin X"
+        soft_box nt_x, nt_y 6, nt_w, nt_h, tao "navy", "Postfix"
+        node_describe 6, "3!", "25 km"
+        soft_box nt_x, nt_y 7, nt_w, nt_h, tao "purple", "Block"
+        node_describe 7, "(A)", "[A]", "{A}", <<
+        print "Hello" >>
+
+        node_describe N, List ->
+            locally
+                text_box 200, nt_y N, 1200, 100,
+                    style "story"
+                    vertical_align 50%
+                    align 0%
+                    node_describe_horiz List
+        node_describe_horiz X, Y ->
+            node_describe_horiz X
+            node_describe_horiz Y
+        node_describe_horiz X ->
+            code X
+            text "    "
+
+
+// ----------------------------------------------------------------------------
+body_slide "An example",
+// ----------------------------------------------------------------------------
+    subtitle "How do we parse some actual code"
+
+    left_picture
+        code_move 100, 0, 900, 800
+        colorize_file "Source code", "example.xl"
+    right_picture
+        translate 0, 400 + mouse_y * 2, 0
+        import "example.ddd"
+
+
+// ============================================================================
+//
+section_slide "Stuff that works",
+//
+// ============================================================================
+    title page_label
+    subtitle "There are already a few things that have been tested and proven"
+    picture
+        texture "XLLogo.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 95%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Self-compiling compiler (pre 2005)",
+// ----------------------------------------------------------------------------
+    subtitle "Transpiler to C++, validated ""new"" parse tree"
+
+    code_move 0, 0, 1600, 800
+    code_box_at_step 1, "Generic ordered type",
+        colorize load_text "minimax_vararg_generic.xl"
+    code_box_at_step 2, "Compiler plug-ins",
+        font_size 30
+        colorize load_text "differentiation.xl"
+    code_box_at_step 3, "Distributed functions",
+        font_size 24
+        colorize load_text "semantics.xl"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Demo 1: Parse tree rendering",
+// ----------------------------------------------------------------------------
+    subtitle "Parse input, render with style"
+
+    code_move 0, 0, 1600, 800
+    only_at 1,
+        picture
+            colorize_file "Input file", "example.xl"
+    code_box_at_step 2, "Simple rendering", load_text "demo1-parse-tree.sh"
+    code_box_at_step 3, "Debug rendering", load_text "demo1-parse-tree-style.sh"
+    code_box_at_step 4, "HTML rendering", load_text "demo1-parse-tree-html.sh"
+    code_box_at_step 5, "Tao rendering", load_text "demo1-parse-tree-tao.sh"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Demo 2: Remote access",
+// ----------------------------------------------------------------------------
+    subtitle "Serialize source code and variables"
+
+    code_move 0, 0, 1600, 800
+    code_box_at_step 1, "Hello Remote World",
+        colorize load_text "demo/1-hello.xl"
+    code_box_at_step 2, "Temperature API",
+        colorize load_text "demo/4-get-temperature.xl"
+    code_box_at_step 3, "Temperature variations",
+        colorize load_text "demo/5-temp-variation.xl"
+    code_box_at_step 4, "Average",
+        colorize load_text "demo/6-temp-average.xl"
+    code_box_at_step 5, "Two hops",
+        font_size 32
+        colorize load_text "demo/7-two-hops.xl"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Demo 3: Interactive 3D graphics",
+// ----------------------------------------------------------------------------
+    subtitle "This is what is being used for this talk"
+
+    left_picture
+        code_move 0, 0, 900, 800
+        colorize_file "Source code", "tao-move.ddd"
+    right_picture
+        import "tao-move.ddd"
+
+
+
+// ============================================================================
+//
+section_slide "Stuff in the works",
+//
+// ============================================================================
+    title page_label
+    subtitle "This does not work, but should work ""soon"""
+    picture
+        texture "XLLogo.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 95%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Code generation",
+// ----------------------------------------------------------------------------
+    subtitle "LLVM is not a stable API"
+
+    story
+        * "XL2: transpiling to C or Java"
+        * "XL(R) has been using LLVM since version 2.6"
+        * "Every single version broke API compatibility"
+        * "Ended up writing an adapter, llvm-crap"
+        * "Objective: generate C-level code"
+        * "... that requires a solid type system"
+
+    code_move 400, 0, 1000, 800
+    code_box_at_step 1, "Generator configuration (pre-2003)",
+        font_size 24
+        colorize load_text "xl-bytecode.txt"
+    code_box_at_step 4, "LLVM Crap",
+        font_size 20
+        colorize load_text "llvm-crap.h"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Sugaring",
+// ----------------------------------------------------------------------------
+    subtitle "Code is designed solely for humans"
+
+    story
+        * "Expression vs. statement"
+        * "This is sometimes a problem"
+        * "Number parsing issues"
+        * "Space sensitivity"
+        * "Optional prefix words"
+        * "Typing by name"
+        * "Two type annotations"
+        * "Alternate notations"
+
+    code_move 400, 0, 1000, 800
+    code_box_at_step 1, "Expression / Statement",
+        colorize load_text "expression-statement.xl"
+    code_box_at_step 2, "Expression issue",
+        colorize load_text "expression-statement-issue.xl"
+    code_box_at_step 3, "Number parsing",
+        colorize load_text "unary-minus.xl"
+    code_box_at_step 4, "Space-sensitive parsing",
+        colorize load_text "space-sensitivity.xl"
+    code_box_at_step 5, "Optional prefix words",
+        colorize load_text "optional-prefix.xl"
+    code_box_at_step 6, "Typing by name",
+        colorize load_text "type-by-name.xl"
+    code_box_at_step 7, "Type annotations",
+        colorize load_text "two-type-annotations.xl"
+    code_box_at_step 8, "Alternate forms",
+        colorize load_text "written-forms.xl"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Idea #3: XL types",
+// ----------------------------------------------------------------------------
+    subtitle "A type system based on the shape of trees"
+
+    story
+        * "A type in XL is the shape of a tree"
+        * "A single value belongs to many types"
+        * "Operations on types"
+        * "Algorithm W circles down the drain"
+        * "Forward-only type inference should work"
+        * "Can build an array type"
+        * "Can build a network buffer type"
+        * "Can optimize complex operations"
+
+    code_move 400, 0, 1000, 800
+    code_box_at_step 1, "Type as shapes",
+        colorize load_text "type-as-shapes.xl"
+    code_box_at_step 2, "One value, many types",
+        colorize load_text "one-value-many-types.xl"
+    code_box_at_step 3, "Operations on type",
+        colorize load_text "type-operations.xl"
+    code_box_at_step 4, "Gödel type",
+        colorize load_text "goedel-type.xl"
+    code_box_at_step 5, "Type deduction",
+        colorize load_text "type-deduction.xl"
+    code_box_at_step 6, "Array type",
+        colorize load_text "array-type.xl"
+    code_box_at_step 7, "Network buffer type",
+        colorize load_text "network-buffer-type.xl"
+    code_box_at_step 8, "Complex optimization",
+        colorize load_text "complex-optimizations.xl"
+
+
+
+// ----------------------------------------------------------------------------
+body_slide "Modules and isolation",
+// ----------------------------------------------------------------------------
+    subtitle "Information hiding = actually hiding information"
+
+    story
+        * "Scopes contain only declarations"
+        * "Using scopes for closures"
+        * "Mapping = functions = array"
+        * "A module is a constant scope"
+        * "Importing a module"
+        * "Interface can hide implementation"
+        * "A module can be generic"
+        * "Hierarchy of modules"
+
+    code_move 400, 0, 1000, 800
+    code_box_at_step 1, "Scopes",
+        colorize load_text "scopes.xl"
+    code_box_at_step 2, "Closures",
+        colorize load_text "closures.xl"
+    code_box_at_step 3, "Maps",
+        colorize load_text "maps.xl"
+    code_box_at_step 4, "Module",
+        colorize load_text "module.xl"
+    code_box_at_step 5, "Module import",
+        colorize load_text "module-import.xl"
+    code_box_at_step 6, "Interface",
+        colorize load_text "array-interface.xl"
+    code_box_at_step 7, "Generic module",
+        colorize load_text "generic-module.xl"
+    code_box_at_step 8, "Module hierarchy",
+        colorize load_text "module-hierarchy.xl"
+
+
+
+// ============================================================================
+//
+body_slide "https://c3d.github.com/xl",
+//
+// ============================================================================
+    picture
+        text_box 0, -150, 1200, 120,
+            font "Edwardian Script ITC", 220
+            color_hsv 2 * time, 70%, 90%
+            text "Thank you!"
+    picture
+        texture "how-to-create-your-own-programming-language.png"
+        translate 550, 230, -200
+        rotate_z -2
+        scale 155%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+    picture
+        texture "XL-Doc.png"
+        translate -650, 230, -200
+        rotate_z 4
+        scale 220%
+        rectangle texture_width, texture_height

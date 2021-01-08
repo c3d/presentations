@@ -1,0 +1,16 @@
+// Define the case for 'array[1]'
+array[1] of T is
+    Value : T
+    1 is Value
+
+// Build the general case
+array[N] of T when N > 1 is
+    Head  : array[N-1] of T
+    Tail  : T
+    lambda I when I<N is Head[I]
+    lambda I when I=N is Tail
+
+// Use it like a regular array
+A : array[5] of integer
+for I in 1..5 loop
+    A[I] := I * I

@@ -1,0 +1,15 @@
+// Generic, variadic 'min' function
+min X,Y is
+    MY is min Y
+    if X < MY then X else MY
+min X   is X
+
+// Simplified one-based array
+array[1] of T is
+    Value : T
+    1 is Value
+array[N] of T when N > 1 is
+    Head  : array[N-1] of T
+    Tail  : T
+    lambda I when I<N is Head[I]
+    lambda I when I=N is Tail

@@ -1,0 +1,13 @@
+// Built-in operators known to the compiler
+X:integer+Y:integer as integer is builtin Add
+
+// Unicode notations
+X ≠ Y is (not X = Y)
+
+// Multi-operators
+X + Y * Z is FusedMultiplyAdd(X, Y, Z)
+
+// Common notations
+X% is X * 0.01
+0! is 1
+N! is N * (N-1)!

@@ -1,0 +1,8 @@
+// This only matches value 42
+type forty_too is matching(42)
+
+// This matches all even integers
+type even is matching(X:integer when X mod 2 = 0)
+
+// X is 'integer', 'forty_too' and 'even'
+K is 42

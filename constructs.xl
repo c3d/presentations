@@ -1,0 +1,12 @@
+// The actual definition of 'if-then-else'
+if [[true]]  then IfTrue else IfFalse   is IfTrue
+if [[false]] then IfTrue else IfFalse   is IfFalse
+
+// Infinite loop
+loop Body is { Body; loop Body }
+
+// While loop
+while Condition loop Body is
+   if Condition then
+       Body
+       while Condition loop Body

@@ -1,0 +1,16 @@
+// Define X as a variable integer
+X : integer
+
+// Define pi as a constant real
+pi as real
+
+// Define an integer addition
+X : integer + Y : integer as integer
+
+// May need to indicate otherwise
+with
+    Map     : map
+    VarMap  : inout map
+    Index   : offset
+Map[Index] as map.value
+VarMap[Index] as variable map.value

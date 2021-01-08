@@ -1,0 +1,14 @@
+// Implicit conversions
+Z:cartesian                 as polar
+Z:polar                     as cartesian
+
+// Type-optimized operations
+Z:cartesian + X:real        as cartesian
+Z:polar     * X:real        as polar
+X:cartesian * Y:cartesian   as cartesian
+X:polar     * Y:polar       as polar
+
+// Type-selection optimization
+sqrt  Z:polar     as polar
+exp   Z:cartesian as polar
+ln    Z:polar     as cartesian when Z.Arg ≠ 0

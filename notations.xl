@@ -1,0 +1,15 @@
+// Check if a value is in an interval
+A in B..C is A >= B and A <= C
+
+// Repeat something at a regular interval
+every Duration do Body is
+    Wakeup : time := time
+    loop
+        Wakeup += Duration
+        Body
+        sleep_until Wakeup
+
+// Usage
+every 1 mn do
+    if minutes in 0..1 then
+        play_sound "Cuckoo"

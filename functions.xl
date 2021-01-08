@@ -1,0 +1,14 @@
+// Convert hours,minutes,seconds to seconds
+seconds(H, M, S) is (H*3600 + M*60 + S)
+
+// Add a "0" prefix for seconds or minutes
+zero_prefix N:integer is
+    if N < 10 then
+        "0" & N
+    else
+        N
+
+// Fibonacci sequence
+fib 0 is 1
+fib 1 is 1
+fib N is (fib(N-1)+fib(N-2))

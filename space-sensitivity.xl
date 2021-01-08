@@ -1,0 +1,11 @@
+// How do you parse this:
+write -A
+
+// Probably like this
+write (-A)
+
+// How do you parse this:
+A-B
+
+// Probably like this
+(A-B)

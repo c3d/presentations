@@ -1,0 +1,10 @@
+// A complex module for any real type
+module COMPLEX[real:type, angle:type] with
+
+    type complex is polar or rect
+    type rect is matching rect(Re:real, Im:real)
+    type polar is matching rect(Mod:real, Arg:angle)
+
+// Specializations
+module COMPLEX[real:type] is COMPLEX[real, real]
+module COMPLEX is COMPLEX[real]

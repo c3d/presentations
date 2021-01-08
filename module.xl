@@ -1,0 +1,8 @@
+// Define a type module
+module FILES is
+    type file is another integer
+    function Open(name:text) as file is ...
+    to Close(F:file) is ...
+
+// Scope rules apply
+F : FILES.file := FILES.Open("/tmp/foo.txt")

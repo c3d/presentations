@@ -1,0 +1,8 @@
+// A function that builds an adder
+adder N is { lambda X is X + N }
+
+// In this expression, we need to capture 3
+adder 3
+
+// The resulting value looks like that
+{ N is 3 } { lambda X is X + N }

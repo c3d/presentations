@@ -1,0 +1,11 @@
+// [1.3m] is a 'length'
+type length is matching(N:real m)
+
+// The type for 'if-then-else' statements
+type if_then_else is matching(if X then Y else Z)
+
+// A classic 'record'
+type person is matching person
+    FirstName : text
+    LastName  : text
+    Address   : address

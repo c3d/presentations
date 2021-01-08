@@ -1,0 +1,11 @@
+// A scope is a body with only declarations
+scope is
+    Constant is 0
+    add X, Y is X + Y
+    sub X, Y is X - Y
+
+// Dot notation restricts to scope
+if scope.Constant = 0 then success
+
+// Prefix notation injects scope
+scope { add 2, Constant }

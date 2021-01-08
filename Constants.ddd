@@ -1,0 +1,76 @@
+
+  pi is 3.14159265358
+
+  identity_matrix is [ [1, 0, 0],
+                       [0, 1, 0],
+                       [0, 0, 1] ]
+
+  true  is self
+  false is self
+
+
+  seconds(H, M, S) is (H * 3600 + M * 60 + S)
+
+  zero_prefix N:integer is
+      if N < 10 then
+          "0" & N
+      else
+          N
+
+  fib 0 is 1
+  fib 1 is 1
+  fib N is (fib(N-1)+fib(N-2))
+
+
+  X:integer+Y:integer as integer is builtin Add
+
+  X ≠ Y is (not X = Y)
+
+  X + Y * Z is FusedMultiplyAdd(X, Y, Z)
+
+  0! is 1
+  N! is N * (N-1)!
+
+
+  cartesian is type cartesian(Re:real, Im:real)
+  polar     is type polar(Mod:real, Arg:angle)
+  complex   is cartesian or polar
+
+
+  loop Body is { Body; loop Body }
+
+  while Condition loop Body is
+     if Condition then
+         Body
+         while Condition loop Body
+
+
+  A in B..C is A >= B and A <= C
+
+  every Duration do Body is
+      loop
+          Body
+          sleep Duration
+
+
+  X + 0 is X
+  X * 1 is X
+
+  sqrt Z:polar as polar is polar(sqrt(Z.Arg), Z.Im / 2)
+  exp Z:cartesian as polar is polar(exp(Z.Re), Z.Im)
+  ln Z:polar as cartesian is cartesian(ln(Z.Arg), Z.Mod)
+
+
+  min X,Y is
+      MX is min X
+      if MX < Y then MX else Y
+  min X   is X
+
+  array[1] of T is type
+      Value : T
+      1 is Value
+  array[N] of T when N > 1 is type
+      Head  : array[N-1] of T
+      Tail  : T
+      lambda I when I<N is Head[I]
+      lambda I when I=N is Tail

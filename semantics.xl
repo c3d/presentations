@@ -1,0 +1,30 @@
+translation XLDeclarations
+// ------------------------------------------------------------------------
+//   Processing declarations (goes into XL.TRANSLATOR.Declarations )
+// ------------------------------------------------------------------------
+    // Sequences
+    when
+        'FirstDeclLine'
+        'SecondDeclLine'
+    then
+        FirstDeclLine := XLT.XLDeclarations FirstDeclLine
+        if PT.Attached(FirstDeclLine, "REPROCESSMACROS") <> nil then
+            SecondDeclLine := PPR.Preprocess(SecondDeclLine)
+        SecondDeclLine := XLT.XLDeclarations SecondDeclLine
+        return parse_tree
+            'FirstDeclLine'
+            'SecondDeclLine'
+    when
+        'FirstDecl' ; 'SecondDecl'
+    then
+        FirstDecl := XLT.XLDeclarations FirstDecl
+        if PT.Attached(FirstDecl, "REPROCESSMACROS") <> nil then
+            SecondDecl := PPR.Preprocess(SecondDecl)
+        SecondDecl := XLT.XLDeclarations SecondDecl
+        return parse_tree ('FirstDecl'; 'SecondDecl')
+
+    // When semantics have been done already, don't do it again
+    when
+        @ 'AsmStatement'
+    then
+        return input

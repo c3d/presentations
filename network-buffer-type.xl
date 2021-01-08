@@ -1,0 +1,16 @@
+// An array with a size
+network_buffer T is matching network_buffer
+    length : size
+    data   : array[length] of T
+
+
+// The following is in the type
+GoodBuf is network_buffer(3, [1,3,4])
+
+
+// The following is not in the type
+BadBuf is network_buffer(1, [1,3,4])
+
+// Type error in the following
+Resize B:inout network_buffer, S:size is
+    B.length := S

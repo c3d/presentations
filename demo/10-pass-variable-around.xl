@@ -1,0 +1,3 @@
+Var is "Declared on original computer"
+tell "localhost",
+   print "The value of Var is ", Var

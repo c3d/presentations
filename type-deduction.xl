@@ -1,0 +1,7 @@
+// Can I still deduce the type of 6! ?
+0! is 1
+N! is N * (N-1)!
+
+// This one does not break on (-1)!
+0! is 1
+N! when N > 0 is N * (N-1)!

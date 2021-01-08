@@ -1,0 +1,11 @@
+// Eliminate no-ops
+X + 0 is X
+X * 1 is X
+
+// Type-selection optimization
+sqrt Z:polar as polar is
+    polar(sqrt(Z.Mod), Z.Arg / 2)
+exp Z:cartesian as polar is
+    polar(exp(Z.Re), Z.Im)
+ln Z:polar as cartesian is
+    cartesian(ln(Z.Mod), Z.Arg)

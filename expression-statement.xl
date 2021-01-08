@@ -1,0 +1,14 @@
+// How do you parse this?
+write X, sin Y
+
+// Probably like this
+write (X, sin (Y))
+
+// How do you parse this
+write sin X, cos Y
+
+// Probably like this
+write (sin(X), cos(Y))
+
+// And not like this
+write (sin(X, cos(Y))

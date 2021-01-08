@@ -1,0 +1,6 @@
+rotate_y 30 * sin (0.1 * time)
+for I in 1..20 loop
+    color_hsv 7 * I, 50%, 80%, 80%
+    rotate_z 13
+    shape
+        ellipse 140, 0, 400, 80

@@ -1,0 +1,5 @@
+// An alternative way to write the factorial
+function Factorial(N:natural) as natural written N!
+
+// Faster way to specify some properties
+MLA(X,Y,Z) written X+Y*Z written Y*Z+X is ...

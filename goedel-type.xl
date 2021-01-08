@@ -1,0 +1,2 @@
+// This type accept values not in the type???
+goedel is type(X:[not goedel])

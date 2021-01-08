@@ -1,0 +1,10 @@
+// Define a "complete" complex type
+cartesian is matching cartesian(Re:real,Im:real)
+polar     is matching polar(Mod:real,Arg:real)
+complex   is cartesian or polar
+
+// Holds either a value or an error
+mayfail T is T or error
+
+// Accept anything but a number
+not_a_number is not number

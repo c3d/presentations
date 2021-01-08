@@ -1,0 +1,12 @@
+// Let's define Fibonacci
+fib 0 is 1
+fib 1 is 1
+fib N is fib(N-1) + fib(N-2)
+
+// Ooops
+fib N is fib((N-1) + fib(N-1))
+
+// Correct
+fib N is (fib(N-1) + fib(N-2))
+
+// This is considered a bug

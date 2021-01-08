@@ -1,0 +1,18 @@
+// Define an array
+MyArray is
+    0 is "Zero"
+    1 is "One"
+
+// Standard array usage
+MyArray[1]
+
+// Function-like maps
+MyMap is
+    0 is 42
+    27 is 33
+    lambda N is N + 1
+
+// Usage is still that of an array
+check MyMap[0] = 42
+check MyMap[27] = 33
+check MyMap[22] = 23

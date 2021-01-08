@@ -1,0 +1,13 @@
+// Default types for some names
+with
+    Z1 : cartesian
+    Z2 : cartesian
+    P1 : polar
+    P2 : polar
+    X  : real
+    Y  : real
+
+// Make the definitions shorter
+Z1 + Z2 as cartesian
+P1 * P2 as polar
+Z1 + X  as cartesian

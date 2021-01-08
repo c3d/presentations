@@ -1,0 +1,7 @@
+// Types match the shape of a parse tree
+cartesian  is matching cartesian(Re:real, Im:real)
+polar      is matching polar(Mod:real, Arg:angle)
+
+// There are operations on types
+complex    is cartesian or polar
+optional T is T or nil

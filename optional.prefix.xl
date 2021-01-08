@@ -1,0 +1,8 @@
+// Mark something as a constant or variable
+constant pi is 3.14
+variable X is 2.1
+
+// Procedures, functions
+procedure Copy(Target, Source)
+to Copy(Target, Source)
+function NoSideEffects(N) is N+1

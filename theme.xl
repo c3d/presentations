@@ -1,182 +1,1797 @@
-// ****************************************************************************
-//  theme.xl                                                        Tao project
-// ****************************************************************************
-//
-//   File Description:
-//
-//     Theme for the imagina presentation
-//
-//
-//
-//
-//
-//
-//
-//
-// ****************************************************************************
-// This document is released under the GNU General Public License.
-// See http://www.gnu.org/copyleft/gpl.html and Matthew 25:22 for details
-//  (C) 1992-2010 Christophe de Dinechin <christophe@taodyne.com>
-//  (C) 2010 Jérôme Forissier <jerome@taodyne.com>
-//  (C) 2010 Catherine Burvelle <cathy@taodyne.com>
-//  (C) 2010 Lionel Schaffhauser <lionel@taodyne.com>
-//  (C) 2010 Taodyne SAS
-// ****************************************************************************
+import Slides
+import Animate
+import Charts
+import VLCAudioVideo
+import ObjectLoader
+import RegExp
+import Filters
+
+
+theme "XL-Lang"
+PresentationTitle -> "XL, un langage extensible" en "XL, an extensible language"
 
 
 
 // ============================================================================
 //
-//    Initializations
+//    Customizations for the slides
+//
+// ============================================================================
+//    This should be kept sorted with the more specific patterns at the top
+
+theme_align "XL-Lang", "main", "title"           -> align_left
+theme_align "XL-Lang", "main", "subtitle"        -> align_left
+theme_align "XL-Lang", "section", "title"        -> align_left
+theme_align "XL-Lang", "section", "subtitle"     -> align_left
+theme_color "XL-Lang", "main", "title"           -> color "#FAD06E"
+theme_color "XL-Lang", "main", "subtitle"        -> color "#FAD03E"
+theme_color "XL-Lang", "main", Other             -> color "white"
+theme_color "XL-Lang", "section", "title"        -> color "#F0D020"
+theme_color "XL-Lang", "section", "subtitle"     -> color "#FAC03E"
+theme_color "XL-Lang", "section", Other          -> color "white"
+
+theme_font  "XL-Lang", "movie", "title"          -> font "Overpass", bold, 60
+theme_size  "XL-Lang", "movie", "title"          -> 60
+theme_color "XL-Lang", "movie", "title"          -> color "white"
+theme_align "XL-Lang", "movie", "title"          -> align 50%; vertical_align 50%
+
+theme_font  "XL-Lang", "movie", "subtitle"       -> font "Overpass", bold, 45
+theme_size  "XL-Lang", "movie", "subtitle"       -> 45
+theme_color "XL-Lang", "movie", "subtitle"       -> color "white"
+theme_align "XL-Lang", "movie", "subtitle"       -> align 50%; vertical_align 50%
+
+theme_align "XL-Lang", Master, "caption-white"   -> align 50%; vertical_align 50%
+theme_font  "XL-Lang", Master, "caption-white"   -> font "Overpass", bold, 30
+theme_size  "XL-Lang", Master, "caption-white"   -> 30
+theme_color "XL-Lang", Master, "caption-white"   -> color "white"
+
+
+theme_font  "XL-Lang", Master, "title"           -> font "DIN Alternate", bold
+theme_size  "XL-Lang", "main", "title"           -> 85
+theme_size  "XL-Lang", "section", "title"        -> 80
+theme_size  "XL-Lang", Master, "title"           -> 60
+theme_font  "XL-Lang", Master, "subtitle"        -> font "DIN Alternate"
+theme_size  "XL-Lang", "main", "subtitle"        -> 55
+theme_size  "XL-Lang", "section", "title"        -> 52
+theme_size  "XL-Lang", Master, "subtitle"        -> 50
+theme_color "XL-Lang", Master, "subtitle"        -> color "#A21400"
+theme_font  "XL-Lang", Master, "code"            -> font "Menlo", 36
+theme_size  "XL-Lang", Master, "code"            -> 32
+theme_color "XL-Lang", Master, "code"            -> color "#003388"
+theme_font  "XL-Lang", Master, "quote"           -> font "Hoefler text", italic
+theme_font  "XL-Lang", Master, "boxtitle"        -> font "Overpass", bold, 40
+theme_align "XL-Lang", Master, "boxtitle"        -> align 80%
+theme_align "XL-Lang", Master, "quote"           -> margins 80, 80
+
+theme_align "XL-Lang", Master,"story",1          -> margins 40, 0; paragraph_space 0, 20
+theme_align "XL-Lang", Master,"story",N          -> margins 40*N, 0
+theme_color "XL-Lang", Master,"story",N          -> color "black", 0.99-0.2*N
+theme_size  "XL-Lang", Master,"story",N          -> 36 - N * 2
+
+theme_color "XL-Lang", Master,"picture"          -> color "white"
+theme_font  "XL-Lang", Master,"story"            -> font "DIN Alternate"
+theme_size  "XL-Lang", Master,"story"            -> 40
+
+theme_font  "XL-Lang", Master, Theme             -> font "DIN Alternate"
+theme_color "XL-Lang", Master,Style              -> color "black"
+
+
+
+// ============================================================================
+//
+//    Charts
 //
 // ============================================================================
 
-// Theme style name
-theme -> "XLTalk"
+// Chart colors
+theme_color "XL-Lang", Master:text, "line", N:integer -> line_color_hsv (336.0 * N) / chart_datasets_count, 0.3, 1.0, 1.0
+theme_color "XL-Lang", "pie", Style:text, N:integer -> color_hsv (336.0 * N) / (chart_count chart_first), 0.3, 1.0, 1.0
+theme_color "XL-Lang", "area", Style:text, N:integer -> theme_color "XL-Lang", "bar", Style, N
+theme_color "XL-Lang", "line", Style:text, N:integer -> theme_color "XL-Lang", "bar", Style, N
+theme_color "XL-Lang", "bar", Style:text, N:integer -> color_hsv (336.0 * N) / chart_datasets_count, 0.3, 1.0, 1.0
 
-// Disable the glyph cache for better font smoothing
-theme_init "XLTalk"                     -> enable_glyph_cache false
+// No boxes for charts components (except title)
+theme_box "XL-Lang",Master:text,"chart_legend", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"area", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"bar", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"line", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"pie", X:real,Y:real,W:real,H:real -> false
 
-// Background position and image
-background_picture "XLTalk"             -> "background.png"
-background_width "XLTalk"               -> 1920.0
-background_height "XLTalk"              -> 1080.0
-background_z "XLTalk"                   -> -30000
-foreground_z "XLTalk"                   -> 3000
-start_time -> 0.0
+// No boxes for pictures either
+theme_box "XL-Lang",Master:text,"picture", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"leftpic", X:real,Y:real,W:real,H:real -> false
+theme_box "XL-Lang",Master:text,"rightpic", X:real,Y:real,W:real,H:real -> false
 
-lang -> "fr"
-Fr:text | En:text -> if lang = "en" then En else Fr
-Fr:text . En:text -> if lang = "en" then En else Fr
-language L:text -> lang := L; refresh 0.1
 
-background "XLTalk"                     ->
-    picture_background
+// ============================================================================
+//
+//    Theme definition
+//
+// ============================================================================
+
+theme_slide_width  "XL-Lang" -> 1920
+theme_slide_height "XL-Lang" -> 1080
+
+mouans2018_red1     -> "#8F1000"
+mouans2018_red2     -> "#B21600"
+mouans2018_red3     -> "#CC1B00"
+
+mouans2018_blue1    -> "#10008F"
+mouans2018_green1   -> "#008F10"
+
+widescreen -> window_width * 10 >= window_height * 16
+movie_label_vpos -> if widescreen then 500 else 650
+title_vpos -> if widescreen then 420 else 550
+footer_vpos -> if widescreen then -510 else -660
+
+
+theme_background "XL-Lang", "main" ->
+// ----------------------------------------------------------------------------
+//   Draw voronoise-based shader for main title
+// ----------------------------------------------------------------------------
+    clear_color "#333"
+    background -500,
+        voronoise_kind 2.2
+        voronoise_smooth 0
+        voronoise_shift 1, 3, 6
+        voronoise_color1 0.1, 0.1, 0.2
+        voronoise_color2 0.1, 0.2, 0.4
+        translate_y -120
+        voronoise_shader
+
+
+theme_background "XL-Lang", "section" ->
+// ----------------------------------------------------------------------------
+//   Draw voronoise-based shader for section
+// ----------------------------------------------------------------------------
+    clear_color "#333"
+    background -500,
+        voronoise_kind 0.8
+        voronoise_smooth 0.9
+        voronoise_shift 5, 3, 1
+        voronoise_color1 0.3, 0.3, 0.4
+        voronoise_color2 0.4, 0.4, 0.5
+        translate_y -120
+        voronoise_shader
+
+
+theme_background "XL-Lang", "movie" ->
+// ----------------------------------------------------------------------------
+//   No background for full-screen movies
+// ----------------------------------------------------------------------------
+    false
+
+
+theme_background "XL-Lang", Master ->
+// ----------------------------------------------------------------------------
+//   Background for normal slides
+// ----------------------------------------------------------------------------
+    clear_color "white"
+    background -500,
+        voronoise_kind 1
+        voronoise_smooth 0.5
+        voronoise_shift 2, 1, 3
+        voronoise_color1 0.97, 0.97, 0.97
+        voronoise_color2 0.99, 0.99, 0.99
+        translate_y -120
+        voronoise_shader
     locally
-        translate -700, -480, 500
-        color "red", 20%
-        ellipse_arc 0, 0, 40, 30, 0, 360 * page_number / page_count
+        font "DIN Alternate"
+        translate 0, bottom_offset, -50
+        vertical_align 0.5
+        font_size 30 * min(0.5, min(window_width / slide_width, window_height / slide_height))
+        text_box 0, 0, bottom_width - 30, 50,
+            align 0%
+            if step = 0 then
+                text "Page " & page_number //  & "/" & page_count
+            else
+                text "Page " & page_number & "." & step
+        text_box 0, 0, bottom_width - 2.5 * text_width("Page 99/99"), 50,
+            align 0%
+            text PresentationTitle
+        text_box 0, 0, bottom_width - 30, 50,
+            align 100%
+            text month & "/" & day & "/" & year & " - " & hours & ":" & zero minutes & ":" & zero seconds
+zero N -> if N < 10 then "0" & N else N
+bottom_offset -> (-window_height / 2 + 20)
+bottom_width -> window_width - 100
 
-        if start_time = 0.0 then start_time := time
-        color "green", 20%
-        ellipse_arc 0, 0, 35, 25, 0, 360 * (time - start_time) / (40 * 60)
 
-    if show_logo page_label then
+
+theme_boxstyle "XL-Lang","movie",Style:text->
+// ----------------------------------------------------------------------------
+//   Style for text boxes
+// ----------------------------------------------------------------------------
+    color "black", 60%
+
+
+theme_boxstyle "XL-Lang",Master:text,Style:text->
+// ----------------------------------------------------------------------------
+//   Style for text boxes
+// ----------------------------------------------------------------------------
+    color "black"
+
+
+theme_box "XL-Lang","movie",Style:text, X:real,Y:real,W:real,H:real ->
+// ----------------------------------------------------------------------------
+//   Draw the background box for text and flows in movie slides
+// ----------------------------------------------------------------------------
+    contents 80,
+        theme_boxstyle "XL-Lang", "movie", Style
+        rectangle X, Y, W, H
+
+
+theme_text Theme:text,"movie",Style:text,X:real,Y:real,W:real,H:real,Body ->
+// ----------------------------------------------------------------------------
+//   Draw a default text box
+// ----------------------------------------------------------------------------
+    theme_box Theme, "movie", Style, X, Y, W, H
+    contents 100,
+        text_box X, Y, W, H,
+            theme_style Theme, "movie", Style
+            Body
+
+
+theme_box "XL-Lang",Master:text,Style:text, X:real,Y:real,W:real,H:real ->
+// ----------------------------------------------------------------------------
+//   Draw the background box for text and flows
+// ----------------------------------------------------------------------------
+    false
+
+
+
+// ============================================================================
+//
+//    Layout for the various kind of pages
+//
+// ============================================================================
+
+theme_layout "XL-Lang", "main" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 0, -250, 1200, 200, "title"
+    flow 0, -400, 1200, 300, "subtitle"
+
+
+theme_layout "XL-Lang", "section" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 0, -350, 1400, 250, "title"
+    flow 0, -400, 1400, 150, "subtitle"
+
+
+theme_layout "XL-Lang", "movie" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow   0,  movie_label_vpos, slide_width, 80, "title"
+    flow   0, -movie_label_vpos, slide_width, 80, "subtitle"
+
+
+theme_layout "XL-Lang", "blank" ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flow 0, 0, 1800, 750, "story"
+
+
+theme_layout "XL-Lang", Master:text ->
+// ----------------------------------------------------------------------------
+//    Centered flows
+// ----------------------------------------------------------------------------
+    flows   0,  450, 1800, 220, "title", "subtitle"
+    flow    0,  -80, 1800, 700, "story"
+    flow -475,  -80,  850, 700, "left"
+    flow  475,  -80,  850, 700, "right"
+
+
+presentation_author Body ->
+// ----------------------------------------------------------------------------
+//    Format the presentation author on the main title page
+// ----------------------------------------------------------------------------
+        box 0, -400, 1200, 100,
+            font_size 45
+            render Body
+
+
+
+// ============================================================================
+//
+//    Utilities
+//
+// ============================================================================
+
+current_step -> 1
+
+stepping ->
+// ----------------------------------------------------------------------------
+//   A body where each bullet is at a given step
+// ----------------------------------------------------------------------------
+    compute_smooth_step
+    current_step := 1
+    on "pageentry",
+        skip_directly_to 0
+        highest_step := 0
+
+
+at_current_step ->
+// ----------------------------------------------------------------------------
+//   Show something at the current step
+// ----------------------------------------------------------------------------
+    at_step current_step
+    current_step := current_step + 1
+
+
+only_at N:integer..M:integer, Body ->
+// ----------------------------------------------------------------------------
+//   Show something at step N only
+// ----------------------------------------------------------------------------
+    if smooth_step in N-1..M+1 then
         locally
-            translate 550, -480, 500
-            color "white"
-            image 0, 0, 20%, 20%, "Taodyne_Logo.svg"
-background_stretch "XLTalk"             -> true
-background_color "XLTalk"               -> color_hsv 3*time, 15%,100%,100%
+            show 1.3*fade_between(smooth_step, N, M)
+            Body
 
-show_logo "XL et Taodyne" -> false
-show_logo "La programmation par concepts" -> false
-show_logo "Petite histoire de XL" -> false
-show_logo "Merci" -> false
-show_logo N -> true
+
+only_at N:integer, Body ->
+// ----------------------------------------------------------------------------
+//   Show something at step N only
+// ----------------------------------------------------------------------------
+    if smooth_step in N-1..N+1 then
+        locally
+            show 1.3*fade_between(smooth_step, N, N)
+            Body
+
+
+
+*    Body -> at_current_step; bullet 1, Body
+**   Body -> at_current_step; bullet 2, Body
+***  Body -> at_current_step; bullet 3, Body
+**** Body -> at_current_step; bullet 4, Body
+
+$ -> paragraph " "
+$ Body -> paragraph Body
+
+
+top_left     Body -> box -475,  150, 900, 350, { render Body }
+top_right    Body -> box  475,  150, 900, 350, { render Body }
+bottom_left  Body -> box -475, -250, 900, 350, { render Body }
+bottom_right Body -> box  475, -250, 900, 350, { render Body }
+// ----------------------------------------------------------------------------
+//   Draw a box in the four quadrants
+// ----------------------------------------------------------------------------
+
+
+! Body ->
+// ----------------------------------------------------------------------------
+//   Highlight a given bullet point
+// ----------------------------------------------------------------------------
+    * { color_hsv 32.3 * seconds, 0.4, 1; render Body }
+
+
+highlight       -> "none"
+highlight_start -> "none"
+highlight_end   -> "none"
+highlight S,E,H -> highlight_start := S; highlight_end := E; highlight := H
+highlight S, E  -> highlight S, E, "none"
+highlight H     -> highlight "none", "none", H
+highlighting    -> 0
+
+highlight_show Body -> text_span { color "#00CC99"; render Body }
+
+
+colorize_text T:text ->
+// ----------------------------------------------------------------------------
+//   Highlight or not depending on highlighting state
+// ----------------------------------------------------------------------------
+    if highlighting <> 0 then
+        highlight_show T
+    else
+        text T
+
+
+colorize_highlight T:text ->
+// ----------------------------------------------------------------------------
+//   Highlight names depending on highlight pattern
+// ----------------------------------------------------------------------------
+//   We must use a separate function to save the captured patten,
+//   since it would be overwritten by the regexp_match we do here
+    // writeln "Colorize [", T, "] h=", highlighting
+    if regexp_match(T, highlight) then
+        highlighting := 1
+    else if regexp_match(T, highlight_start) then
+        highlighting := -1
+    else if regexp_match(T, highlight_end) then
+        highlighting := 0
+    if highlighting <> 0 then
+        highlight_show T
+    else
+        text T
+    if highlighting > 0 then
+        highlighting := 0
+
+
+colorize_type Colon:text, Type:text ->
+// ----------------------------------------------------------------------------
+//    Colorize a type annotation
+// ----------------------------------------------------------------------------
+    gray  { colorize_highlight Colon }
+    green { colorize_highlight Type }
+
+
+colorize Input:text ->
+// ----------------------------------------------------------------------------
+//   Render the given input using colorized text
+// ----------------------------------------------------------------------------
+    highlighting := 0
+    regexp_parse_all Input,
+        // Comments
+        - "(//.*\n)|(/[*].*[*]/)" ->
+            red regexp_captured 0
+        // Definition
+        - "([^\n]*)(->|is)" ->
+            italic { ltblue { colorize regexp_captured 1 } }
+            gray regexp_captured 2
+        // Real numbers
+        "[0-9_]+[.][0-9_]+(e[+-]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Real numbers (with base)
+        "[0-9_]+#[0-9_A-Za-z]+[.][0-9_A-Za-z]+(e[+-]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Integer numbers
+        "[0-9_]+(e[+]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Integer numbers (with base)
+        "[0-9_]+#[0-9_A-Za-z]+(e[+]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Text
+        - "([""].*[""])|<<.*>>" ->
+            dpurple regexp_captured 0
+        // Characters
+        - "'.*'" ->
+            purple regexp_captured 0
+        // Type declarations
+        "((:|as)[ ]*)([A-Za-z][A-Za-z0-9_]*)" ->
+            colorize_type regexp_captured 1, regexp_captured 3
+        // Names
+        "[A-Za-z][A-Za-z_0-9]*" ->
+            colorize_highlight regexp_captured 0
+        // Symbols
+        "[^A-Za-z0-9 ""'\n]+" ->
+            navy { colorize_highlight regexp_captured 0 }
+        // Spaces
+        "[ \n]+" ->
+            text regexp_captured 0
+        // Other
+        "." ->
+            text regexp_captured 0
+    refresh 0.1
+    on "pageexit",
+        highlight "none"
+
+
+colorize_file Title:text, File:text ->
+// ----------------------------------------------------------------------------
+//   Colorize from a file
+// ----------------------------------------------------------------------------
+    code_box Title,
+        colorize load_text File
+
+
+colorize_file_at Time, Title:text, File:text ->
+// ----------------------------------------------------------------------------
+//   Colorize at a given time
+// ----------------------------------------------------------------------------
+    only_at Time,
+        colorize_file Title, File
+
+
+red     Body -> text_span { color "#AA0022"; render Body }
+orange  Body -> text_span { color "#DD3311"; render Body }
+yellow  Body -> text_span { color "#EEAA11"; render Body }
+green   Body -> text_span { color "#006633"; render Body }
+ltblue  Body -> text_span { color "#0066CC"; render Body }
+blue    Body -> text_span { color "#003399"; render Body }
+ocean   Body -> text_span { color "#229988"; render Body }
+sky     Body -> text_span { color "#3399FF"; render Body }
+navy    Body -> text_span { color "#002266"; render Body }
+purple  Body -> text_span { color "#CC0099"; render Body }
+dpurple Body -> text_span { color "#990066"; render Body }
+gray    Body -> text_span { color "#777";    render Body }
+code    Body -> text_span { font "Menlo";    blue   Body }
+concept Body -> text_span { font "Amaze";    green  Body }
+// ----------------------------------------------------------------------------
+//   Draw something in red, green or blue
+// ----------------------------------------------------------------------------
+
+
+code_box X:real, Y:real, W:real, H:real, Title, Body ->
+// ----------------------------------------------------------------------------
+//    A text box showing a code example
+// ----------------------------------------------------------------------------
+    background -50,
+        line_color "lightblue", 0.5
+        linear_gradient 128, 0, 128, 256, 256, 256,
+            gradient_color 0%, "lightgray", 80%
+            gradient_color 100%, "white", 0%
+        color "white"
+        rectangle X, Y, W+50, H+50
+    locally
+        frame_texture W, H,
+            text_box 0, 0, W, H,
+                style "boxtitle"
+                anchor
+                    linear_gradient 32, 64, 32, 0, 64, 64,
+                        gradient_color   0%, "#CCF", 70%
+                        gradient_color  10%, "#448",  90%
+                        gradient_color 100%, "#FFF", 0%
+                    color "lightblue"
+                    rectangle 0, -25, 5 * W, 65
+                paragraph Title
+                style "code"
+                render Body
+                vertical_align 10%
+        color "white"
+        rectangle X, Y, W, H
+
+
+code_box Title, Body ->
+// ----------------------------------------------------------------------------
+//    Default location for the code box
+// ----------------------------------------------------------------------------
+    code_box code_x, code_y, code_w, code_h, Title, Body
+
+
+code_x ->   0.0
+code_y ->   0.0
+code_w -> 700.0
+code_h -> 800.0
+code_position X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//    Move the code at the given location
+// ----------------------------------------------------------------------------
+    code_x := X
+    code_y := Y
+    code_w := W
+    code_h := H
+
+
+code_move_default ->
+// ----------------------------------------------------------------------------
+//   Restore to default position
+// ----------------------------------------------------------------------------
+    code_move 0, 0, 700, 800
+
+
+code_move X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//    Move the code box smoothly
+// ----------------------------------------------------------------------------
+    interpolate 15%, X, code_x
+    interpolate 15%, Y, code_y
+    interpolate 15%, W, code_w
+    interpolate 15%, H, code_h
+
+
+code_box_at_step N, Title, Body ->
+// ----------------------------------------------------------------------------
+//   Draw a code box only at given step
+// ----------------------------------------------------------------------------
+    picture
+        only_at N,
+            code_box Title, Body
+
+
+framed Color:text, Body ->
+// ----------------------------------------------------------------------------
+//    Consistent coloring for framed shapes
+// ----------------------------------------------------------------------------
+    locally
+        radial_gradient 128, 85, 160, 256, 256,
+            gradient_color 0%, Color, 20%
+            gradient_color 100%, Color, 50%
+        color "white"
+        Body
+    locally
+        line_color Color, 80%
+        color "tranparent"
+        line_width 3
+        Body
+
+
+framed_box Color:text, X:real, Y:real, W:real, H:real, Body ->
+// ----------------------------------------------------------------------------
+//    A text box showing a code example
+// ----------------------------------------------------------------------------
+    background -50,
+        framed Color, { rectangle X, Y, W, H }
+    locally
+        framed_box_offset -> 20
+        frame_texture W-framed_box_offset, H-framed_box_offset,
+            text_box 0, 0, W-20, H-20,
+                style "story"
+                vertical_align 30%
+                align 50%
+                render Body
+        color "white"
+        rectangle X, Y, W-framed_box_offset, H-framed_box_offset
+
+
+image_box X:real, Y:real, W:real, H:real, Body ->
+// ----------------------------------------------------------------------------
+//    An image box with a cached frame texture
+// ----------------------------------------------------------------------------
+    background -50,
+        line_color "lightblue", 0.5
+        linear_gradient 128, 0, 128, 256, 256, 256,
+            gradient_color 0%, "lightgray", 80%
+            gradient_color 100%, "white", 0%
+        color "white"
+        rectangle X, Y, W+50, H+50
+    locally
+        frame_texture W, H,
+            render Body
+        color "white"
+        rectangle X, Y, W, H
+
+
+ibox X:real, Y:real, W:real, H:real, Body ->
+// ----------------------------------------------------------------------------
+//   A box mostly for text
+// ----------------------------------------------------------------------------
+    image_box X, Y, W, H,
+        text_box 0, 0, W, H,
+            render Body
+
+
+stamp Color, Body ->
+// ----------------------------------------------------------------------------
+//    Display a stamp with the given color
+// ----------------------------------------------------------------------------
+    locally
+        rotate_z 30
+        text_box -80, 250, 400, 80,
+            font "Impact", 90
+            color Color, sin(5 * page_time)^4
+            render Body
+
+
+placed_image_only_at N, X, Y, Size, Name ->
+// ----------------------------------------------------------------------------
+//   Draw an image at the given step
+// ----------------------------------------------------------------------------
+    image_only_at N,
+        image X, Y, Size, Size, Name
+
+
+scaled_image_only_at N, Size, Name ->
+// ----------------------------------------------------------------------------
+//   Draw an image at the given step
+// ----------------------------------------------------------------------------
+    placed_image_only_at N, 0, 0, Size, Name
+
+
+image_only_at N, Body ->
+// ----------------------------------------------------------------------------
+//   Draw an image at the given step
+// ----------------------------------------------------------------------------
+    only_at N,
+        locally
+            color "white"
+            Body
+
+
+full_screen_movie S:real, Name:text ->
+// ----------------------------------------------------------------------------
+//    Display a movie, using full screen if possible
+// ----------------------------------------------------------------------------
+    contents 50,
+        color "black", S
+        rectangle 32000, 32000
+        color "white"
+        movie_texture Name
+        if texture_width > 0 and texture_height > 0 then
+            scale min(real slide_width / texture_width, real slide_height / texture_height)
+            scale 50% + 50 % * S
+            rectangle texture_width, texture_height
+        on "pageexit",
+            movie_drop Name
+        on "key:-",
+            movie_set_time Name, movie_time Name - 10
+        on "key:+",
+            movie_set_time Name, movie_time Name + 10
+        on "key:r",
+            movie_set_time Name, 0
+        on "key:p",
+            full_screen_movie_pause := 1 - full_screen_movie_pause
+            if full_screen_movie_pause = 1 then
+                movie_pause Name
+            else
+                movie_play Name
+
+full_screen_movie_pause -> 1
+
+full_screen_movie Name:text ->
+    full_screen_movie fade_at(smooth_step, 1), Name
+
+
+images N:integer, X, Y ->
+// ----------------------------------------------------------------------------
+//   Display the images in a list one after the other
+// ----------------------------------------------------------------------------
+    images N, X
+    images N+1, Y
+images N:integer, X ->
+    image_only_at N,
+        rotate_z 7 * sin (2 * N)
+        texture X
+        scale min(850.0 / texture_width, 640.0 / texture_height)
+        rectangle texture_width, texture_height
+images List -> images 1, List
+
+
+colored_boxes N:integer, X, Y ->
+// ----------------------------------------------------------------------------
+//   Display the texts in imbricated colored boxes, one after the other
+// ----------------------------------------------------------------------------
+    colored_boxes N+1, Y
+    colored_boxes N, X
+colored_boxes N:integer, X ->
+    locally
+        at_step N
+        locally
+            color_hsv 37 * N, 50%, 50%, 80%
+            line_color_hsv 37 * N, 70%, 80%, 100%
+            line_width 3
+            rectangle 0, 30 * N, 800 + 50 * N, 80 * N
+        text_box 0, 30 * N, 800 + 50 * N, 80 * N,
+            style "story"
+            align 50%
+            vertical_align 0%
+            color "white"
+            render X
+colored_boxes List ->
+    translate_y -200
+    colored_boxes 1, List
+
+
+events N:integer, Label, Rest ->
+// ----------------------------------------------------------------------------
+//   Display the events in a list one after the other
+// ----------------------------------------------------------------------------
+    events N, Label
+    events N+1, Rest
+events N:integer, Label ->
+    events_internal N, Label, 700 * sin(N * pi / 2.15 + 1), 200 * cos(N * pi / 2.15 + 1), mouse_x, mouse_y
+events_internal N:integer, Label:text, X:real, Y:real, MX:real, MY:real ->
+    locally
+        events_label X, Y, Label
+        events_image exp(-0.0001 * ((MX-X)^2 + (MY-Y)^2)), Label
+        events_image S:real, T:text ->
+            if S > 0.1 then
+                locally
+                    translate_z 50
+                    locally
+                        texture T & ".jpg"
+                        scale S * 600.0 / max(texture_width, texture_height, 2)
+                        events_rectangle texture_width, texture_height
+                        events_rectangle W:real, H:real ->
+                            rectangle W, H
+                            texture ""
+                            color "transparent"
+                            line_color "red"
+                            line_width 5
+                            rectangle W, H
+events List -> events 0, List
+events_label X:real, Y:real, Label:text ->
+    translate X, Y, 0
+    locally
+        color "yellow", 20%
+        line_color "black"
+        circle 0, 0, 70
+    text_box 0, 0, 70, 70,
+        align 50%
+        vertical_align 50%
+        font "Arial", 18
+        color "black"
+        text Label
+
+
+math_eq Eq:text ->
+// ----------------------------------------------------------------------------
+//   Small utility to draw an equation
+// ----------------------------------------------------------------------------
+    image "http://latex.codecogs.com/png.latex?\dpi{600}\color{White}" & Eq
+
+
+rotate_step N, Body ->
+// ----------------------------------------------------------------------------
+//   Display something on a carousel
+// ----------------------------------------------------------------------------
+    locally
+        rotate_step_adjust  X:real -> rotate_step_adjust2 30 * X * pi / 180
+        rotate_step_adjust2 X:real ->
+            translate 600 * sin X, 550 - 600 * cos X, 4000 * cos X - 4000
+
+        rotate_step_adjust smooth_step - N
+        at_step N
+        show fade_between(smooth_step, N, N) + 0.3
+        Body
+
+
+youtube_movie Scale:real, File:text, YT:text ->
+// ----------------------------------------------------------------------------
+//   Load a youtube movie locally if cached, otherwise remotely
+// ----------------------------------------------------------------------------
+    youtube_movie_play Scale,
+        if file_exists ("movies/" & File) then
+            "movies/" & File
+        else
+            "https://www.youtube.com/watch?v=" & YT
+
+
+youtube_movie_play Scale:real, URL:text ->
+// ----------------------------------------------------------------------------
+//   Load a youtube movie locally if cached, otherwise remotely
+// ----------------------------------------------------------------------------
+    movie_only URL
+    movie 0, 0, Scale, Scale, URL
+    movie_set_volume URL, 100%
+    on "pageexit",
+        movie_drop URL
+
+
+movie_name -> ""
+movie_timing -> 0
+movie_pause_time -> 1.0e9
+movie_pause_disable -> 0.0
+
+movie_last_time -> 0.0
+movie_held_time Name:text ->
+// ----------------------------------------------------------------------------
+// Workaround for 'movie_time' still counting when movie is paused
+// ----------------------------------------------------------------------------
+//  There is apparently a bug in movie_time in 1.61, where it keeps
+//  counting time even when the movie is on pause.
+//  Work around that bug so that the logic that depends on movie_time works.
+
+    if not movie_paused Name then
+        movie_last_time := movie_time Name
+    movie_last_time
+
+
+movie_slide Title:text, Name:text, Body ->
+// ----------------------------------------------------------------------------
+//   Create a slide containing a full-screen movie
+// ----------------------------------------------------------------------------
+    slide_master theme, "movie", Title,
+        movie_name := Name
+        title page_label
+        stepping
+        Body
+        full_screen_movie 1, Name
+        if movie_pause_time <> movie_pause_disable then
+            if movie_held_time Name >= movie_pause_time then
+                movie_pause Name
+                movie_pause_disable := movie_pause_time
+        if movie_timing = 1 then
+            contents 200,
+                text_box 800, 500, 200, 50,
+                    align 0%
+                    vertical_align 0%
+                    font "Arial", 20
+                    color "yellow"
+                    if movie_paused Name then
+                        color "red"
+                    paragraph "Time=" & (0.1*integer(10*movie_held_time movie_name))
+                    if movie_pause_time = movie_pause_disable then
+                        paragraph "Stopped=" & movie_pause_time
+                    else
+                        paragraph "Pause=" & movie_pause_time
+        on "key:Control-I",
+            movie_timing := 1 - movie_timing
+        on "key:Right",
+            movie_play Name
+            movie_pause_time := 1.0e9
+        on "key:Space",
+            movie_play Name
+            movie_pause_time := 1.0e9
+        on "pageexit",
+            movie_pause_disable := 0.0
+            movie_pause_time := 1.0e9
+movie_slide Title:text, Name:text -> movie_slide Title, Name, false
+
+
+movie_highlight N:real..M:real, X:real, Y:real, W:real, H:real, Body ->
+// ----------------------------------------------------------------------------
+//    Higlight a region of the screen based on current movie time
+// ----------------------------------------------------------------------------
+    if movie_held_time movie_name in N-0.5..M+0.5 then
+        if movie_pause_disable < M then
+            if movie_held_time movie_name in N..M then
+                movie_pause_time := M - 0.5
+        contents 90,
+            show fade_between(movie_held_time movie_name, N+0.5, M-0.5)
+            color "transparent"
+            line_color_hsv 90 + 20 * sin time, 100%, 100%, 90%
+            line_width 5
+            rectangle X, Y, W, H
+
+            color "black", 75%
+            line_width 0
+            rectangle X, Y + H/2 + 500, 4000, 1000
+            rectangle X, Y - H/2 - 500, 4000, 1000
+            rectangle X + W/2 + 1000, Y, 2000, H
+            rectangle X - W/2 - 1000, Y, 2000, H
+            text_box X, Y + H/2 + 50, W-10, 100,
+                align 50%
+                vertical_align 95%
+                font "Arial Rounded MT Bold", 30
+                color "yellow"
+                render Body
+
+
+movie_on_page Text:text ->
+// ----------------------------------------------------------------------------
+//   Play the movie only while we are on the page
+// ----------------------------------------------------------------------------
+    movie_texture Text
+    on "pageexit",
+        movie_drop Text
+
+
+movie_base_volume       -> 1.0
+movie_base_volume V     -> movie_base_volume := V
+
+
+movie_at_step Step, Text:text -> movie_at_step Step, Text, false
+movie_at_step Step, Text:text, Body ->
+// ----------------------------------------------------------------------------
+//   Play the movie only while we are on the page
+// ----------------------------------------------------------------------------
+    only_at Step,
+        movie_texture Text
+        movie_set_volume Text, fade_between(smooth_step, Step, Step) * movie_base_volume
+        Body
+    on "pageentry",
+        movie_base_volume 100%
+    on "pageexit",
+        movie_drop Text
+    on "key:]",
+        movie_set_time movie_time Text + 10
+    on "key:[",
+        movie_set_time movie_time Text - 10
+
+
+
+// ============================================================================
+//
+//    Taodyne colors
+//
+// ============================================================================
 
 // Taodyne logo colors
-red "Tao"                               -> "#AA0022"
-orange "Tao"                            -> "#DD3311"
-yellow "Tao"                            -> "#EEAA11"
-green "Tao"                             -> "#88BB00"
-ocean "Tao"                             -> "#229988"
-sky "Tao"                               -> "#3399FF"
-navy "Tao"                              -> "#003366"
-purple "Tao"                            -> "#CC0099"
-grey "Tao"                              -> "#555"
+tao "red"                               -> "#AA0022"
+tao "orange"                            -> "#DD3311"
+tao "yellow"                            -> "#EEAA11"
+tao "green"                             -> "#006633"
+tao "ocean"                             -> "#229988"
+tao "sky"                               -> "#3399FF"
+tao "navy"                              -> "#003388"
+tao "purple"                            -> "#CC0099"
+tao "grey"                              -> "#555"
 
-// Colors for this theme
-title_color    "XLTalk"                 -> color grey "Tao"
-highlight_color "XLTalk"                -> color orange "Tao"
-story_color    "XLTalk", Level          -> color navy "Tao"
-bullet_color "XLTalk", Level            -> color red "Tao"
 
-// Title information for this theme
-title_layout "XLTalk", Body            -> text_box 0, 460, 1200, 300,  Body
-subtitle_layout "XLTalk", Body         -> text_box 0, -300, 1200, 300, Body
-story_layout "XLTalk", Body            -> text_box 0, 0, 1200, 800,    Body
-left_layout "XLTalk", Body             -> text_box -320, 0, 600, 800,  Body
-right_layout "XLTalk", Body            -> text_box 320, 0, 600, 800,   Body
-code_layout "XLTalk", Body             -> text_box -160, 0, 900, 800,  Body
+// ============================================================================
+//
+//   Timer
+//
+// ============================================================================
 
-title_image Name ->
+TOTAL_DURATION -> 2400 // 40 minutes
+START_TIME     -> 0.0
+
+key "Right" -> skip 1
+key "Space" -> skip 1
+key "Left"  -> skip -1
+seconds_time -> hours * 3600 + minutes * 60 + seconds
+key "Backspace" ->
+    START_TIME := seconds_time
+    goto_page 1
+once
+    START_TIME := seconds_time
+
+disabled
+  locally
+    color "red"
+    translate 0, bottom_offset + 20, -90
+    rectangle bottom_width * (seconds_time - START_TIME) / TOTAL_DURATION, 4
+    if page_count > 0 then
+        color "green"
+        rectangle bottom_width * page_number / page_count, 2
+
+LANG -> "en"
+English fr French -> if LANG="fr" then French else English
+english Body -> if LANG="en" then Body
+french  Body -> if LANG="fr" then Body
+key "f" -> LANG := "fr"; refresh 0
+key "e" -> LANG := "en"; refresh 0
+
+
+// ============================================================================
+//
+//   Virtual laser pointer (activate with "l")
+//
+// ============================================================================
+
+key "l" -> laser := 1 - laser
+key "L" -> show_coordinates := 1 -  show_coordinates
+laser -> 0
+show_coordinates -> 0
+contents 500,
+    if show_coordinates > 0 then
+        text_box mouse_x + 90, mouse_y + 40, 150, 90,
+            color "red", 80%
+            font "Arial", 35, bold
+            paragraph "X=" & integer mouse_x
+            paragraph "Y=" & integer mouse_y
+
+locally
+    translate_z 500
+    color "red", 80% * laser
+    rectangle mouse_x, 0, 1, 10000
+    rectangle 0, mouse_y, 10000, 1
+    circle mouse_x, mouse_y, 3
+    line_color "red", 80% * laser
+    color "red", 10% * laser
+    circle mouse_x, mouse_y, 10
+
+
+// ============================================================================
+//
+//    Shader display
+//
+// ============================================================================
+
+viewpoint_delta_base -> 0.01
+viewpoint_delta -> viewpoint_delta_base * eye_distance
+
+shader_x        -> 0.0
+shader_y        -> 0.0
+shader_scale    -> 1.0
+shader_scale S  -> shader_scale := S
+shader_rscale   -> 1.0
+shader_rrate    -> 60.0
+shader_autoscale-> 0
+
+shader_show File, Arguments ->
 // ----------------------------------------------------------------------------
-//   Draw an image next to the title
+//   Display a shader with the given file name
 // ----------------------------------------------------------------------------
-    locally
-        translate 550, 350, 200
-        rotatez -5
-        scale 60%, 60%, 60%
+  locally
+    if page_time < 0.1 then shader_speed 1
+    shader_rscale := shader_scale / sqrt(stereo_viewpoints)
+    WIDTH  := window_width  * shader_rscale
+    HEIGHT := window_height * shader_rscale
+    color "white"
+    shader_x := mouse_x
+    shader_y := mouse_y
 
-        color "black", 5%
-        shadow N:integer -> rounded_rectangle N*4, -N*4, 584, 512, 10
-        shadow with 1..5
+    if shader_autoscale > 0 then
+        nonzero 0.0 -> 1e5
+        nonzero X -> X
+        shader_rrate := 0.95 * shader_rrate + 0.05 / nonzero refresh_time
+        if shader_rrate < 15 then
+            shader_scale := shader_scale * 0.99
+        else if shader_rrate >= 20 and shader_scale < 1 then
+            shader_scale := shader_scale * 1.001
 
-        color "white"
-        texture Name
-        rectangle 0, 0, 584, 512
-
-title_font "XLTalk" ->
-    font "DejaVu Sans", 85
-    title_color theme
-    align 0.5
-    vertical_align 0.5
-
-story_font "XLTalk" ->
-    font "Gentium Plus", 45
-    story_color theme, 0
-    align 0.0
-    vertical_align 0.3
-
-highlight_font "XLTalk" ->
-    font "Tangerine", 85
-    highlight_color theme
-    align 0.9
-    vertical_align 0.3
-
-bullet_size "XLTalk", Level:integer -> 80 * exp((1 - Level) * 0.35)
-bullet_font "XLTalk", Level:integer ->
-    font "Gentium Plus"
-    font_size bullet_size (theme, Level)
-    story_color theme, Level
-
-bullet_picture "XLTalk", Level:integer ->
-    color yellow "Tao"
-    line_color orange "Tao"
-    draw S:real -> circle -50% * S, 30% * S, 15% * S
-    draw bullet_size (theme, Level)
-
-italic T:text ->
-    font "Gentium Plus", italic
-    text T
-    font "Gentium Plus"
-
-code_font T:text ->
-    font "Menlo", 42
-    color "darkgreen"
-    text T
-    bullet_font theme, 2
+    for I in 0..stereo_viewpoints-1 loop
+        stereo_viewpoints 2^I,
+            frame_texture WIDTH, HEIGHT,
+                clear_color 0, 0, 0, 1
+                shader_program
+                    fragment_shader_file File
+                Arguments
+                shader_set iViewpoint := I * viewpoint_delta
+                color "white"
+                rectangle WIDTH, HEIGHT
+            color "white"
+            rectangle 0, 120, slide_width, slide_height
 
 
-stars_background ->
-// ----------------------------------------------------------------------------
-//   Scaled stars background
-// ----------------------------------------------------------------------------
-    locally
-        color 70%, 70%, 70%, 1
-        texture "Stars.jpg"
-        translate 0, 0, -3000
-        rotatey 0.01 * time + 90
-        scale 1, -1, 1
+    if shader_autoscale > 0 then
+        contents 0,
+            color "darkgreen", 0.5
+            ellipse_sector -800, -400, 180, 180, 180, -180 * shader_scale
+            color "darkred", 0.5
+            ellipse_sector -800, -400, 200, 200, 180, -180 * shader_rrate / 60
+    on "key:r",
+        shader_scale := 1.0
+    on "key:a",
+        shader_autoscale := 1 - shader_autoscale
+
+
+shader_speed       -> 1.0
+shader_speed S     -> shader_speed := S
+shader_resolution  -> shader_set iResolution := WIDTH, HEIGHT, 1
+shader_time        -> shader_set iGlobalTime := page_time * shader_speed
+shader_gtime       -> shader_set iGlobalTime := (time+7200) mod 86400 * shader_speed
+shader_atime       -> shader_set iGlobalTime := time mod 813 * shader_speed
+shader_htime       -> shader_set iGlobalTime := time mod 997 * shader_speed
+shader_mouse       -> shader_set iMouse := shader_x+slide_width/2, shader_y+slide_height/2, mouse_buttons and 1, mouse_buttons and 2
+shader_depth X:real -> viewpoint_delta_base := 0.01 * X
+shader_channel 0,T -> shader_chantex 0, T; shader_set iChannel0 := 0
+shader_channel 1,T -> shader_chantex 1, T; shader_set iChannel1 := 1
+shader_channel 2,T -> shader_chantex 2, T; shader_set iChannel2 := 2
+shader_channel 3,T -> shader_chantex 3, T; shader_set iChannel3 := 3
+shader_chanres 0 ->
+    shader_set iChannelResolution0 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 1 ->
+    shader_set iChannelResolution1 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 2 ->
+    shader_set iChannelResolution2 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chanres 3 ->
+    shader_set iChannelResolution3 := 1.0/texture_width, 1.0/texture_height, 1
+shader_chantex N,T ->
+    texture_unit N
+    if T contains ".mp4" or T contains "youtube" then
+        movie_texture T
+        on "pageexit",
+            movie_drop T
         texture_wrap true, true
-        texture_transform
-            scale 15, 15, 15
-        sphere 0, 0, 0, 25000
+    else if T contains "#" then
+        cube_map 512,
+            cube_map_flip false, false
+            cube_map_face 0, text_replace(T, "#", "1")
+            cube_map_face 1, text_replace(T, "#", "2")
+            cube_map_face 2, text_replace(T, "#", "3")
+            cube_map_face 3, text_replace(T, "#", "4")
+            cube_map_face 4, text_replace(T, "#", "5")
+            cube_map_face 5, text_replace(T, "#", "6")
+    else if T contains "cross" then
+        cube_map_cross T
+    else
+        texture T
+        texture_wrap true, true
+shader_date     -> shader_set iDate := year, month, day, time mod 86400
 
 
-separator -> paragraph_break; text " "
 
-zero N:integer -> if N < 10  then "0" & text N else text N
+// ============================================================================
+//
+//    Display artist information
+//
+// ============================================================================
 
-import "theme-common.xl"
+description T ->
+// ----------------------------------------------------------------------------
+//   Display information about the artist
+// ----------------------------------------------------------------------------
+    locally
+        show fade_out_at(page_time, 5)
+        texture ""
+        translate 0, -100, 200
+        rotate_y -30
+        light 0
+        light_position 100, 100, 1000
+        text_box 0, 0, 1600, 200,
+            style "story"
+            font "Cherry Cream Soda", bold, 60
+            extrude_depth 25
+            align 1
+            vertical_align 1
+            text T
+    locally
+        show_news -> 0
+        if show_news > 0 then
+            rtn_newsfeed
+        on "key:i",
+            show_news := 1 - show_news
+
+artist T -> description T
+
+
+
+// ============================================================================
+//
+//    Per-display size adjustments
+//
+// ============================================================================
+
+WIDTH -> 1920.0
+HEIGHT -> 1080.0
+
+adjust_width "alioscopy" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "united_entertain" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_ml" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_mv" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "tridelity_mp" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_height*0.4
+adjust_width "hsplit" ->
+    WIDTH := window_width*0.2
+    HEIGHT := window_width*0.4
+adjust_width "vsplit" ->
+    WIDTH := window_width*0.4
+    HEIGHT := window_width*0.2
+adjust_width Other ->
+    WIDTH := window_width
+    HEIGHT := window_height
+
+
+// ============================================================================
+//
+//   Voronoise setup
+//
+// ============================================================================
+
+ShaderKind      -> 0.0
+ShaderSmooth    -> 0.0
+ShaderRed1      -> 0.0
+ShaderGreen1    -> 0.0
+ShaderBlue1     -> 0.0
+ShaderRed2      -> 0.0
+ShaderGreen2    -> 0.0
+ShaderBlue2     -> 0.0
+ShaderRedS      -> 0.0
+ShaderGreenS    -> 0.0
+ShaderBlueS     -> 0.0
+
+voronoise_shift R, G, B ->
+    interpolate 4%, R, ShaderRedS
+    interpolate 6%, G, ShaderGreenS
+    interpolate 8%, B, ShaderBlueS
+
+voronoise_color1 R, G, B ->
+    interpolate 4.2%, R, ShaderRed1
+    interpolate 6.3%, G, ShaderGreen1
+    interpolate 8.5%, B, ShaderBlue1
+
+voronoise_color2 R, G, B ->
+    interpolate 5.1%, R, ShaderRed2
+    interpolate 7.11%, G, ShaderGreen2
+    interpolate 9.111%, B, ShaderBlue2
+
+voronoise_kind Kind ->
+    interpolate 3.66342%, Kind, ShaderKind
+
+voronoise_smooth Smooth ->
+    interpolate 3.323123%, Smooth, ShaderSmooth
+
+voronoise_shader ->
+    shader_show "voronoise.fs",
+        shader_resolution
+        shader_speed 5%
+        shader_atime
+        shader_depth 100%
+        shader_set iKind := ShaderKind
+        shader_set iSmooth := ShaderSmooth
+        shader_set iColor1 := ShaderRed1, ShaderGreen1, ShaderBlue1
+        shader_set iColor2 := ShaderRed2, ShaderGreen2, ShaderBlue2
+        shader_set iShift  := ShaderRedS, ShaderGreenS, ShaderBlueS
+
+
+
+// ============================================================================
+//
+//   Mouans 2019-specific features
+//
+// ============================================================================
+
+milestone Era, Title, Body ->
+// ----------------------------------------------------------------------------
+//   Create a slide with three pictures and a year
+// ----------------------------------------------------------------------------
+    base_slide Title,
+        title Title
+        stepping
+        era Era
+        Body
+        at_step 6
+
+art             Img, Info -> milestone_picture  0, Img, Info
+science         Img, Info -> milestone_picture  1, Img, Info
+pensee          Img, Info -> milestone_picture  2, Img, Info
+
+art_m           Img, Info -> milestone_movie  0, Img, Info
+science_m       Img, Info -> milestone_movie  1, Img, Info
+pensee_m        Img, Info -> milestone_movie  2, Img, Info
+
+
+milestone_picture N, Img, Info -> milestone_animation N, Img, Info,
+    texture Img & ".jpg"
+milestone_movie   N, Img, Info -> milestone_animation N, Img, Info,
+    movie_texture "movie/" & Img & ".mp4"
+
+milestone_animation N, Img, Info, Body ->
+// ----------------------------------------------------------------------------
+//   Draw one of the three pictures
+// ----------------------------------------------------------------------------
+    picture
+        Body
+        adjust_milestone N, fade_between(smooth_step, milestone_N N, milestone_N N)
+
+        adjust_milestone N:integer, S:real ->
+            extrude_depth 20
+            light 0
+            light_position -200 * (N-1) * (1-S), 0, 100
+
+            translate_x (N * 640 - 640) * (1-S)
+            translate_y 40 * S
+            translate_z 50 - 250 * (1-S)
+            scale 1.0 + 0% * S
+            rotate_y -40*(N-1) * (1-S)
+            texture_transform
+                adjust_milestone_scale N, 1640 + 280 * S, (820 + 260 * S), texture_width, texture_height
+                adjust_milestone_scale N:integer, IX:real, IY:real, TX:real, TY:real ->
+                    if IX * TY > IY * TX then
+                        translate_y (0.5 + 0.5 * sin(time*0.12+N)) * (1 - (IY * TX) / (IX * TY))
+                        scale_y IY * TX / (IX * TY)
+                    else
+                        translate_x (0.5 + 0.5 * sin(time*0.08+N)) * (1 - (IX * TY) / (IY * TX))
+                        scale_x IX * TY / (IY * TX)
+            rounded_rectangle 0, 80, 1640 + 280 * S, 820 + 260 * S, 30
+
+    picture
+        adjust_milestone_info N, Img, Info, fade_between(smooth_step, milestone_N N, milestone_N N)
+        adjust_milestone_info N:integer, Img:text, Info:text, S:real ->
+            if S > 0.1 then
+                translate_z 120 - 250 * (1-S)
+                show S^5
+                locally
+                    color "#DDE", 85%
+                    line_color "black", 60%
+                    line_width 2
+                    rectangle 0, 505, 2000, 100*S
+                    rectangle 0, -320, 2000, 100*S
+                translate_z 50
+                text_box 0, 500, 1600, 100,
+                    style "title"
+                    vertical_align 50%
+                    align 90%
+                    scale S
+                    text Img
+                text_box 0, -315, 1600, 100,
+                    style "subtitle"
+                    vertical_align 50%
+                    align 10%
+                    scale S
+                    text Info
+
+
+milestone_N 0 -> 3
+milestone_N 1 -> 1
+milestone_N 2 -> 5
+
+
+era Era ->
+// ----------------------------------------------------------------------------
+//   Draw which era we are in
+// ----------------------------------------------------------------------------
+    picture
+        extrude_depth 20
+        light 0
+        light_position -50, 0, 100
+        translate 740, 750, -120
+        rotate_y -45
+        text_box 0, 0, 420, 200,
+            align 50%
+            vertical_align 50%
+            font "Impact", 70
+            color tao "green"
+            render Era
+
+
+memory Bits ->
+// ----------------------------------------------------------------------------
+//   Display a representation for the memory of old computers
+// ----------------------------------------------------------------------------
+    only_at 1,
+        picture
+            translate_z 50
+            locally
+                color "white", 50%
+                line_color "blue", 80%
+                line_width 3
+                rectangle 0, 120, 1280, 640
+            locally
+                color "red"
+                rectangle 0, 120, 2*sqrt(Bits/64), sqrt(Bits/64)
+
+
+frequency Freq, Calc ->
+// ----------------------------------------------------------------------------
+//   Display a representation for the frequency of old computers
+// ----------------------------------------------------------------------------
+    only_at 1,
+        picture
+            translate_z 50
+            text_box 0, 120, 1260, 620,
+                style "code"
+                align 0%
+                vertical_align 0%
+                text "Cycles: " & frequency_convert(page_time * Freq)
+                line_break
+                text "Opérations: " & frequency_convert(page_time * Calc)
+
+
+frequency_convert N:real ->
+// ----------------------------------------------------------------------------
+//   Convert the frequency to the correct format
+// ----------------------------------------------------------------------------
+    if N > 1e9 then
+        "" & (integer(N*1e-8) * 0.1) & "G"
+    else if N > 1e6 then
+        "" & (integer(N*1e-5) * 0.1) & "M"
+    else if N > 1e3 then
+        "" & (integer(N*1e-2) * 0.1) & "K"
+    else
+        "" & integer N
+
+
+power Power, Weight, Price ->
+// ----------------------------------------------------------------------------
+//   Display a representation for the power usage of old computers
+// ----------------------------------------------------------------------------
+    only_at 1,
+        picture
+            translate_z 50
+            text_box 0, 120, 1260, 620,
+                style "code"
+                align 100%
+                vertical_align 0%
+                paragraph
+                    text "Énergie: " & (Power * 0.01) & "   "
+                    anchor
+                        color "white"
+                        image -50, 20, 40%, 40%, "Light-Bulb.png"
+                paragraph { text "Poids: "; render Weight }
+                paragraph { text "Coût: "; render Price }
+
+
+notes Notes ->
+// ----------------------------------------------------------------------------
+//   Display notes associated with a given old computer
+// ----------------------------------------------------------------------------
+    only_at 1,
+        picture
+            translate_z 50
+            text_box 0, 120, 1260, 620,
+                style "body"
+                align 0%
+                vertical_align 100%
+                render Notes
+
+
+comparison_convert N:real ->
+// ----------------------------------------------------------------------------
+//   Convert the frequency to the correct format
+// ----------------------------------------------------------------------------
+    if N > 1e9 then
+        "" & (integer(10.0*N/(1024.0*1024.0*1024.0)) * 0.1) & "G"
+    else if N > 1e6 then
+        "" & (integer(10.0*N/(1024.0*1024.0)) * 0.1) & "M"
+    else if N > 1e3 then
+        "" & (integer(10.0*N/1024.0) * 0.1) & "K"
+    else
+        "" & integer N
+
+
+comparison_title Title, Cray2, iPhone ->
+// ----------------------------------------------------------------------------
+//   Draw a comparison map between Cray2 and iPhone
+// ----------------------------------------------------------------------------
+    locally
+        text_box -600, 0, 500, 50,
+            style "subtitle"
+            color tao "navy"
+            align 100%
+            render Title
+        text_box  -200, 0, 500, 50,
+            style "subtitle"
+            color tao "red"
+            render Cray2
+        text_box  600, 0, 500, 50,
+            style "subtitle"
+            color tao "green"
+            render iPhone
+    translate_y -70
+
+
+comparison_k Title, Cray2, iPhone ->
+// ----------------------------------------------------------------------------
+//   Draw a comparison map between Cray2 and iPhone
+// ----------------------------------------------------------------------------
+    locally
+        text_box -600, 0, 500, 50,
+            style "subtitle"
+            color tao "navy"
+            align 100%
+            render Title
+        text_box  -200, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render comparison_convert Cray2
+        color tao "red"
+        rectangle 200, 10, 400 * Cray2 / (Cray2 + iPhone), 20
+        color tao "green"
+        rectangle 200, -10, 400 * iPhone / (Cray2 + iPhone), 20
+        text_box  600, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render comparison_convert iPhone
+    translate_y -70
+
+
+comparison_si Title, Cray2, iPhone ->
+// ----------------------------------------------------------------------------
+//   Draw a comparison map between Cray2 and iPhone
+// ----------------------------------------------------------------------------
+    locally
+        text_box -600, 0, 500, 50,
+            style "subtitle"
+            color tao "navy"
+            align 100%
+            render Title
+        text_box  -200, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render frequency_convert Cray2
+        color tao "red"
+        rectangle 200, 10, 400 * Cray2 / (Cray2 + iPhone), 20
+        color tao "green"
+        rectangle 200, -10, 400 * iPhone / (Cray2 + iPhone), 20
+        text_box  600, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render frequency_convert iPhone
+    translate_y -70
+
+
+comparison_txt Title, Cray2, iPhone ->
+// ----------------------------------------------------------------------------
+//   Draw a comparison map between Cray2 and iPhone
+// ----------------------------------------------------------------------------
+    locally
+        text_box -600, 0, 500, 50,
+            style "subtitle"
+            color tao "navy"
+            align 100%
+            render Title
+        text_box  -200, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render Cray2
+        text_box  600, 0, 500, 50,
+            style "subtitle"
+            color "black"
+            render iPhone
+    translate_y -70
+
+
+
+// ============================================================================
+//
+//   Specific to Alpha-Waves
+//
+// ============================================================================
+
+adjust_picture X:real, Y:real, Base:real, Scale:real, MS:real, Image:text ->
+    adjust_picture_at 0, X, Y, Base, Scale, MS, Image
+
+adjust_picture_at DX:real, X:real, Y:real, Base:real, Scale:real, MS:real, Image:text ->
+    locally
+        translate DX, 80, 0
+        adjust_picture_int X-DX, Y-130, Base, Scale, MS
+        image 0, 0, 1, 1, Image
+
+adjust_picture_int X:real, Y:real, Base:real, Scale:real, MouseScale:real ->
+    translate_z 100 * exp(-0.0000123 * X^2)
+    scale Base + Scale * exp(-0.0000123 * X^2)
+    translate_y -Y * MouseScale * exp(-0.0000123 * X^2)
+
+
+
+// ============================================================================
+//
+//    XL specific formats
+//
+// ============================================================================
+
+body_slide Title, Body ->
+// ----------------------------------------------------------------------------
+//   Default for XL slides
+// ----------------------------------------------------------------------------
+    base_slide Title,
+        title page_label
+        stepping
+        Body
+
+
+
+// ============================================================================
+//
+//   Diagramming
+//
+// ============================================================================
+
+soft_box X:real, Y:real, Color:text, Body ->
+// ----------------------------------------------------------------------------
+//   Soft box with preset width and height
+// ----------------------------------------------------------------------------
+    soft_box X, Y, 400, 200, Color, Body
+
+
+soft_box X:real, Y:real, W:real, H:real, Color:text, Body ->
+// ----------------------------------------------------------------------------
+//   Draw a software box
+// ----------------------------------------------------------------------------
+    color Color
+    rounded_rectangle X, Y, W, H, 40
+    text_box X, Y, W-5, H-5,
+        style "caption-white"
+        render Body
+
+
+anim_step               -> 0
+anim_step_selected      -> 0.0
+anim_step Step:integer  ->
+// ----------------------------------------------------------------------------
+//   Change the animation step
+// ----------------------------------------------------------------------------
+    if Step <> anim_step then
+        anim_step := Step
+        refresh 0.1
+
+anim X:real -> X
+anim X:real, Values ->
+// ----------------------------------------------------------------------------
+//    Compute animated value
+// ----------------------------------------------------------------------------
+    anim_step_selected := X
+    anim_select X, Values
+    if X in anim_step_selected-0.1..anim_step_selected+0.1 then
+        X := anim_step_selected
+    else
+        interpolate 10%, anim_step_selected, X
+    X + 0.0
+
+
+anim_select X:real, S:integer = TX:real ->
+// ----------------------------------------------------------------------------
+//   Compute an animated value that sets X to TX at step S
+// ----------------------------------------------------------------------------
+    if anim_step >= S then
+        anim_step_selected := TX
+    X + 0.0
+
+
+anim_select X:real, S:integer = TX:real, Rest ->
+// ----------------------------------------------------------------------------
+//   Compute animated value in a list
+// ----------------------------------------------------------------------------
+    anim_select X, S = TX
+    anim_select X, Rest
+
+
+check_refresh ->
+// ----------------------------------------------------------------------------
+//   Check if we have overly-eager refresh
+// ----------------------------------------------------------------------------
+    counter -> 0
+    writeln "Refresh ", counter, " step=", smooth_step
+    counter := counter + 1
+
+
+
+// ============================================================================
+//
+//    Parse tree generation
+//
+// ============================================================================
+
+tao_dx  -> 40
+tao_dy  -> -60
+tao_w   -> 200
+tao_h   -> 50
+tao_px  -> 0
+tao_py  -> 0
+
+
+tao_integer N:integer ->
+// ----------------------------------------------------------------------------
+//   Draw an integer node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "red", N
+
+
+tao_real R:real ->
+// ----------------------------------------------------------------------------
+//   Draw a real node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "orange", R
+
+
+tao_text T:text ->
+// ----------------------------------------------------------------------------
+//   Draw a text node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "yellow", T
+
+
+tao_name N:text ->
+// ----------------------------------------------------------------------------
+//   Draw a name node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "green", N
+
+
+tao_infix Name:text, Body ->
+// ----------------------------------------------------------------------------
+//   Infix node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "ocean", Name
+    translate tao_dx, tao_dy, 0
+    Body
+    translate -tao_dx, 0, 0
+
+
+tao_prefix Body ->
+// ----------------------------------------------------------------------------
+//   Prefix node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "sky", "Prefix"
+    translate tao_dx, tao_dy, 0
+    Body
+    translate -tao_dx, 0, 0
+
+
+tao_postfix Body ->
+// ----------------------------------------------------------------------------
+//   Postfix node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "navy", "Postfix"
+    translate tao_dx, tao_dy, 0
+    Body
+    translate -tao_dx, 0, 0
+
+
+tao_block Name:text, Body ->
+// ----------------------------------------------------------------------------
+//   Block node
+// ----------------------------------------------------------------------------
+    soft_box 0, 0, tao_w, tao_h, tao "purple", Name
+    translate tao_dx, tao_dy, 0
+    Body
+    translate -tao_dx, 0, 0
+
+
+tao_left Body ->
+// ----------------------------------------------------------------------------
+//   Draw the left node
+// ----------------------------------------------------------------------------
+    text_box 0, 0, tao_w, tao_h,
+        color "#559"
+        text "Left"
+    Body
+    translate 0, tao_dy, 0
+
+
+tao_right Body ->
+// ----------------------------------------------------------------------------
+//   Draw the right node
+// ----------------------------------------------------------------------------
+    text_box 0, 0, tao_w, tao_h,
+        color "#595"
+        text "Left"
+    Body

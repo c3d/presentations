@@ -1,0 +1,7 @@
+// Use a module
+use XL.CONSOLE.TEXT_IO
+write "Hello world"
+
+// Use a module with a short name
+use IO = XL.CONSOLE.TEXT_IO
+IO.write "Hello world"
