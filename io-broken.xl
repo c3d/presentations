@@ -1,0 +1,17 @@
+// C: Not type safe
+printf("The answer must be %d\n", 42.42);
+
+// C++: Many function calls, can't be made thread safe
+std::cout << "The answer must be " << 42 << '\n';
+
+// Haskell: needs "show". monads
+main = putStrLn ("The answer must be " ++ show 42)
+
+// Ada: super-verbose, no variadics
+Text_IO.put("The answer must be ");
+Text_IO.put(42, 1);
+Text_IO.new_line;
+
+// Basic, Pascal: Can't define anything similar
+MYPRINT "The answer must be "; 42
+MyWriteLn ('The answer must be ', 42)

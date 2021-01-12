@@ -1,0 +1,9 @@
+// Adding "write" for a complex
+write Z:complex is { write "(", Z.Re, ", ", Z.Im, ")" }
+
+// Still completely type safe
+type unprintable is matching unprintable(X)
+write U:unprintable is compile_error "Cannot print that!"
+
+// Type error on the following code
+print "Not a printable: ", unprintable("A")

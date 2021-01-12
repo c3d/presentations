@@ -1,0 +1,16 @@
+// Basic "real" numbers
+42.42
+
+// Separators
+1_000.003_242
+
+// Scientific form
+1.0e42
+4E-5
+
+// Not really real numbers
+pi is 3.141_159_265_358_979_323
+pi ≠ 4 * atan 1
+
+// Classical example of semantic noise
+1.0 - 1.0 + 1e-60 ≠ 1.0 + 1e-60 - 1.0

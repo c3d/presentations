@@ -1,0 +1,16 @@
+// A function is just a prefix form
+write X, Y is
+    write X
+    write Y
+write C:character is C putchar
+write T:text is
+    for C in T loop
+        write C
+
+// A single argument can hide many
+print Items is
+    write Items
+    write C_style_escapes "\n"
+
+// Follow what happens here
+print "Hello", ' ', "World"

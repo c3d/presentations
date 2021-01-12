@@ -1,0 +1,24 @@
+% xl -nobuiltins -parse slide.xl -style debug -show
+(prefix
+ body_slide
+ (infix,
+  "Is XL Declarative?"
+  (block indent
+   (infix CR
+    (prefix
+     subtitle
+     "The self-presenting programming language"
+    )
+    (infix CR
+     (prefix
+      story
+      (block indent
+       (infix CR
+        (prefix
+         *
+         "Tao3D, an XL derivative"
+        )
+        (infix CR
+         (prefix
+          *
+          "Homoiconic"

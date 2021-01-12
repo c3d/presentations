@@ -1,0 +1,19 @@
+exp         Z:cartesian     as polar
+ln          Z:polar         as cartesian when Z.Arg ≠ 0
+
+Z:cartesian ^ N:natural     as cartesian
+X:polar     ^ Y:cartesian   as polar
+
+sin         Z:cartesian     as polar
+cos         Z:cartesian     as polar
+tan         Z:cartesian     as polar
+arcsin      Z:polar         as cartesian
+arccos      Z:polar         as cartesian
+arctan      Z:polar         as cartesian
+
+sinh        Z:cartesian     as polar
+cosh        Z:cartesian     as polar
+tanh        Z:cartesian     as polar
+arcsinh     Z:polar         as cartesian
+arccosh     Z:polar         as cartesian
+arctanh     Z:polar         as cartesian

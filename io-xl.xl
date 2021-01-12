@@ -1,0 +1,11 @@
+// Writing an element
+write C:character is C putchar
+write T:text is { for C in T loop write C }
+write I:integer is ...
+
+// Writing a list
+write Head, Tail is { write Head; write Tail }
+
+// Print a line
+print is write C_format "\n"
+print Items is { write Items; print }

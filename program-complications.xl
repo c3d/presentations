@@ -1,0 +1,5 @@
+// Infinite recursion at compile time?
+bad [[bad 1]] is 1
+
+// Is it really worse than runtime?
+factorial N is N * factorial(N-1)

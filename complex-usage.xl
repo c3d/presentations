@@ -1,0 +1,9 @@
+// Creating a complex number
+X is 5+2i
+Y is 2*exp(3i)
+
+// Performing computations
+R is (sin X - cos Y) / (X^2+Y^2)
+
+// Print the result
+print "R=", R

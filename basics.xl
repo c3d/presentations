@@ -1,0 +1,13 @@
+// Fundamental operations, e.g. arithmetic
+X:integer + Y:integer as integer is builtin Add
+
+// Fundamental types
+type natural is builtin u64
+type integer is natural or matching(-N:natural)
+
+// Basic programming constructs
+if [[true]]  then Body  is Body
+if [[false]] then Body  is false
+
+// Foreign library routines
+write C:character is C putchar

@@ -1,0 +1,11 @@
+// Natural number
+42
+
+// Prefix with "minus" ("-") on the left
+-42
+
+// Separators for convenience
+1_000_000
+
+// Scientific form with (positive) exponents
+1e6

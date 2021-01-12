@@ -1,0 +1,15 @@
+// Fibonacci function
+fib N is fib(N-1) + fib(N-2)
+
+// Loop definition
+loop Body is Body; loop Body
+
+// CONTRADICTIONS - ERROR RISK
+fib((N-1) + fib(N-2))
+(loop Body is Body); loop Body
+
+// Require explicit parentheses for expressions?
+fib N is (fib(N-1) + fib(N-2))
+
+// Require explicit block for statements?
+loop Body is { Body; loop Body }

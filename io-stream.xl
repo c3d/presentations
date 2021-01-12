@@ -1,0 +1,17 @@
+// Representation of C file descriptors
+type stream is matching stream(fd:integer)
+
+// Add stream-switching
+write S:stream, Items is
+    saved is POSIX.dup(1)
+    POSIX.dup2(S.fd, 1)
+    write Items
+    POSIX.dup2(saved, 1)
+
+// Same with print
+print S:stream, Items is write S, Items, C_format "\n"
+print S:stream is write S, C_format "\n"
+
+// Usage
+stderr is stream(2)
+print stderr, "The answer must be ", 42

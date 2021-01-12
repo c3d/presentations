@@ -1,0 +1,11 @@
+// An interesting case
+write sin X, cos Y
+
+// Passing arguments
+prefix Arg1, Arg2
+
+// Precedence of , is above prefix
+prefix(Arg1, Arg2)
+
+// Precedence for first statement
+write(sin(X,cos(X))

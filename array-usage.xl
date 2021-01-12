@@ -1,0 +1,6 @@
+// Creating an array
+A is array(1,2,3,4,5)
+B : array[8] of real
+
+// Printing an array (uses 'write' below)
+print "A=", A, " and B=", B

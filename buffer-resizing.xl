@@ -1,0 +1,14 @@
+// The following does not pass type checks
+to Resize (P:inout packet, S:natural) is
+    P.Size := S
+
+// Case where you don't change the size
+to Resize(P:inout packet, S:natural) when S = P.Size is
+    nil
+
+// Case when you change the size
+to Resize(P:inout packet, S:natural) is
+    Payload : array[S] of byte
+    for I in 1..min(S, P.Size) loop
+        Payload[I] := P.Payload[I]
+    P := packet(S, Payload)

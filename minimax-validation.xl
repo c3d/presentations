@@ -1,0 +1,13 @@
+// The previous definition allows:
+Z is complex(1.0, 2.0)
+M is min Z
+
+// Require a less than
+type ordered is matching X when
+    Y : ordered
+    X < Y ∈ boolean
+
+// In XL2, based on "compilability"
+generic type ordered where
+    A, B : ordered
+    Test : boolean := A < B

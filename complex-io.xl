@@ -1,0 +1,9 @@
+// Step 1: Writing a complex in cartesian form
+write Z:cartesian is
+    write "cartesian(", Z.Re, ", ", Z.Im, ")"
+
+// Step 2: Write a complex in polar form
+write Z:polar is
+    write "polar(", Z.Mod, ", ", Z.Arg, ")"
+
+// Step 3: There no step 3

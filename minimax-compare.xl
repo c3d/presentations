@@ -1,0 +1,12 @@
+// Should this be "Blé" or "Blue"?
+min("Blé", "Dur", "Blue", "Car")
+
+// What if we want multiple comparisons?
+min[comparison] Items is
+    X < Y is comparison(X,Y)
+    min Items
+
+// Usage
+min[X,Y is X>Y] ("ABC", "DEF")           // "DEF"
+min("Blé", "Dur", "Blue", "Car")         // "Blue"
+min[french]("Blé", "Dur", "Blue", "Car") // "Blé"

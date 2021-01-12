@@ -1,0 +1,17 @@
+// A type that exists in two forms
+type complex is cartesian or polar
+
+// Cartesian representation
+type cartesian is matching cartesian(Re:real, Im:real)
+
+// Polar representation
+type polar is matching polar(Mod:real, Arg:angle)
+
+// Implicit conversions
+Z:polar         as cartesian
+Z:cartesian     as polar
+
+// Notations for convenience
+i is cartesian(0, 1)
+Re:real + Im:real [[i]] is cartesian(Re, Im)
+Mod:real * exp(Arg:real[[i]]) is polar(Mod, Arg)

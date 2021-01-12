@@ -1,0 +1,17 @@
+// Definition with two cases
+min X, Y is
+    minX is min X
+    minY is min Y
+    if minX < minY then minX else minY
+min X is X
+
+// Works for arbitrary types
+min 1, 2
+min "ABC", "DEF"
+
+// Works for arbitrary number of elements
+min 1, 2, 3, 4
+
+// Works for lists
+List is 1,2,3,4
+min List, 0, List

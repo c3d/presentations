@@ -1,0 +1,6 @@
+text month & "/" & day & "/" & year & " - " &
+     hours & ":" & zero minutes & ":" & zero seconds
+
+
+color_hsv 20*time, 70%, 70%, 30%
+circle mouse_x, mouse_y, 100 + 40 * sin(8*time)

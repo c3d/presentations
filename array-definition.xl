@@ -1,0 +1,7 @@
+// Interface for an array with 1 element
+type array[1] of T with
+    1 as T
+
+// Interface for an array with Size elements
+type array[Size:natural when Size > 1] of T with
+    \lambda Index:natural when Index in 1..Size as T

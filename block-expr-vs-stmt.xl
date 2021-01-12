@@ -1,0 +1,19 @@
+// Expression block
+(sin X, sin Y)
+
+// Used in parameter passing
+write (sin X, sin Y)
+
+// Alternate form (syntactic sugar, e.g. arrays)
+Array[index 1, index 2]
+
+// Statement block
+{write X; write Y}
+
+// Used in "functional" parameter passing
+loop Body is { Body; loop Body }
+
+// Alternate form (off-side rule syntactic sugar)
+loop Body is
+    Body
+    loop Body

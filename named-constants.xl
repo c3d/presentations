@@ -1,0 +1,9 @@
+// What happens here?
+if true then Yes else No        is Yes
+if false then Yes else No       is No
+
+// This does not work as intended
+if 0 = 1 then print "Failed" else print "OK"
+
+// Same with optimizations
+sin pi is 0

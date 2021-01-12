@@ -1,0 +1,10 @@
+type integer is natural or matching(-N:natural)
+type even    is matching (N:integer when N mod 2 = 0)
+type answer  is matching 42
+
+X is 42
+
+X ∈ natural = true
+X ∈ integer = true
+X ∈ even = true
+X ∈ answer = true

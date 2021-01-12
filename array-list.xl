@@ -1,0 +1,4 @@
+// A comma-separated list of N items of type T
+list[1] of T is matching list(Head:T)
+list[Size:natural when Size > 1] of T is
+    matching(Head:T, Tail:list[Size-1] of T)

@@ -1,0 +1,13 @@
+// Interfaces
+X:cartesian + Y:cartesian   as cartesian
+X:cartesian - Y:cartesian   as cartesian
+X:cartesian * Y:cartesian   as cartesian
+X:cartesian / Y:cartesian   as cartesian    when X ≠ 0
+X:cartesian / Y:cartesian   as error        when X = 0
++X:cartesian                as cartesian
+-X:cartesian                as cartesian
+~X:cartesian                as cartesian    // Conjugate
+
+// Example implementation
+X:cartesian + Y:cartesian   as cartesian is
+    cartesian(X.Re + Y.Re, X.Im + Y.Im)

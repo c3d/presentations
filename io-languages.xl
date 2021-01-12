@@ -1,0 +1,17 @@
+// C
+printf("The answer must be %d\n", 42);
+
+// C++
+std::cout << "The answer must be " << 42 << '\n';
+
+// Haskell
+main = putStrLn ("The answer must be " ++ show 42)
+
+// Ada
+Text_IO.put("The answer must be ");
+Text_IO.put(42, 1);
+Text_IO.new_line;
+
+// Basic, Pascal
+PRINT "The answer must be "; 42
+WriteLn ('The answer must be ', 42)

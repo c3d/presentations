@@ -1,0 +1,9 @@
+// C
+min(i++, j++)
+
+// C++
+min(1, 2.0)
+
+// Java
+max(a,b)
+e1.compareTo(e2) < 0

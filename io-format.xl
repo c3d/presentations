@@ -1,0 +1,16 @@
+// Format function takes C-style format
+format(Format:text, Items) as text
+
+// print with formatting (no trailing newline)
+printf Items is write format(Items)
+
+// Usage similar to C, but now type-safe
+printf "The answer must be %d\n", 42
+
+// C++-style format modifiers
+type format_width is matching width(Width:natural)
+printf "The answer must be %10d\n", 42
+printf "The answer must be %d\n", width(10), 42
+
+// Format extensions, notably %v: Anything
+printf "The answer must be %v\n", 42

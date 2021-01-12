@@ -1,0 +1,8 @@
+// Hello world
+print "Hello world"
+
+// With multiple arguments
+print "Hello", ' ', "World"
+
+// With some function calls
+print "fib 12 = ", fib 12

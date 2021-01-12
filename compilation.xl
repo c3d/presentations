@@ -1,0 +1,10 @@
+// Explain how to compile things
+type ifte is matching{if Cond then True else False}
+to compile If:ifte is
+    C is compile Cond
+    T is compile True
+    F is compile False
+    Target.ConditionalBranch C, T, F
+
+// Simple optimization (compiled version)
+to compile X + 0 is compile X

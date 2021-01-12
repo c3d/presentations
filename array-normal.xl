@@ -1,0 +1,13 @@
+// Create an array from elements
+array(List:list[Size:natural] of T) as array[Size] of T is
+    Result : array[Size] of T
+    fill N:natural, Head, Tail is
+        Result[N] := Head
+        fill N+1, Tail
+    fill N, Head is
+        Result[N] := Head
+    fill 1, List
+    Result
+
+// Usage
+A is array(1,2,3,4,5)

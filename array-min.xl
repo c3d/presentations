@@ -1,0 +1,6 @@
+// Minimum of an array
+min A:array as A.item is
+    Min : A.item := A[1] // Should ie be min A[1]?
+    for I in 2..A.Size loop
+        Min := min(Result, A[I])
+    Min

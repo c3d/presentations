@@ -1,0 +1,12 @@
+// Version numbers don't parse correctly
+1.2.20 = (1.2).20
+
+// Semantic versioning problem
+1.2 = 1.20 = 1.200
+
+// Not even consistent; only happens for the first level
+1.2.20 = 1.20.20 = 1.200.20
+1.2.2 ≠ 1.2.20
+
+// Worth adding to the basic syntax?
+1.0.0.4332

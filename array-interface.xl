@@ -1,7 +1,0 @@
-// Define the case for 'array[1]'
-array[1] of T with
-    1 : T
-
-// Build the general case
-array[N] of T when N > 1 with
-    lambda I when I in 1..N as T

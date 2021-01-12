@@ -1,0 +1,7 @@
+// Inserting a constant in a pattern
+0! is 1
+N! is N * (N-1)!
+
+// Basis for dynamic dispatch
+theme_color "Theme", "section", "title" is color "blue"
+theme_color "Theme", "main", Other   is color "white"

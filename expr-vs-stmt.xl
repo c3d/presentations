@@ -1,0 +1,13 @@
+// What you write
+write sin X, cos Y
+
+// What you get (by default)
+write (sin(X, cos(Y)))
+
+// What you expect
+write (sin(X), cos(Y))
+
+// Concept programming:
+// This is what you actually get!
+write "Sin X=", sin X, " Cos X=", cos X
+write ("Sin X=", sin(X), " Cos X=", cos(X))

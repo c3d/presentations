@@ -1,0 +1,13 @@
+// Generate an optimize array layout
+//  A[1]
+//  A[2]
+//  ...
+//  A[Size]
+
+to compile (A:array) is
+    Item is compile A.item
+    if Target.IsVariableSize(Item) then
+        error "Array item %v has variable size", A.item
+    Bytes is A.Size * Target.ByteSize(Item)
+    Data is Target.BytesBuffer[Bytes]
+    Data

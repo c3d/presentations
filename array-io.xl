@@ -1,0 +1,8 @@
+// Write any array of any type
+write A:array is
+    write "array("
+    for I in 1..A.Size loop
+        write A[I]
+        if I < A.Size then
+            write ","
+    write ")"

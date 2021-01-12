@@ -1,0 +1,14 @@
+// C
+#define min(X,Y) ((X) < (Y) ? (X) : (Y))
+
+// C++
+template<typename T>
+inline min(const T &X, const T &Y)
+{
+    return X < Y ? X : Y;
+}
+
+// Java
+public static <T extends Object
+               & Comparable<? super T>>
+T max(Collection<? extends T> coll)

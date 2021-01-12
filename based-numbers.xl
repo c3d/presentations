@@ -1,0 +1,11 @@
+// Basic notation
+16#FFFF
+
+// Any base
+2#1001
+
+// Separators
+2#1001_0110_0001_0101_1100
+
+// Real numbers
+16#0.FF#E2 = 255.0

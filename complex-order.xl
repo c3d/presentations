@@ -1,0 +1,15 @@
+// Lexicographic order
+Z1:cartesian < Z2:cartesian as boolean is
+    Z1.Re < Z2.Re or (Z1.Re=Z2.Re and Z1.Im < Z2.Im)
+
+// Useful for implementation of containers that require it
+Map : map[complex, text]
+
+// Not compatible with multiplication
+A is 2 + 5 i
+B is 8 - i
+Z is 0 + 0 i
+X is 1 - 2 i
+
+// The following is true
+A < B and Z < X and not (A*Z < B*X)

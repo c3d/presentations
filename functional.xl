@@ -1,0 +1,7 @@
+adder N is { lambda M is N + M }
+
+slide Title:text, Body is
+    slide_master theme, "slide", Title,
+        title
+            text Title
+        story Body

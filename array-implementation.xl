@@ -1,0 +1,17 @@
+with { Size:natural; item:type; Head:item}
+
+// Arrays if size 1
+type array[Size] of item when Size = 1 is
+    matching(array(Head))
+with
+    1           is Head
+
+// Recursive definition
+type array[Size] of item when Size > 1 is
+    matching(array(Head, Tail:array[Size-1] of item))
+with
+    1                                   is Head
+    lambda Index when Index in 2..Size  is Tail[Index-1]
+
+// Generic array type (XL-style inheritance)
+type array is like(array[Size] of item)

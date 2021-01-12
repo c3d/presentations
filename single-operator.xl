@@ -1,0 +1,15 @@
+// Standard programming entities
+MyConstant      is 42
+MyFunction(A,B) is A + 2*B
+
+// Operators and notations
+A in B..C       is A >=B and A <= C
+
+// Types
+type even       is matching(X when X mod 2 = 0)
+
+// Optimizations
+X + 0           is X
+
+// Programming constructs
+loop Body       is { Body; loop Body }
