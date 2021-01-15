@@ -1,0 +1,11 @@
+4117 commits in git repository
+Date range: Oct 23, 2003 - Present
+
+10 authors
+BUT: Only 267 commits not by me (second author: 202)
+
+Lines of code:
+ 34444: Interpreter alone
+ 41907: In-progress LLVM compiler
+110823: Including self-compiling compiler
+427955: Including documentation, etc.

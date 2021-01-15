@@ -1,0 +1,14 @@
+320 commits
+Date range: July 1, 2019 - Jan 7, 2021 (active)
+
+7 authors
+1 author with 281 commits (Daniel Berrange)
+3 other authors with more than 5 commits
+
+12402 lines of code (mostly in Go)
+  126 lines in README.md
+
+15 open issues
+20 closed issues
+
+10 forks, 12 stars

@@ -1,0 +1,8 @@
+In file included from vncdisplaykeymap.c:95:
+In file included from /usr/local/Cellar/gtk+3/3.22.24/include/gtk-3.0/gdk/gdkquartz.h:23:
+In file included from /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/AppKit.framework/Headers/AppKit.h:10:
+In file included from /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.h:8:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h:506:9: error:
+      unknown type name 'NSString'; did you mean 'GString'?
+typedef NSString * NSRunLoopMode NS_EXTENSIBLE_STRING_ENUM;
+        ^

@@ -1,0 +1,13 @@
+84 commits
+Date range: May 21, 2015 - May 22, 2020 (mature)
+
+13 authors
+63 commits for primary author
+
+3028 lines of code (C and assembly)
+  47 lines in README
+
+ 3 open issues
+12 closed issues
+
+117 forks 624 stars

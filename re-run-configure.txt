@@ -1,0 +1,7 @@
+make install
+echo 0.34.23-0381-dirty > .version-t && mv .version-t .version
+/Library/Developer/CommandLineTools/usr/bin/make  install-recursive
+Making install in spice-common
+make[2]: *** No rule to make target `install'.  Stop.
+make[1]: *** [install-recursive] Error 1
+make: *** [install] Error 2

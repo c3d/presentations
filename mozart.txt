@@ -1,0 +1,18 @@
+// 99 like this, with both XL and Java front-ends
+tone Coda: Note
+tone CodaList : Coda
+tone CodaComments : Coda
+tone CodaMessages : CodaComments
+tone CodaTranslationUnit : Coda
+tone CodaPosition : Coda
+tone CodaInstruction : Coda
+tone CodaNop : CodaInstruction
+
+bool performer (MzEqual) (const Note *n1,
+                          const Note *n2);
+bool perform(MzEqual, char)    (const char    *,  const char    *);
+bool perform(MzEqual, uchar)   (const uchar   *,  const uchar   *);
+bool perform(MzEqual, short)   (const short   *,  const short   *);
+bool perform(MzEqual, ushort)  (const ushort  *,  const ushort  *);
+bool perform(MzEqual, int)     (const int     *,  const int     *);
+bool perform(MzEqual, uint)    (const uint    *,  const uint    *);

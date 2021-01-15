@@ -1,16 +1,14 @@
-body_slide "Is XL Declarative?",
-  subtitle "A self-presenting programming language"
-  story
-    * "Tao3D, an XL derivative"
-    * "Homoiconic"
-    * "Functional"
-    * "Reactive"
-    * "Weird"
+body_slide "Idea #3: Use XL for ..., 3D documents",
+    subtitle "Only needed to add reactivity..."
+    story
+        * "Tao3D, an XL derivative"
+        * "Functional: pass code around"
+        * "Reactive: event-driven evaluation"
+        * "Even weirder than base XL"
 
-  right_picture
-      code_move -100, 0, 1100, 800
-      colorize_file_at 1, "Tao3D", "slide.xl"
-      colorize_file_at 2, "Homoiconic", "homoiconic.xl"
-      colorize_file_at 3, "Functional", "functional.xl"
-      colorize_file_at 4, "Reactive", "reactive.xl"
-      colorize_file_at 5, "Weird", "weird.xl"
+    right_picture
+        code_move -100, 0, 1100, 800
+        colorize_file_at 1, "Tao3D", "slide.xl"
+        colorize_file_at 2, "Functional", "functional.xl"
+        colorize_file_at 3, "Reactive", "reactive.xl"
+        colorize_file_at 5, "Weird", "weird.xl"

@@ -1,5 +1,7 @@
-// Explain how to compile things
+// A type to represent "if-then-else"
 type ifte is matching{if Cond then True else False}
+
+// Explain how to compile if-then-else
 to compile If:ifte is
     C is compile Cond
     T is compile True

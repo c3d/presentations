@@ -1,0 +1,32 @@
+// Shared-lib friendly
+RECORDER_DECLARE(program_arguments);
+RECORDER_DEFINE(program_arguments, 32, "Command-line arguments");
+
+// New printf-like syntax
+record(program_arguments, "Got argc=%d, argv[0]=%s", argc, argv[0]);
+for (a = 1; a < argc; a++)
+    record(program_arguments, "argv[%d]=%s", a, argv[a]);
+
+// Fedora packaging, man page
+% dnf install recorder-devel
+
+% man recorder
+RECORDER(3)                    Recorder Library                    RECORDER(3)
+
+NAME
+       RECORDER,  RECORDER_DEFINE,  RECORDER_DECLARE - Declare and define buf‐
+       fers to record events
+
+SYNOPSIS
+       #include <recorder/recorder.h>
+
+       #define RECORDER(recname, recsize, rechelp) ...
+       #define RECORDER_DEFINE(recname, recsize, rechelp) ...
+       #define RECORDER_DECLARE(recname) ...
+
+DESCRIPTION
+       The RECORDER() macro defines a buffer named recname to store up to rec‐
+       size  events  for  use by the record(3) function. The rechelp string is
+       self-documentation describing the events stored in  the  buffer.   This
+       self-documentation  can  be displayed by activating the help trace, see
+       recorder_set_trace(3).

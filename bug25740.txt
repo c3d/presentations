@@ -1,0 +1,8 @@
+autoreconf: running: aclocal --force -I m4
+Use of uninitialized value $msg in concatenation (.) or string at /usr/local/Cellar/autoconf/2.69/bin/autom4te line 1026.
+Use of uninitialized value $stacktrace in pattern match (m//) at /usr/local/Cellar/autoconf/2.69/bin/autom4te line 1026.
+unknown channel m4trace: -1- AS_VAR_APPEND(ac_configure_args, " '$ac_arg'")
+ at /usr/local/Cellar/autoconf/2.69/share/autoconf/Autom4te/Channels.pm line 638.
+	Autom4te::Channels::msg('m4trace: -1- AS_VAR_APPEND(ac_configure_args, " \'$ac_arg\'")\x{a}', undef, 'warning: ', 'partial', 0) called at /usr/local/Cellar/autoconf/2.69/bin/autom4te line 1026
+aclocal: error: echo failed with exit status: 1
+autoreconf: aclocal failed with exit status: 1

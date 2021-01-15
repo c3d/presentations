@@ -1,0 +1,23 @@
+// Execute the code on pi2.local, exposing local scope
+invoke "pi2.local",
+   every 1.1s,
+        rasp1_temp is
+            // Execute code on "pi.local", waiting for response
+            ask "pi.local",
+                temperature
+        send_temps rasp1_temp, temperature
+
+   // Check if relevant info to report
+   send_temps T1:real, T2:real is
+       if abs(T1-T2) > 2.0 then
+           // Return reply using caller scope
+           reply
+               show_temps T1, T2
+
+// Function invoked remotely by "reply"
+show_temps T1:real, T2:real is
+    print "Temperature on pi: ", T1, " on pi2: ", T2, ". "
+    if T1>T2 then
+        print "Pi hotter by ", T1-T2, " degrees"
+    else
+        print "Pi2 hotter by ", T2-T1, " degrees"

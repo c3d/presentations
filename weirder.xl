@@ -1,0 +1,10 @@
+// Loop creating 25 colored ellipses
+for I in 1..25 loop
+    color_hsv I * 5 + 10 * time, 90%, 50%, 30%
+    line_color_hsv I * 5 + 3 + 10 * time, 90%, 50%, 100%
+    rotate_z 5
+
+    // "shape" makes the code below editable
+    shape
+        // But there is a single ellipse being repeated
+        ellipse 200, 0, 300, 60

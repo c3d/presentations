@@ -1,7 +1,11 @@
-adder N is { lambda M is N + M }
-
+// Create a simple "slide" from a master
 slide Title:text, Body is
     slide_master theme, "slide", Title,
         title
             text Title
         story Body
+
+// Usage is even simpler than LaTeX
+slide "Simple slide",
+    * "First bullet"
+    * "Second bullet"

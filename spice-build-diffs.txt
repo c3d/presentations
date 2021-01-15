@@ -1,0 +1,18 @@
+# Makefile.am
+libserver_la_SOURCES =				\
+	$(libspice_serverinclude_HEADERS)	\
+	$(spice_built_sources)			\
+	agent-msg-filter.c			\
+	agent-msg-filter.h			\
+
+
+# Makefile
+PKGCONFIGS=	pixman-1                        \
+		openssl                         \
+		liblz4? ...
+CONFIG=		<lz4.h>                         \
+		libjpeg                         \
+		lz4_compress_fast_continue ...
+SOURCES=	$(filter %.c, $(GENERATED))     \
+		agent-msg-filter.c              \
+		char-device.c ...

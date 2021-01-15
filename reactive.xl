@@ -1,6 +1,8 @@
+// This is what shows up at bottom right of slide
 text month & "/" & day & "/" & year & " - " &
      hours & ":" & zero minutes & ":" & zero seconds
 
 
+// Draw a colored circle following the mouse (highlight)
 color_hsv 20*time, 70%, 70%, 30%
 circle mouse_x, mouse_y, 100 + 40 * sin(8*time)

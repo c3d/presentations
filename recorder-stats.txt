@@ -1,0 +1,10 @@
+360 commits
+9362 commits in git repository
+Date range: Apr 2, 2017 - Present
+
+2 authors
+21 commits by Frediano Ziglio
+
+ 4369 lines of code in main library
+ 1256 lines of code in Qt-based recorder scope
+11751 lines of code total, including doc and tests

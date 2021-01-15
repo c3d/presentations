@@ -1,0 +1,12 @@
+// Type is matching a pattern
+if_then_else is matching(if Condition then True else False)
+
+// Binding of pattern variables
+compile Stmt:if_then_else as code is
+    Cond  is compile Stmt.Condition
+    True  is compile Stmt.True
+    False is compile Stmt.False
+    return ConditionalBranch(Cond, True, False)
+
+// Conditional patterns
+even is matching (N when N mod 2 = 0)

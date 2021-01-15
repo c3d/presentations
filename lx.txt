@@ -1,0 +1,21 @@
+-- Reconstructed from a May 2002 email
+-- Added back 1995-style "end"
+import IO = XL.Text_IO
+
+-- Validated "template" type
+generic type ordered if
+    with ordered A, B
+    with boolean C := A < B
+end type
+
+-- Implicitly template
+{inline}   -- General syntax for "pragmas"
+function Min(ordered A) return ordered is
+    return A
+end function
+
+-- Variadic generic function
+function Min(ordered A, others) return ordered is
+    with ordered B := Min(others)
+    if A < B then return A; else return B; end
+end function

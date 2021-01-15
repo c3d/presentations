@@ -1,0 +1,19 @@
+// Represent everything with 8 node types
+struct Integer;
+struct Real;
+struct Text;
+struct Name;
+struct Infix;
+struct Prefix;
+struct Postfix;
+struct Block;
+
+// Unchanged since then
+C is 1+2
+writeln "C=", 1+2
+
+// Debug-level rendering
+% xl -parse test.xl -style debug -show
+(infix CR
+ (infix is C (infix + 1 2))
+ (prefix writeln (infix , "C=" (infix + 1 2))))

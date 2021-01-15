@@ -1,0 +1,13 @@
+9362 commits in main git repository
+Date range: Oct 23, 2003 - July 21, 2020
+38 submodules!
+
+10 authors
+4994 commits not by me
+3391 commits by second author
+
+Lines of code:
+ 273207: Tao3D application
+ 478789: Modules (including submodules)
+ 194866: Other imported code, e.g. crypto, help viewer, etc
+  14803: Doxygen doc files

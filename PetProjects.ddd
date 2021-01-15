@@ -1,0 +1,1257 @@
+// ============================================================================
+//
+main_title_slide "Main title",
+//
+// ============================================================================
+    title PresentationTitle
+    subtitle "Or: How I learned to stop worrying and love my monsters"
+    stepping
+    picture
+        text_box 0, -400, 1600, 200,
+            style "story"
+            color "white"
+            align 100%
+            font_size 35
+            text "(C) 2019-2021 Christophe de Dinechin"
+
+        translate 510, 270, -200
+        texture "Frankenstein.jpg"
+        circle 400
+
+
+
+// ============================================================================
+section_slide "Do you have a pet project?",
+// ============================================================================
+    title page_label
+    subtitle "One of these crazy things that nobody understands?"
+    THE_COMPLICATED_MACHINE -> "movies/RubeGoldberg.mp4##noaudio"
+    picture
+        movie_texture THE_COMPLICATED_MACHINE
+        translate 350, 250, 20
+        rotate_z -2
+        scale 55%
+        rounded_rectangle 0, 0, texture_width, texture_height, 40
+    on "pageexit",
+        movie_drop THE_COMPLICATED_MACHINE
+
+    object -8000, 0, 0, 12, 12, 12, "models/Resurs3D_Audi_S5.obj"
+
+
+// ----------------------------------------------------------------------------
+base_slide "What do I call a pet project?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "The various reasons to develop software"
+    stepping
+    story
+        * "Getting paid to write code"
+        * "Being part of a great community"
+        * "Having fun solving tough problems"
+        * "Fighting an injustice in the world"
+        * { red "Scratching an itch (something that annoys you)" }
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 150%, "Motivation.jpg"
+
+    right_picture
+        images "Big Bucks Bunny.png", "Community.jpg", "Tough Problems.jpg", "Fighting for justice.jpg", "Scratching an itch.jpg"
+
+
+// ============================================================================
+//
+section_slide "Part 1 - How to do it all wrong",
+//
+// ============================================================================
+    title page_label
+    subtitle "My pet projects: too big not to fail"
+    picture
+        texture "You Are Doing It Wrong.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 120%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+base_slide "25 years of zany pet projects",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "When you fail, redefine success"
+    stepping
+    story
+        * "1995: Concept programming: a ""programming paradigm"""
+        * "1995: XL, an extensible programming language"
+        * "2010: Tao3D: real-time interactive 3D presentations"
+        * "2017: make-it-quick: auto-configuration with make"
+        * "2017: recorder: a flight recorder for C/C++ programs"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 150%, "Purpose of your life.jpg"
+
+    right_picture
+        images "Concept Programming.png", "XL.png", "Tao3D.png", "Make-it-Quick.png", "FlightRecorder.png"
+
+
+// ============================================================================
+//
+section_slide "Concept Programming",
+//
+// ============================================================================
+    title page_label
+    subtitle "The art of turning ideas into code"
+    picture
+        texture "Concept Programming.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 45%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+    reference_talk "FOSDEM 2020", "Concept Programming, from ideas to code", "https://archive.fosdem.org/2020/schedule/event/concept_programming"
+
+
+
+
+// ----------------------------------------------------------------------------
+base_slide "Itch #1: Code does not look nor behave like concepts it models",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Turning ideas into code sounds quite easy, until you actually start doing it"
+    stepping
+    picture
+        ideas_adjust fade_at(smooth_step, 2)
+        ideas_adjust S:real ->
+            translate_y -200 * S
+            scale 1.0 - 0.5 * S
+        image -550, -100, 100%, 100%, "Brain.png"
+
+        at_step 1
+        locally
+            linear_gradient 0, 0, 256, 0, 256, 256,
+                gradient_color 0%, "darkblue", 0.3
+                gradient_color 10%, "darkblue", 0.9
+                gradient_color 20%, "blue", 0.9
+                gradient_color 50%, "cyan", 0.9
+                gradient_color 80%, "blue", 0.9
+                gradient_color 90%, "darkblue", 0.9
+                gradient_color 100%, "darkblue", 0.0
+            texture_wrap true, true
+            texture_transform
+                scale_x 10
+                translate_x -0.3*time mod 1
+            arrow 0, -100, 400, 100, 100, 0.5
+        image  450, -20, 100%, 100%, "HP-Computer.png"
+
+        at_step 3
+        locally
+            color "white", 0.8
+            line_color "black", 0.4
+            line_width 4
+            speech_balloon -950, 650, 1700, 750, 40, -700, 50
+        if smooth_step >= 2.8 then
+            locally
+                show -1
+                light 0
+                light_position 1000, 1000, 1000
+                translate -700, 450, 250
+                rotate_y 7 * page_time
+                rotate_x -95
+                object 0, 0, 0, 1200, 1200, 1200, "models/Resurs3D_Audi_S5.obj"
+
+        at_step 4
+        locally
+            texture_mag_filter "NEAREST"
+            translate 950, 650 + 50 * (sin (2.3 * page_time))^100, 0
+            rotate_z 5 * sin(5.5 * time)
+            color "white", 0.99
+            image 0, 0, 2000%, 2000%, "Beetle.png"
+
+
+
+// ----------------------------------------------------------------------------
+picture_slide "Idea #1: Study how we turn ideas into code",
+// ----------------------------------------------------------------------------
+    subtitle "Example: Pseudo-metrics to evaluate differences between code and concepts"
+    stepping
+    story
+        define Term, Part1, Highlight, Part2 ->
+            * Term
+            at_current_step
+            gray Part1
+            yellow Highlight
+            gray Part2
+            at_current_step
+        define "Syntactic noise: ", "code does not ", "look", " as expected"
+        define "Semantic noise: ",  "code does not ", "behave", " as expected"
+        define "Bandwidth: ",  "What problems does the code ", "cover", "?"
+        define "Signal/noise ratio: ",  "What fraction of the code is ", "useful", "?"
+
+        --
+        * "What is noise to one person may be music to another"
+
+    right_picture
+        code_move 0, 300, 700, 600
+        code_box_at_step 2, "Lisp",
+            font_size 60
+            align_center
+            red "(+ 2 3)"
+        code_box_at_step 5, "SmallTalk",
+            font_size 60
+            align_center
+            text "2+3*5 = "; red "25"
+        code_box_at_step 8, "OCaml",
+            font_size 60
+            align_center
+            text "2.0 "
+            red "+."
+            text " 3.0"
+        code_box_at_step 11, "C++",
+            font_size 45
+            mark_useless load_text "complex-add.cpp"
+            mark_useless T:text ->
+                regexp_parse_text T,
+                    "complex operator|return|\(|\)|\{|\}|;|," ->
+                        red regexp_captured 0
+                    "." ->
+                        text regexp_captured 0
+
+    picture
+        translate_y 200
+        scaled_image_only_at 0, 30%, "Brain Metrics.jpg"
+
+    picture
+        at_step 13
+        translate 600, 150, 20
+        rotate_z -2
+        image 0, 0, 150%, 150%, "Music-and-noise.jpg"
+
+
+// ----------------------------------------------------------------------------
+picture_slide "Effort #1: Just slides and talks",
+// ----------------------------------------------------------------------------
+    subtitle "This is just an idea, the real effort comes next"
+    stepping
+    at_step 1
+    image 0, 60, 80%, 80%, "Talk is Cheap.png"
+
+
+
+// ============================================================================
+//
+section_slide "XL, an extensible programming language",
+//
+// ============================================================================
+    title page_label
+    subtitle "Take advantage of Moore's law instead of being defeated by it"
+    picture
+        texture "XLLogo.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 75%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+    reference_talk "FOSDEM 2020", "XL, an extensible programming language", "https://archive.fosdem.org/2020/schedule/event/xllang"
+
+
+
+// ============================================================================
+//
+//    Fighting Moore's law
+//
+// ============================================================================
+
+X1 -> 0.0
+Y1 -> 0.0
+Z1 -> 0.0
+S1 -> 0.0
+
+CX -> 0.0
+CY -> 0.0
+CZ -> 0.0
+CS -> 0.0
+
+set_arrow s0:symbol, s1:symbol -> endpoints_style s0, s1
+
+body_slide "Itch #2: Why do we need so many languages?",
+// ----------------------------------------------------------------------------
+//   Illustration basee sur la loi de Moore
+// ----------------------------------------------------------------------------
+    subtitle "Moore's law applies to software and defeats programmers over and over"
+    picture
+        translate_y 120
+        scale 80%
+        adjust_view_point
+        move_speed -> if current_view_point > 8 then 0.05 else 0.15
+        interpolate_scale move_speed, S1, CS
+        interpolate_position move_speed, X1, Y1, Z1, CX, CY, CZ
+        locally
+            line_width 8
+            color "transparent"
+            line_color "red"
+            path
+                coord N:integer -> line_to 20*N, 70*exp(N*0.05), 0
+                coord with 0..50
+                set_arrow none, arrowhead
+
+        locally
+            color "transparent"
+            line_color tao "orange"
+            line_width 3
+            translate -50, 50, 0
+            line_arrow -30, 0, none, 1200, 0, arrowhead
+            line_arrow 0, -30, none, 0, 800, arrowhead
+            font "Gentium Plus", 30
+            line_width 0
+            color tao "orange"
+            text_box 1200, -50, 200, 200,
+                text "Time"
+            rotatez 90
+            text_box 750, -50, 200, 200,
+                text "Complexity"
+
+        abstraction N:integer ->
+            locally
+                if N >= current_view_point then show -0.1
+                if current_view_point > 7 then show -0.1
+                translate 20*(8*N+5), 70*exp((8*N+5)*0.05), 150
+                align 0.0
+                locally
+                    line_width 4
+                    line_color tao "navy", 30%
+                    color "transparent"
+                    path
+                        move_to -130, 0, 0
+                        line_to 130, 0, 0
+                        set_arrow none, arrowhead
+                text_box 0, 25, 250, 50,
+                    vertical_align 1.0
+                    font "Gentium Plus", 20, bold
+                    text abstraction_language N
+                text_box 0, -25, 250, 50,
+                    vertical_align 0.0
+                    font "Gentium Plus", 12
+                    text abstraction_description N
+                if N+1 = current_view_point then
+                    show -1
+                    locally
+                        color "white", 90%
+                        line_color tao "navy", 20%
+                        line_width 1
+                        rounded_rectangle 0, -50, 310, 70, 5
+                    text_box 0, -50, 300, 60,
+                        vertical_align 0.5
+                        font "Menlo", 9
+                        color tao "green"
+                        text abstraction_code N
+
+        locally
+            color tao "navy"
+            abstraction with 0..5
+
+        if current_view_point > 7 then
+            translate -CX, -CY, 80
+            locally
+                line_width 1
+                color "white", 70%
+                line_color tao "navy", 20%
+                circle 0, 0, 110
+                rotatez -40 * time
+                translatez 25
+                line_color tao "red"
+                color tao "yellow"
+                star_polygon 0, 0, 30, 30, 5, 4
+            locally
+                if CX > -20*(8*3+5) then
+                    text_box 0, 55, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "green"
+                        align 0.0
+                        vertical_align 1.0
+                        paragraph "Easy"
+                        font "Gentium Plus", 12
+                        paragraph "Tools work"
+                        paragraph "Two guys in a garage"
+                        paragraph "Easy money"
+                else if current_view_point < 10 then
+                    text_box 0, -55, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "red"
+                        align 1.0
+                        vertical_align 0.0
+                        paragraph "Hard"
+                        font "Gentium Plus", 12
+                        paragraph "Tools are outdated"
+                        paragraph  "Need more hands"
+                        paragraph "Delays and costs overrun"
+                else if current_view_point < 11 then
+                    text_box 0, -65, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "orange"
+                        align 0.5
+                        vertical_align 0.0
+                        paragraph "You are here"
+                        font "Gentium Plus", 12
+                        paragraph "Many languages"
+                        paragraph  "Work sent to India"
+                        paragraph "75% of projects fails"
+                else
+                    text_box 0, 65, 160, 100,
+                        font "Gentium Plus", 18
+                        color tao "green"
+                        align 0.5
+                        vertical_align 0.8
+                        paragraph "The XL dream"
+                        font "Gentium Plus", 12
+                        paragraph "On-demand language"
+                        paragraph "DSL ecosystem"
+                        paragraph "Moore's law helps"
+
+
+abstraction_language    0 -> "Fortran, Basic"
+abstraction_description 0 -> "Symbols and expressions"
+abstraction_code        0 ->
+<<10 FOR X = 0 TO 100 STEP 0.1
+20 Y = SIN(X) * COS(10 * X)
+30 GOSUB 1000 : REM Plot X, Y
+40 NEXT X >>
+
+abstraction_language    1 -> "Pascal, C, Ada, Modula"
+abstraction_description 1 -> "Structured programming"
+abstraction_code        1 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot(x, sin(x) * cos(10*x)); >>
+
+abstraction_language    2 -> "C++, Smalltalk, Eiffel"
+abstraction_description 2 -> "Objects"
+abstraction_code        2 ->
+<< for (x = 0; x < 100; x += 0.1)
+    plot.addDataPoint(x, sin(x) * cos(10*x));
+ plot.draw(); >>
+
+abstraction_language    3 -> "Java"
+abstraction_description 3 -> "Distributed programs"
+abstraction_code        3 ->
+<<String plotDriver = "com.jnetdirect.jsql.JSQLDriver";
+Class.forName(plotDriver);
+PlotManager.connect(url, user, password);>>
+
+abstraction_language    4 -> "Python, XML"
+abstraction_description 4 -> "Software components"
+abstraction_code        4 -> "<plot source=""$URL"" x_axis=""x"" y_axis=""y""/>"
+
+abstraction_language    5 -> "XL"
+abstraction_description 5 -> "On-demand notations"
+abstraction_code        5 ->
+    << plot (lambda x is sin x * cos(10*x)) >>
+
+view_set ax:real, ay:real, az:real, as:real ->
+    X1 := ax
+    Y1 := ay
+    Z1 := az
+    S1 := as
+
+view_point_zoom N:integer -> view_set -20*(8*N+5), -70*exp((8*N+5)*0.05), -50, 5.0
+view_point 0            -> view_set -500.0, -500.0, 0.0, 1.0
+view_point 1            -> view_point_zoom 0
+view_point 2            -> view_point_zoom 1
+view_point 3            -> view_point_zoom 2
+view_point 4            -> view_point_zoom 3
+view_point 5            -> view_point_zoom 4
+view_point 6            -> view_point_zoom 5
+view_point 7            -> view_set -500.0, -500.0, 0.0, 1.0
+view_point 8            -> view_set -20*(8*3+5) + 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 9            -> view_set -20*(8*3+5) - 120, -70*exp((8*3+5)*0.05), -150, 4.0
+view_point 10           -> view_set -20*(8*3+5) - 350, -70*exp((8*3+5)*0.05) - 250, -150, 3.0
+view_point 11           -> view_set -800, -680, -150, 3.0
+
+view_point 12           -> view_set -900, -680, -150, 3.0
+view_point 13           -> view_set -900, -800, -150, 3.0
+view_point 14           -> view_set -950, -800, -150, 3.0
+view_point 15           -> view_set -950, -900, -150, 3.0
+
+
+view_point N:integer    -> view_set -950.0, -950.0, -150, 0.5
+
+current_view_point -> 0
+adjust_view_point ->
+    if page_time < 0.1 then
+        skip_to 0
+    current_view_point := integer (step)
+    view_point current_view_point
+
+
+// ----------------------------------------------------------------------------
+body_slide "Idea #2: An extensible programming language (as small as possible)",
+// ----------------------------------------------------------------------------
+    subtitle "Perfection is achieved when there is nothing to remove"
+
+    story
+        * "Simple parse tree, 8 node types"
+        * "One operator to rule them all"
+        * "Basics moved to builtin library"
+        * "Compilation and optimizations"
+        * "Weird and hard to compile"
+
+    right_picture
+        code_move -100, 0, 1100, 800
+        colorize_file_at 2, "Single operator",          "single-operator.xl"
+        colorize_file_at 3, "Basics",                   "basics.xl"
+        colorize_file_at 4, "Compilation",              "compilation.xl"
+        colorize_file_at 5, "Weird",                    "weird.xl"
+
+    right_picture
+        only_at 1,
+            translate -100, 0, 0
+            scale 80%
+            simple_parse_tree
+
+simple_parse_tree ->
+    nt_x    -> -600
+    nt_y N  -> 420 - 100 * N - 40 * (N/4)
+    nt_w    -> 300
+    nt_h    -> 80
+    soft_box nt_x, nt_y 0, nt_w, nt_h, tao "red",    "Integer"
+    node_describe 0, "0", "42", "1_000_000", "16#FFF0_FFFF", "2#1101#e5"
+    soft_box nt_x, nt_y 1, nt_w, nt_h, tao "orange", "Real"
+    node_describe 1, "0.3", "3.141_592_653", "1.0e100", "16#F.0F", "2#1e-5"
+    soft_box nt_x, nt_y 2, nt_w, nt_h, tao "yellow", "Text"
+    node_describe 2, """Accentué""", """Տեղայնացվող տեքստ""", "'A'", "<<Long multi-line text>>"
+    soft_box nt_x, nt_y 3, nt_w, nt_h, tao "green",  "Symbol"
+    node_describe 3, "ABC", "Go_2_Market", "+", "->"
+
+    soft_box nt_x, nt_y 4, nt_w, nt_h, tao "ocean", "Infix"
+    node_describe 4, "A+B", "A and B"
+    soft_box nt_x, nt_y 5, nt_w, nt_h, tao "sky", "Prefix"
+    node_describe 5, "-5", "sin X"
+    soft_box nt_x, nt_y 6, nt_w, nt_h, tao "navy", "Postfix"
+    node_describe 6, "3!", "25 km"
+    soft_box nt_x, nt_y 7, nt_w, nt_h, tao "purple", "Block"
+    node_describe 7, "(A)", "[A]", "{A}", <<
+    print "Hello" >>
+
+    node_describe N, List ->
+        locally
+            text_box 200, nt_y N, 1200, 100,
+                style "story"
+                vertical_align 50%
+                align 0%
+                node_describe_horiz List
+    node_describe_horiz X, Y ->
+        node_describe_horiz X
+        node_describe_horiz Y
+    node_describe_horiz X ->
+        code X
+        text "    "
+
+// ----------------------------------------------------------------------------
+body_slide "Effort #2: Failing forward, again and again",
+// ----------------------------------------------------------------------------
+    subtitle "More reboots than the Amazing Spiderman series"
+    story
+        * "1995: LX, language expérimental"
+        * "1998: Mozart, parse tree API, compiler plugins"
+        * "2001: XL0 universal parse tree, 8 node types"
+        * "2005: XL2 self-compiling compiler"
+        * "2008: XLR LLVM-based JIT, inspired by Pure"
+        * "2012: ELIoT distributed interpreter"
+        * "2016: A type system for parse trees"
+        * "Overall, a fairly large ""pet project"""
+        * "Exemplifies ""fail forward"" quite well"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 100%, "Spiderman.png"
+
+
+    right_picture
+        code_move -50, 0, 1000, 800
+        code_size 24
+        colorize_file_at 1, "LX - Ada like",    "lx.txt"
+        colorize_file_at 2, "Mozart",           "mozart.txt"
+        colorize_file_at 3, "XL0",              "XL0.txt"
+        colorize_file_at 4, "XL2",              "XL2.txt"
+        colorize_file_at 5, "XLR",              "XLR.txt"
+        colorize_file_at 6, "ELIoT",            "ELIoT.txt"
+        colorize_file_at 7, "Types",            "xl-types.txt"
+        only_at 8,
+            code_box "Stats", { text load_text "xl-stats.txt" }
+        scaled_image_only_at 9, 130%, "Fail Forward.jpg"
+
+
+
+// ============================================================================
+//
+section_slide "Tao3D, better presentations for engineers",
+//
+// ============================================================================
+    title page_label
+    subtitle "A more expressive tool to share ideas"
+    picture
+        texture "Tao3D-Logo.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 125%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+    reference_talk "DevConf.cz 2018", "Tao3D, like an interactive 3D LaTeX Lisp", "https://devconfcz2018.sched.com/event/DJXR/tao3d-like-an-interactive-3d-latex-lisp"
+
+
+// ----------------------------------------------------------------------------
+body_slide "Itch #3: Presentations tools are insufficient for engineers",
+// ----------------------------------------------------------------------------
+    subtitle "It's hard to convey ideas, and you spend too much time doing it"
+    picture
+        TAODYNE_MOVIE -> "movies/Taodyne.mp4"
+        movie 0, 80, 120%, 120%, TAODYNE_MOVIE
+        on "pageexit",
+            movie_drop TAODYNE_MOVIE
+
+
+
+// ----------------------------------------------------------------------------
+body_slide "Idea #3: Use XL for real-time, interactive, 3D documents",
+// ----------------------------------------------------------------------------
+    subtitle "Only needed to add reactivity to XL, and build a GUI around it"
+    story
+        * "Tao3D, an XL derivative (demo)"
+        * "Functional: pass code around"
+        * "Reactive: event-driven evaluation"
+        * "Even weirder than base XL"
+
+    right_picture
+        code_move -100, 0, 1100, 800
+        colorize_file_at 1, "Tao3D",            "slide.xl"
+        colorize_file_at 2, "Functional",       "functional.xl"
+        colorize_file_at 3, "Reactive",         "reactive.xl"
+        colorize_file_at 4, "Weirder",          "weirder.xl"
+
+    left_picture
+        only_at 3,
+            color_hsv 20*time, 70%, 70%, 30%
+            circle mouse_x, mouse_y, 100 + 40 * sin(8*time)
+
+    right_picture
+        only_at 4,
+            translate 0, -50, 0
+            rotate_z -150
+            for I in 1..25 loop
+                color_hsv I * 5 + 10 * time, 90%, 50%, 30%
+                line_color_hsv I * 5 + 3 + 10 * time, 90%, 50%, 100%
+                rotate_z 5
+                shape
+                    ellipse 200, 0, 300, 60
+
+
+// ----------------------------------------------------------------------------
+body_slide "Effort #3: Too big to not fail",
+// ----------------------------------------------------------------------------
+    subtitle "This project never attracted a user/developer base"
+    story
+        * "Number of current users / developers: 1"
+        * "Serious LLVM ongoing bit rot (like XL)"
+        * "... and incompatibility with LLVMPipe"
+        * "Much too large for a ""pet project"""
+        * "Even I can't rebuild a runnable version"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 170%, "Perseverance.jpg"
+
+
+    right_picture
+        code_move -100, 0, 1100, 800
+        scaled_image_only_at 1, 170%, "Christophe.jpg"
+        code_size 16
+        colorize_file_at 2, "LLVM-Crap",        "llvm-crap.h"
+        colorize_file_at 3, "LLVMPipe",         "llvm-pipe.txt"
+        code_size 30
+        only_at 4,
+            code_box "Stats", { text load_text "tao-stats.txt" }
+        scaled_image_only_at 5, 80%, "Big Fail.png"
+
+
+// ============================================================================
+//
+section_slide "Make it quick",
+//
+// ============================================================================
+    title page_label
+    subtitle "Autoconfiguration using only simple makefiles"
+    picture
+        texture "Make-It-Quick.png"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 125%
+        color_hsv 0, 0, 100% - 50% * fade_at(smooth_step, 1)
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+    reference_talk "DevConf.us 2018", "Autoconfiguration using make", "https://devconfus2018.sched.com/event/FNNU/auto-configuration-using-only-make"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Itch #4: Building for multiple platforms feels overly complicated",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle  "autoconf is a complex non-solution to a simple non-problem"
+    stepping
+    picture
+        translate_x -2000 * smooth_step
+
+        french
+            image 0, 0, 220%, 220%, "calvin-et-hobbes-luge-looping.jpg"
+        english
+            image 0, 0, 300%, 300%, "calvin-and-hobbes-looping.gif"
+
+        translate_x 2000
+        locally
+            translate -600, 300, 100
+            rotate_z 30
+            box 0, 0, 400, 100,
+                style "subtitle"
+                bold
+                show sin(4 * page_time)^4
+                paragraph "Auto-configuration"
+        image 0, 60, 100%, 70%, "Unix_timeline.png"
+
+        translate_x 2000
+        locally
+            translate -600, 300, 100
+            rotate_z 30
+            box 0, 0, 400, 100,
+                style "subtitle"
+                bold
+                show sin(4 * page_time)^4
+                paragraph "The ""solution""" fr "La ""solution"""
+        image 0, 0, 250%, 250%, "autotools-process.png"
+
+        translate_x 2000
+        image 0, 0, 100%, 100%, "BuildStep1.png"
+        locally
+            box -150, 130, 400, 80,
+                style "subtitle"
+                text "Two? Why two?" fr "Deux? Pourquoi deux?"
+
+            color "red", 20%
+            line_color "red"
+            line_width 3
+            ellipse -280, 60, 150, 100
+
+        translate_x 2000
+        image 0, 50, 70%, 70%, "BuildStep2.png"
+
+        translate_x 2000
+        image 0, 50, 60%, 60%, "BuildStep3.png"
+
+        translate_x 2000
+        image 0, 50, 60%, 60%, "BuildStep4.png"
+
+        translate_x 2000
+        image 0, 50, 80%, 80%, "BuildStep5.png"
+
+        translate_x 2000
+        if smooth_step >= 7.2 and smooth_step <= 8.9 then
+            image -400, 50, 65%, 65%, "AutoconfOutput.png"
+            locally
+                color "yellow", 10%
+                line_color "yellow"
+                line_width 3
+                rectangle -400, mouse_y, 850, 40
+            box 500, 50, 800, 600,
+                * "Does my program really depend on --param=ssp-buffer-size=4?" fr "C'est quoi ce --param=ssp-buffer-size=4?"
+                * "What happens if the -fipa-pure-const option is not supported?" fr "Qu'est ce qui se passe quand l'option -fipa-pure-const ne marche pas?"
+                * "Why should I care about a read-only GOT table?" fr "Ça m'apporte quoi, une GOT qu'on ne peut pas écrire?"
+
+        translate_x 2000
+        if smooth_step >= 8.2 and smooth_step <= 9.9 then
+            box -500, 250, 800, 600,
+                * "13000 lines of perl scripts that parse the error output of 27000 lines of m4 macros to generate bash code?" fr "13000 lignes de scripts Perl pour analyser les erreurs générées par 27000 lignes de macros m4 afin de générer du code bash?"
+                * "What could possibly go wrong?" fr "Forcément, ça va bien se passer"
+            code_box 500, 200, 800, 400, "Autoconf bug #25740 (> 5 yrs old)" fr "Bug #25740 autoconf (age > 5 ans)",
+                font_size 18
+                text load_text "bug25740.txt"
+            code_box 350, -250, 800, 200, "Just re-run it!" fr "Essaie encore!",
+                font_size 18
+                text load_text "re-run-configure.txt"
+            code_box -450, -20, 800, 350, "macOS uses Objective-C" fr "macOS et Objective-C",
+                font_size 18
+                text load_text "objective-c.txt"
+
+        translate_x 2000
+        ASK_ME_THE_QUESTION -> "movies/Monty Python.mp4##start-time=81"
+        if smooth_step >= 9.2 then
+            movie -400, 100, 170%, 170%, ASK_ME_THE_QUESTION
+            movie_set_volume ASK_ME_THE_QUESTION, 100% * fade_between(smooth_step, 10, 10)
+            on "pageexit",
+                movie_drop ASK_ME_THE_QUESTION
+
+            subtitle_text -> ""
+            subtitle Time, Text ->
+                if movie_time ASK_ME_THE_QUESTION >= Time then
+                    subtitle_text := Text
+
+            subtitle 80, "Let me use configure, I'm not afraid" fr "J'ai même pas peur d'utiliser configure"
+            subtitle 84, "What is uname?" fr "Que dit uname?"
+            subtitle 86.5, "Linux 4.12.9-300.fc26.x86_64 #1 SMP x86_64 x86_64 x86_64 GNU/Linux"
+            subtitle 89, "What is your compiler?" fr "Quel est votre compilateur?"
+            subtitle 91, "gcc (GCC) 7.2.1 20170915 (Red Hat 7.2.1-2)"
+            subtitle 94, "Does your GCC accept the -fPIC option?" fr "Est-ce que votre GCC accepte l'option -fPIC?"
+            subtitle 96, "Yes" fr "Oui"
+            subtitle 97, "Perfect. Now type 'make'" fr "Parfait. Tapez 'make' maintenant"
+            subtitle 100, "Oh! Thank you. Thank you very much" fr "Ah, merci. Merci beaucoup"
+            subtitle 103, "(program is compiling)" fr "(le programme compile)"
+
+            subtitle 106.5, "That's easy!" fr "Mais c'est super facile!"
+            subtitle 111, "user@machine ~ > _"
+            subtitle 113, "This program uses autotools" fr "Ce programme utilise autotools"
+            subtitle 115, "Run ./configure to automatically select the correct options" fr "Utilisez ./configure pour sélectionner les bonnes options"
+            subtitle 117, "And then run 'make'" fr "Et ensuite vous pourrez utiliser 'make'"
+
+            subtitle 121, "Let me use configure, I'm not afraid" fr "J'ai même pas peur d'utiliser configure"
+            subtitle 123,  "What is uname?" fr "Que dit uname?"
+            subtitle 125, "Darwin Darwin Kernel Version 17.2.0:; root:xnu-4570.20.62~3/RELEASE_X86_64 x86_64"
+            subtitle 127, "What is your compiler?" fr "Quel est votre compilateur?"
+            subtitle 129, "Apple LLVM version 9.0.0 (clang-900.0.37)"
+            subtitle 131, "What is the option to force a read-only GOT?" fr "Quelle est l'option pour forcer la TOG à être en lecture seule?"
+            subtitle 134, "..."
+            subtitle 136, "I don't know that!" fr "Mais j'en sais rien!"
+            subtitle 137, "configure: error: package 'autotools' failed"
+
+            subtitle 146, "[user@machine]% █"
+            subtitle 148, "What is uname?" fr "Que dit uname?"
+            subtitle 150, "Linux 3.13.0-24-generic #46-Ubuntu SMP GNU/Linux"
+            subtitle 152, "What is your compiler?" fr "Quel est votre compilateur?"
+            subtitle 154.2, "gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2"
+            subtitle 156, "Does your GCC accept the -fPIC option?" fr "Est-ce que votre GCC accepte l'option -fPIC?"
+            subtitle 159, "Yes. Ah, wait, I'm doing a static lib" fr "Oui. Ah, en fait je fais une librairies statique"
+            subtitle 161, "configure: error: don't know how to get rid of -fPIC"
+            subtitle 167, "Use of uninitialized value $msg in concatenation (.) or string at /usr/local/Cellar/autoconf/2.69/bin/autom4te line 1026."
+
+            subtitle 168.5, "king@world[master] spice> ▄"
+            subtitle 170, "What is uname?" fr "Que dit uname?"
+            subtitle 172, "Darwin Darwin Kernel Version 17.2.0:; root:xnu-4570.20.62~3/RELEASE_X86_64 x86_64"
+            subtitle 174, "What is your compiler?" fr "Quel est votre compilateur?"
+            subtitle 176.2, "Apple LLVM version 9.0.0 (clang-900.0.37)"
+            subtitle 179, "Does your program require the -ObjC option to compile sources?" fr "Est-ce que votre programme a besoin de l'option -ObjC pour compiler?"
+            subtitle 183, "What do you mean, do the source include <AppKit.h> or <Foundation.h>?" fr "Ça dépend, est ce que les sources utilisent <AppKit.h> ou <Foundation.h>?"
+            subtitle 186, "configure: error: can't add per-source option depending on headers"
+            subtitle 188.3, "(uninstalling autoconf and automake)"
+            subtitle 194.8, "How do you know so much about -ObjC?" fr "Comment savez vous toutes ces choses à propos de -ObjC?"
+            subtitle 197, "Well, you have to know these things when you are a real real programmer, you know" fr "Il faut apprendre ce genre de choses quand on est un développeur, tu sais"
+
+            on "key:Return", { movie_set_time ASK_ME_THE_QUESTION, 165 }
+
+            box -400, -250, 1100, 100,
+                font "Impact", 30
+                color "yellow"
+                align 50%
+                vertical_align 50%
+                paragraph subtitle_text
+
+            box 580, 50, 800, 600,
+                font_size 35
+                paragraph "It looks a bit like this scene of Holy Grail" fr "On se dirait un peu dans Monty Python"
+                if shift_modifier then
+                    paragraph "Movie time: " & movie_time ASK_ME_THE_QUESTION
+                show fade_at(movie_time ASK_ME_THE_QUESTION, 98)
+                * "If you run Linux, it just works" fr "Sous Linux, tout va bien (en général)"
+                show fade_at(movie_time ASK_ME_THE_QUESTION, 108)
+                * "For others, it looks easy" fr "Pour les autres, ça a l'air facile"
+                show fade_at(movie_time ASK_ME_THE_QUESTION, 132)
+                * "But they need to answer harder questions" fr "Mais ils ont à répondre à des questions difficiles"
+
+                show fade_at(movie_time ASK_ME_THE_QUESTION, 158)
+                * "Or are forced into specific decisions" fr "Ou sont forcés à faire certains choix"
+                show fade_at(movie_time ASK_ME_THE_QUESTION, 182)
+                * "While bosses know more than the system" fr "Quant aux vrais durs, ils savent mieux que le système"
+        else
+            movie_drop ASK_ME_THE_QUESTION
+        at_step 10
+    refresh 0
+
+
+// ----------------------------------------------------------------------------
+body_slide "Idea #4: standard makefile rules to compute configuration info",
+// ----------------------------------------------------------------------------
+    subtitle "Refined, improved and productized the makefiles used for XL"
+    stepping
+    locally
+        BUILD_VS_AUTOCONF -> "movies/build vs autoconf.mov"
+        translate_z 10
+
+        at_step 1
+        if smooth_step > 0.1 then
+            locally
+                color "black"
+                rectangle 10000, 10000
+            scale fade_at (smooth_step, 1)
+            movie_texture BUILD_VS_AUTOCONF
+            if texture_width > 0 and texture_height > 0 then
+                scale min(window_width / texture_width, window_height / texture_height)
+                color "white"
+                rectangle 0, 0, texture_width, texture_height
+        else
+            movie_drop BUILD_VS_AUTOCONF
+        on "pageexit",
+            movie_drop BUILD_VS_AUTOCONF
+        on "key:1", { movie_set_time BUILD_VS_AUTOCONF, 14 }
+        on "key:2", { movie_set_time BUILD_VS_AUTOCONF, 175 }
+
+
+// ----------------------------------------------------------------------------
+body_slide "Effort #4: Small, efficient, useful, but still not popular",
+// ----------------------------------------------------------------------------
+    subtitle "Missed a few golden opportunities, did not get serious traction"
+    story
+        * "Somewhat successful (some feedback)"
+        * "Integrated in SPICE, autogen-compatible"
+        ** "Vast, measurable improvement of build"
+        ** "Then SPICE spent 6 months switching to Meson"
+        * "Parallel build too limited for QEMU"
+        ** "QEMU also switched to Meson, also painful"
+        * "Low traction"
+        ** "Transition cost"
+        ** "Not invented here"
+        ** "Don't have a team maintaining it"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 130%, "Frustration Ahead.png"
+
+
+    right_picture
+        code_move 0, 0, 1000, 800
+        scaled_image_only_at 1, 45%, "Make-It-Quick External Issue.png"
+        code_size 22
+        colorize_file_at 2, "SPICE build",              "spice-build.txt"
+        colorize_file_at 4, "SPICE Meson Build",        "spice-meson-build.txt"
+        scaled_image_only_at 5, 65%, "Make-It-Quick Parallelism.png"
+        colorize_file_at 6, "QEMU Meson Build",         "qemu-meson-build.txt"
+        colorize_file_at 8, "Transition cost",          "spice-build-diffs.txt"
+        scaled_image_only_at 10, 95%, "Christophe.jpg"
+
+    only_at 3,
+        right_picture
+            translate -100, 80, 0
+            scale 80%
+            comparison_chart 1, -400,  220, 300, 300, "Initial build duration" fr "Durée du premier build", "s", 11.2, 179.45
+            comparison_chart 2, -400, -200, 300, 300, "Build after changing one file" fr "Durée après avoir changé un fichier", "s", 1.3, 9.5
+            comparison_chart 3, 400, 220, 300, 300, "Size of description files to maintain" fr "Taille des fichiers à maintenir", " lines" fr " lignes", 803, 3731
+            comparison_chart 4, 400, -200, 300, 300, "Size of support files" fr "Taille des fichiers de support", " lines" fr " lignes", 1213, 40253
+            comparison_chart 5, 0, 120, 300, 300, "Number of tools" fr "Nombre d'outils", "", 1, number_of_tools tools_choice
+
+            tools_choice -> integer (fade_at(smooth_step, 5.5) + fade_at(smooth_step, 6.5))
+            number_of_tools 0 -> 4
+            number_of_tools 1 -> 6
+            number_of_tools 2 -> 9
+
+            style "code"
+            font_size 25
+            align 50%
+            vertical_align 0%
+            text_box -120, -350, 200, 400,
+                paragraph "make"
+            text_box  120, -350, 200, 400,
+                paragraph "make"
+                paragraph "autoconf"
+                paragraph "automake"
+                paragraph "autoreconf"
+                paragraph " "
+                paragraph "configure"
+                paragraph "autogen.sh"
+                show fade_at(tools_choice, 2)
+                paragraph " "
+                paragraph "perl"
+                paragraph "m4"
+                paragraph "bash"
+
+    comparison_chart N, X, Y, W, H, Name, Unit, Build, Autoconf ->
+        locally
+            frame_texture W + 100, H + 100,
+                light 0
+                light_position 100, 100, 1000
+                rotate_x  15 * sin(0.1 * time)
+                rotate_y 10 * fade_at(N, 5) - X * (0.06 + 0.03 * cos(0.13 * time))
+                locally
+                    extrude_depth 100
+                    extrude_radius 6
+                    rotate_z 90
+                    color "red"
+                    ellipse_sector 0, 0, W*95%, H*95%, 0, 360
+                    translate_z 20
+                    extrude_depth 120
+                    color "green"
+                    ellipse_sector 0, 0, W, H, 0, -360 * Build / Autoconf
+            color "white"
+            rectangle X, Y, W + 100, H + 100
+
+        locally
+            color "black"
+            align 50%
+            text_box X, Y, 500 + W, 180 + H,
+                vertical_align 100%
+                font "Arial", 30, bold
+                paragraph Name
+                font "Arial", 20
+                paragraph
+                    text "Build: " & Build & Unit
+                    text " (" & (0.01 * integer(10000.0 * Build / Autoconf))
+                    text "% of Autoconf)" fr "% de Autoconf)"
+                paragraph
+                    text "Autoconf: " & Autoconf & Unit
+                    text " (" & (0.01 * integer(10000.0 * Autoconf / Build))
+                    text "% of Build" fr "% de Build"
+
+
+
+// ============================================================================
+//
+section_slide "Recorder library",
+//
+// ============================================================================
+    title page_label
+    subtitle "A printf-like flight recorder for C/C++ programs"
+    picture
+        texture "FlightRecorder.jpg"
+        translate 250, 230, 20
+        rotate_z -2
+        scale 155%
+        color "white", fade_in(page_time, 5)
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+    reference_talk "DevConf.us 2018", "A flight recorder for C/C++ programs", "https://devconfus2018.sched.com/event/FNNR/a-flight-recorder-for-cc-programs"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Itch #5: Why is it so hard to know why a program crashed?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "What matters is usually what happened before the crash"
+    stepping
+    story
+        vertical_align 0
+
+        * "My program crashed, but I don't know why"
+        ** "Think! What was I doing?"
+        ** "Some idiot hit the 'any' key at the wrong time"
+
+        * "I wish I could reproduce"
+        ** "Heisenbugs, bugs that happen only once"
+        ** "Some idiot has better things to do than reproduce for me"
+
+        * "This bug has been opened for too long, let's close it"
+        ** "Unsolved mysteries, part CLXXVII"
+        ** "Do you want to make your customers sad?"
+
+    right_picture
+        images "ArianeExplosion.jpg", "DoryAward.jpg", "TheUniverseIsWinning.jpg", "cant-reproduce-a-defect.jpg", "heisenbugs.jpg", "idiots-vs-idiots.jpg", "Problem Solved.jpg", "bug-key.jpg", "CryBaby.jpg"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Idea #5: A printf-like multi-channel flight recorder",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Always-on instrumentation with benefits"
+    stepping
+    locally
+        SPICE_SMART_STREAMING -> "movies/Smart Streaming.mp4"
+        translate_z 10
+
+        at_step 1
+        if smooth_step > 0.1 then
+            locally
+                color "black"
+                rectangle 10000, 10000
+            scale fade_at (smooth_step, 1)
+            movie_texture SPICE_SMART_STREAMING
+            if texture_width > 0 and texture_height > 0 then
+                scale min(window_width / texture_width, window_height / texture_height)
+                color "white"
+                rectangle 0, 0, texture_width, texture_height
+        else
+            movie_drop SPICE_SMART_STREAMING
+        on "pageexit",
+            movie_drop SPICE_SMART_STREAMING
+        on "key:1", { movie_set_time SPICE_SMART_STREAMING, 14 }
+        on "key:2", { movie_set_time SPICE_SMART_STREAMING, 175 }
+
+
+// ----------------------------------------------------------------------------
+body_slide "Effort #5: Relatively small effort, but still no real traction",
+// ----------------------------------------------------------------------------
+    subtitle "Was ""instrumental"" to understanding SPICE Smart Streaming"
+    story
+        * "An old idea, implemented in earlier jobs"
+        * "Seriously refined based on SPICE feedback"
+        * "Smallish project, keep it simple"
+        * "Replaced original XL/Tao3D recorder"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 100%, "Tire Smoke.jpg"
+
+
+    right_picture
+        code_move -50, 0, 1000, 800
+        code_size 21
+        only_at 1,
+            image   0,  120, 60%, 60%, "HPVM.png"
+            image -50, -120, 70%, 70%, "DXO ONE.png"
+        colorize_file_at 2, "SPICE impact",     "spice-recorder-impact.txt"
+        only_at 3,
+            code_box "Stats", { text load_text "recorder-stats.txt" }
+        scaled_image_only_at 4, 150%, "Happy.png"
+
+
+// ============================================================================
+//
+section_slide "Part 2 - How to do it right",
+//
+// ============================================================================
+    title page_label
+    subtitle "Small projects with a community"
+    picture
+        texture "The Right Way.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 70%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Case #1: Git Publish",
+// ----------------------------------------------------------------------------
+    subtitle "Make it easy to publish patch series on a mailing list"
+    story
+        * "A very simple problem statement"
+        * "Stats tell a story of a project being contributed to"
+        * "Community: mostly the virt team at Red Hat"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 40%, "git-publish.png"
+
+
+    right_picture
+        code_move -50, 0, 1000, 800
+        code_size 21
+        scaled_image_only_at 1, 100%, "git-publish problem statement.png"
+        only_at 2,
+            code_box "Stats", { text load_text "git-publish-stats.txt" }
+
+
+// ----------------------------------------------------------------------------
+body_slide "Case #2: Bichon",
+// ----------------------------------------------------------------------------
+    subtitle "A terminal-based user interface for reviewing GitLab requests"
+    story
+        * "A very simple problem statement"
+        * "Stats tell a story of a project being used"
+        * "Community: mostly the virt team at Red Hat (again)"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 80%, "bichon project.png"
+
+
+    right_picture
+        code_move -50, 0, 1000, 800
+        code_size 21
+        scaled_image_only_at 1, 70%, "bichon goals.png"
+        only_at 2,
+            code_box "Stats", { text load_text "bichon-stats.txt" }
+
+
+// ----------------------------------------------------------------------------
+body_slide "Case #3: QBoot",
+// ----------------------------------------------------------------------------
+    subtitle "Minimal x86 firmware that can boot Linux"
+    story
+        * "A very simple problem statement"
+        * "Stats tell a story of a project with a star effect "
+        * "Community: mostly the virt team at Red Hat (surprise!)"
+
+    picture
+        translate_y 80
+        scaled_image_only_at 0, 40%, "qboot project.png"
+
+    right_picture
+        code_move -50, 0, 1000, 800
+        code_size 21
+        scaled_image_only_at 1, 60%, "qboot problem.png"
+        only_at 2,
+            code_box "Stats", { text load_text "qboot-stats.txt" }
+
+
+
+// ============================================================================
+//
+section_slide "Part 3 - What can we learn",
+//
+// ============================================================================
+    title page_label
+    subtitle "The community is the key"
+    picture
+        texture "KVM Forum 2018.jpg"
+        translate 350, 230, 20
+        rotate_z -2
+        scale 180%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+
+// ----------------------------------------------------------------------------
+body_slide "Factors of success (as measured by traction)",
+// ----------------------------------------------------------------------------
+    subtitle "An existing community, a simple problem, an elegant solution"
+    stepping
+    story
+        * "All three examples have a pre-existing, well established community"
+        ** "Because of that, they actually share the same problems"
+        ** "This means they will probably agree on the solution"
+        * "They also learned to trust one another over time"
+        ** "The number of stars reflects an interesting stardom effect"
+        ** "Simple code attracts more followers"
+
+
+
+// ----------------------------------------------------------------------------
+body_slide "Factors of success (as measured by self-development)",
+// ----------------------------------------------------------------------------
+    subtitle "It may be worth solving a problem that nobody else has"
+    stepping
+    story
+        * "It's OK to be Frank rather than Albert"
+        ** "XL is still failing forward. I love every minute spent solving problems"
+        ** "I still enjoy Tao3D quite a little bit more than Google Slides"
+        --
+        * "It takes 20 years to build an overnight success"
+        ** "There's a lot of value in solving simple problems"
+        ** "Larger problems may be beyond your personal capability"
+        --
+        * "Is popularity your primary driver?"
+        ** "Otherwise, it's really OK to love the monsters you created"
+
+
+    right_picture
+        images "Tough Problems.jpg", "Albert Einstein.jpg", "Tao3D-Logo.png", "Iceberg of Success.jpg", "Small Invention.jpg", "Going to the Moon.jpg", "Twitter Followers.png", "Frankenstein.jpg"
+
+
+// ============================================================================
+//
+body_slide "https://c3d.github.com/xl",
+//
+// ============================================================================
+    picture
+        text_box 0, -150, 1200, 120,
+            font "Edwardian Script ITC", 220
+            color_hsv 2 * time, 70%, 90%
+            text "Thank you!"
+    picture
+        texture "Informagie QR Code.png"
+        translate 550, 230, -200
+        rotate_z -2
+        scale 55%
+        rounded_rectangle 0, 0, texture_width, texture_height, 20
+
+    picture
+        texture "XL-Doc.png"
+        translate -650, 230, -200
+        rotate_z 4
+        scale 220%
+        rectangle texture_width, texture_height

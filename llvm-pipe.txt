@@ -1,0 +1,24 @@
+STACK TRACE:
+   0           0x691467                           (null) [./Tao]
+   1           0x6913ea                           (null) [./Tao]
+   2     0x7ff1c54e7a60                           (null) [/lib64/libc.so.6]
+
+// HERE WE USE THE XLR VERSION OF LLVM
+   3     0x7ff1cad758bd _ZN4llvm19SmallPtrSetImplBase4GrowEj [./libxlr.so.1]
+   4     0x7ff1cad75a0b _ZN4llvm19SmallPtrSetImplBase10insert_impEPKv [./libxlr.so.1]
+// In an LLVM 11 context
+   5     0x7ff19dfe6972 (null) [/lib64/libLLVM-11.so]
+   6     0x7ff1cb2b98ee (null) [/lib64/ld-linux-x86-64
+  15     0x7ff1c9eabbd9 (null) [/lib64/libdl.so.2]
+  16     0x7ff1c9eab428 dlopen [/lib64/libdl.so.2]
+// Coming from GLX
+  17     0x7ff1b155987e (null) [/lib64/libGLX_indirect.so.0]
+// Coming from Qt5 window creation (prior to an XL init)
+  22     0x7ff1b15d06a3 (null) [/usr/lib64/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so]
+  23     0x7ff1b3470705 _ZN10QXcbWindow6createEv [/lib64/libQt5XcbQpa.so.5]
+  24     0x7ff1b345edc6 _ZNK15QXcbIntegration20createPlatformWindowEP7QWindow [/lib64/libQt5XcbQpa.so.5]
+  25     0x7ff1c6309054 _ZN14QWindowPrivate6createEby [/lib64/libQt5Gui.so.5]
+  26     0x7ff1c9d2b1c7 _ZN10QGLContext13chooseContextEPKS_ [/lib64/libQt5OpenGL.so.5]
+  27     0x7ff1c9d29302 _ZN10QGLContext6createEPKS_ [/lib64/libQt5OpenGL.so.5]
+  28     0x7ff1c9d2e03d _ZN9QGLWidget10setContextEP10QGLContextPKS0_b [/lib64/libQt5OpenGL.so.5]
+  29     0x7ff1c9d2e1c4 _ZN16QGLWidgetPrivate11initContextEP10QGLContextPK9QGLWidget [/lib64/libQt5OpenGL.so.5]

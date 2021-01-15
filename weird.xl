@@ -1,8 +1,15 @@
+// Self-contradicting type
 type goedel is matching (G : not goedel)
 
-for I in 1..25 loop
-    color_hsv I * 5 + time, 90%, 50%, 30%
-    line_color_hsv I * 5 + 3 + time, 90%, 50%, 100%
-    rotate_z 5
-    shape
-        ellipse 200, 0, 300, 60
+// Advanced optimizations even for simple stuff
+while Condition loop Body is
+    if Condition then
+        Body
+        while Condition loop Body
+
+// Selecting the best compilation strategy
+min X, Y is
+    minX is min X
+    minY is min Y
+    if minX < minY then minX else minY
+min X is X

@@ -1,0 +1,32 @@
+#
+# project definition
+#
+project('spice', 'c',
+        version : run_command('build-aux/git-version-gen', '${MESON_SOURCE_ROOT}/.tarball-version', check : true).stdout().strip(),
+        license : 'LGPLv2.1',
+        meson_version : '>= 0.48')
+
+message('Updating submodules')
+run_command('build-aux/meson/check-spice-common', check : true)
+
+#
+# soversion
+# The versioning is defined by the forumla (CURRENT-AGE.AGE.REVISION)
+#
+# XXX: KEEP IN SYNC WITH configure.ac file
+spice_server_current = 14
+spice_server_revision = 0
+spice_server_age = 13
+spice_server_so_version = '@0@.@1@.@2@'.format(spice_server_current - spice_server_age,
+                                               spice_server_age,
+                                               spice_server_revision)
+message('libspice.so version: ' + spice_server_so_version)
+
+# some global vars
+spice_server_global_cflags = ['-DSPICE_SERVER_INTERNAL',
+                              '-DG_LOG_DOMAIN="Spice"',
+                              #'-Werror',
+                              '-Wall',
+                              '-Wextra',
+                              '-Wno-sign-compare',
+                              '-Wno-unused-parameter']

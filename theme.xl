@@ -8,7 +8,7 @@ import Filters
 
 
 theme "XL-Lang"
-PresentationTitle -> "Making a programming language simple is complicated"
+PresentationTitle -> "The pet projects of Dr Frank Einstein"
 
 
 
@@ -23,8 +23,8 @@ theme_align "XL-Lang", "main", "title"           -> align_left
 theme_align "XL-Lang", "main", "subtitle"        -> align_left
 theme_align "XL-Lang", "section", "title"        -> align_left
 theme_align "XL-Lang", "section", "subtitle"     -> align_left
-theme_color "XL-Lang", "main", "title"           -> color "#64D0FA"
-theme_color "XL-Lang", "main", "subtitle"        -> color "#3ED0FA"
+theme_color "XL-Lang", "main", "title"           -> color "#DA5044"
+theme_color "XL-Lang", "main", "subtitle"        -> color "#FAD03E"
 theme_color "XL-Lang", "main", Other             -> color "white"
 theme_color "XL-Lang", "section", "title"        -> color "#20D0F0"
 theme_color "XL-Lang", "section", "subtitle"     -> color "#3EC0FA"
@@ -134,8 +134,9 @@ theme_background "XL-Lang", "main" ->
         shader_show "simplicity-galaxy.fs",
             shader_resolution
             shader_speed 15%
-            shader_atime
+            shader_set iGlobalTime := (page_time  + 8) * shader_speed
             shader_depth 100%
+            shader_scale 100%
 
 
 theme_background "XL-Lang", "section" ->
@@ -151,6 +152,7 @@ theme_background "XL-Lang", "section" ->
             shader_depth 100%
             shader_channel 0, "tex03.jpg"
             shader_channel 1, "tex12.png"
+            shader_scale 100%
 
 
 theme_background "XL-Lang", "movie" ->
@@ -171,6 +173,7 @@ theme_background "XL-Lang", Master ->
             shader_speed 15%
             shader_atime
             shader_depth 100%
+            shader_scale 30%
     locally
         font "DIN Alternate"
         translate 0, bottom_offset, -50
@@ -246,8 +249,8 @@ theme_layout "XL-Lang", "main" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow -300, -150, 1200, 200, "title"
-    flow -300, -400, 1200, 300, "subtitle"
+    flow -100, -150, 1400, 200, "title"
+    flow -100, -400, 1400, 300, "subtitle"
 
 
 theme_layout "XL-Lang", "section" ->
@@ -291,6 +294,35 @@ presentation_author Body ->
             font_size 45
             render Body
 
+
+slide_picture_at A..B, What ->
+// ----------------------------------------------------------------------------
+//   Show the "What" picture at time "When"
+// ----------------------------------------------------------------------------
+    only_at A..B,
+        slide_picture What
+
+
+slide_picture_at When, What ->
+// ----------------------------------------------------------------------------
+//   Show the "What" picture at time "When"
+// ----------------------------------------------------------------------------
+    only_at When,
+        slide_picture What
+
+
+slide_picture Picture:text -> slide_picture Picture, 0%
+slide_picture Picture:text, Round:real -> slide_picture Picture, Round, 200
+slide_picture Picture:text, Round:real, Size:real ->
+// ----------------------------------------------------------------------------
+//   Show a picture in a slide
+// ----------------------------------------------------------------------------
+    contents 100,
+        translate 900-Size/2, 420, 0
+        texture Picture
+        color "white"
+        scale min(Size / texture_width, Size / texture_height)
+        rounded_rectangle 0, 0, texture_width, texture_height, Round * max(texture_width, texture_height)
 
 
 // ============================================================================
@@ -423,7 +455,7 @@ colorize Input:text ->
     highlighting := 0
     regexp_parse_all Input,
         // Comments
-        - "(//.*\n)|(/[*].*[*]/)" ->
+        - "(// .*\n)|(/[*] .* [*]/)|(-- .*\n)|(#( .*)?\n)" ->
             red regexp_captured 0
         // Definition
         - "([^\n]*)\b(->|is)\b" ->
@@ -450,6 +482,9 @@ colorize Input:text ->
         // Type declarations
         "((:|as)[ ]*)([A-Za-z][A-Za-z0-9_]*)" ->
             colorize_type regexp_captured 1, regexp_captured 3
+        // Command-line tests
+        "% [a-z][^\n]*\n" ->
+            green regexp_captured 0
         // Names
         "[A-Za-z][A-Za-z_0-9]*" ->
             colorize_highlight regexp_captured 0
@@ -543,6 +578,13 @@ code_x ->   0.0
 code_y ->   0.0
 code_w -> 700.0
 code_h -> 800.0
+code_size -> theme_size "XL-Lang", slide_master, "code"
+code_size_adjust CS:integer, CV:integer -> CS := CV
+code_size S:integer ->
+    code_size_adjust code_size, S
+    on "pageexit",
+        code_size_adjust code_size, 32
+
 code_position X:real, Y:real, W:real, H:real ->
 // ----------------------------------------------------------------------------
 //    Move the code at the given location
@@ -985,7 +1027,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 1500 // 40 minutes
+TOTAL_DURATION -> 2100 // 40 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -1589,6 +1631,23 @@ body_slide Title, Body ->
         title page_label
         stepping
         Body
+
+
+reference_talk Conf, Descr, URL ->
+    stepping
+    contents 100,
+        at_step 1
+        rotate_z 10
+        text_box -400, 300, 800, 400,
+            align 0%
+            vertical_align 30%
+            font "Avenir Next", 40, bold
+            color tao "yellow"
+            paragraph Conf
+            font "Avenir Next Condensed", 50, italic
+            paragraph Descr
+            font "Menlo", 26
+            paragraph URL
 
 
 

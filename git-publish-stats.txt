@@ -1,0 +1,14 @@
+246 commits
+Date range: Apr 2, 2017 - Nov 27, 2020 (active)
+
+24 authors
+137 by Stefan Hajnoczi
+4 authors with more than 10 commits
+
+2295 lines of code
+  51 lines in README.md
+
+13 open issues
+20 closed issues
+
+25 forks, 64 star

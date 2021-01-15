@@ -1,0 +1,22 @@
+// Distributed tree-processing function
+translation XLSemantics
+    when
+        if 'Cond' then 'TrueCase' else 'FalseCase'
+    then
+        return DoIf(Cond, TrueCase, FalseCase)
+    when
+        while 'Test' loop 'Body'
+    then
+        return DoConditionalLoop(Test, Body, true, false)
+
+// Compiler plug-ins
+{differentiation} A : real := d/dx(exp(-2*x))
+Z : real := {constantfold} f(X) - f(1*X)
+
+// C and Java text-based back-ends
+if              "if($1) goto else_$2;"
+ifnot           "if(!($1)) goto else_$2;"
+ifelse          "goto endif_$1;"
+                "else_$1: NOP;"
+ifend           "endif_$1: NOP;"
+ifendelse       "else_$1: NOP;"
