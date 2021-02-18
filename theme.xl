@@ -21,8 +21,15 @@ presentation_url -> "https://github.com/c3d/redhat-template"
 presentation_tao X -> presentation_tao := X
 presentation_tao -> "https://github.com/c3d/redhat-template.git"
 
-presentation_author X -> presentation_aythor := X
+presentation_author X -> presentation_author := X
 presentation_author -> "Christophe de Dinechin (dinechin@redhat.com, IRC c3d)"
+
+presentation_author_title X -> presentation_author_title := X
+presentation_author_title -> "Senior Principal Software Engineer"
+
+presentation_author_mail X -> presentation_author_mail := X
+presentation_author_mail -> "dinechin@redhat.com"
+
 
 
 // ============================================================================
@@ -34,10 +41,11 @@ presentation_author -> "Christophe de Dinechin (dinechin@redhat.com, IRC c3d)"
 
 theme_align "RedHat", "main", "title"           -> align_left
 theme_align "RedHat", "main", "subtitle"        -> align_left
-theme_align "RedHat", "section", "title"        -> align_left
+theme_align "RedHat", "section", "title"        -> align_left; vertical_align_bottom
 theme_align "RedHat", "section", "subtitle"     -> align_left
 theme_color "RedHat", "main", Theme             -> color "white"
-theme_color "RedHat", "section", Theme          -> color "white"
+theme_color "RedHat", "section", "title"        -> color redhat_red
+theme_color "RedHat", "section", Theme          -> color "black"
 
 theme_font  "RedHat", "movie", "title"          -> font "Overpass", bold, 60
 theme_size  "RedHat", "movie", "title"          -> 60
@@ -49,10 +57,10 @@ theme_size  "RedHat", "movie", "subtitle"       -> 45
 theme_color "RedHat", "movie", "subtitle"       -> color "white"
 theme_align "RedHat", "movie", "subtitle"       -> align 50%; vertical_align 50%
 
-theme_font  "RedHat", Master, "title"           -> font "Overpass", weight 300
+theme_font  "RedHat", Master, "title"           -> font "Overpass"
 theme_size  "RedHat", Master, "title"           -> 85
 theme_font  "RedHat", Master, "subtitle"        -> font "Overpass"
-theme_size  "RedHat", Master, "subtitle"        -> 45
+theme_size  "RedHat", Master, "subtitle"        -> 50
 theme_color "RedHat", Master, "subtitle"        -> color "#A21400"
 theme_font  "RedHat", Master, "code"            -> font "Menlo", 40
 theme_size  "RedHat", Master, "code"            -> 20
@@ -114,6 +122,8 @@ theme_box "RedHat",Master:text,"rightpic", X:real,Y:real,W:real,H:real -> false
 theme_slide_width  "RedHat" -> 1920
 theme_slide_height "RedHat" -> 1080
 
+// Red Hat colors
+redhat_red      -> "#EE2000"
 redhat_red1     -> "#8F1000"
 redhat_red2     -> "#B21600"
 redhat_red3     -> "#CC1B00"
@@ -123,6 +133,7 @@ redhat_orange2  -> "#E55520"
 redhat_orange3  -> "#F07520"
 redhat_orange4  -> "#DD3311"
 
+redhat_blue     -> "#3889ED"
 redhat_blue1    -> "#10008F"
 redhat_blue2    -> "#10206F"
 redhat_ocean1   -> "#8CF"
@@ -140,12 +151,10 @@ theme_main_background Body ->
         translate_y -120
         shader_show "shaders/clouds.fs",
             shader_resolution
-            if mouse_x > 0 then
-                shader_atime
-            else
-                shader_set iGlobalTime := seconds_time * 0.01 mod 813
+            shader_time
             shader_depth 100%
-            shader_channel 0, "tex11.png"
+            shader_scale 40%
+            shader_channel 0, "tex16.png"
 
     background -200,
         blend_function_separate "dst_color", "src_color", "src_alpha", "dst_alpha"
@@ -185,7 +194,26 @@ theme_main_background Body ->
 
     contents -10,
         color "white"
-        image -350, 200, 40%, 40%, "RedHat-WhiteText.png"
+        image -370, 300, 25%, 25%, "RedHat-WhiteText.png"
+
+
+title_slide_author Picture:text, Body ->
+// ----------------------------------------------------------------------------
+//    Draw a small text box with the presenter's name and info
+// ----------------------------------------------------------------------------
+    contents 100,
+        color "white"
+        texture Picture
+        circle -550, -350, 90
+    contents 10,
+        text_box -100, -400, 600, 200,
+            font "Overpass", 30
+            color "white"
+            align 0%
+            vertical_align 0%
+            render Body
+        color "red"
+        rectangle -350, -280, 100, 4
 
 
 theme_background "RedHat", "main" ->
@@ -199,9 +227,31 @@ theme_background "RedHat", "section" ->
 // ----------------------------------------------------------------------------
 //   Same as section
 // ----------------------------------------------------------------------------
-    theme_main_background
-        color "black", 20%
-        rectangle 0, -70, 2000, 250
+    clear_color "#EFEFEF"
+    background -250,
+        translate_y -120
+        shader_show "shaders/clouds.fs",
+            shader_resolution
+            shader_time
+            shader_depth 100%
+            shader_scale 40%
+            shader_channel 0, "tex16.png"
+    background -200,
+        color "white"
+        texture "Red Hat Background.png"
+        section_rectangle texture_width * slide_height / texture_height, slide_height
+        section_rectangle W:real, H:real ->
+            locally
+                texture ""
+                color "#EE0000", 80%
+                rectangle -(slide_width - W)/2, 0, W, H
+            color "white", 99%
+            rectangle -(slide_width - W)/2, 0, W, H
+
+    contents -50,
+        color "white"
+        image 800, -510, 15%, 15%, "RedHat-BlackText.png"
+
 
 
 theme_background "RedHat", "movie" ->
@@ -374,16 +424,15 @@ theme_layout "RedHat", "main" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow 200,    0, 1200, 200, "title"
-    flow 200, -200, 1200, 350, "subtitle"
+    flows 200, 0, 1200, 400, "title", "subtitle"
 
 
 theme_layout "RedHat", "section" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow 100, -100, 1000, 250, "title"
-    flow 100, -250, 1000, 150, "subtitle"
+    flow 400,  250, 1000, 450, "title"
+    flow 400, -150, 1000, 350, "subtitle"
 
 
 theme_layout "RedHat", "movie" ->
@@ -434,7 +483,7 @@ slide_picture Picture:text, Round:real, Size:real ->
 //   Show a picture in a slide
 // ----------------------------------------------------------------------------
     contents 100,
-        translate 900-Size/2, 420, 0
+        translate 900-Size/2, 350, 0
         texture Picture
         color "white"
         scale min(Size / texture_width, Size / texture_height)
@@ -484,14 +533,14 @@ title_slide_logo ->
 //   The logo on the title slides
 // ----------------------------------------------------------------------------
     picture
-        translate 600, 320, 20
+        translate 600, 420, 20
         texture presentation_logo
         color "white"
         title_slide_logo_internal texture_width, texture_height
         title_slide_logo_internal 0, H -> false
         title_slide_logo_internal W, 0 -> false
         title_slide_logo_internal W:integer, H:integer ->
-            scale min(300.0 / W, 300.0 / H)
+            scale min(200.0 / W, 300.0 / H)
             locally
                 texture ""
                 rounded_rectangle 0, 0, W*120%, H*120%, 60
@@ -612,32 +661,82 @@ colorize_highlight T:text ->
         highlighting := 0
 
 
+colorize_type Colon:text, Type:text ->
+// ----------------------------------------------------------------------------
+//    Colorize a type annotation
+// ----------------------------------------------------------------------------
+    gray  { colorize_highlight Colon }
+    green { colorize_highlight Type }
+
+
 colorize Input:text ->
 // ----------------------------------------------------------------------------
 //   Render the given input using colorized text
 // ----------------------------------------------------------------------------
     highlighting := 0
     regexp_parse_all Input,
+        // Comments
+        - "(// .*\n)|(/[*] .* [*]/)|(-- .*\n)|(#( .*)?\n)" ->
+            red regexp_captured 0
+        // Definition
+        - "([^\n]*)\b(->|is)\b" ->
+            italic { ltblue { colorize regexp_captured 1 } }
+            gray regexp_captured 2
+        // Real numbers (with base)
+        "[0-9_]+#[0-9_A-Za-z]+[.][0-9_A-Za-z]+(#?[eE][+-]?[0-9_]+)?" ->
+            ocean regexp_captured 0
         // Real numbers
-        "[0-9_]+([.][0-9_]+(e[+-]?[0-9_]+)?)?" ->
+        "[0-9_]+[.][0-9_]+([eE][+-]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Integer numbers (with base)
+        "[0-9_]+#[0-9_A-Za-z]+([eE][+-]?[0-9_]+)?" ->
+            ocean regexp_captured 0
+        // Integer numbers (or real numbers if negative exponent)
+        "[0-9_]+([eE][+-]?[0-9_]+)?" ->
             ocean regexp_captured 0
         // Text
-        - "([""].*[""])|<<.*>>|'.*'" ->
+        - "([""].*[""])|<<.*>>" ->
+            dpurple regexp_captured 0
+        // Characters
+        - "'.*'" ->
             purple regexp_captured 0
-        // Comments
-        - "(#.*\n)+" ->
-            red regexp_captured 0
-        // Command-line options and names
-        "[a-zA-Z0-9-_]+" ->
+        // Type declarations
+        "((:|as)[ ]*)([A-Za-z][A-Za-z0-9_]*)" ->
+            colorize_type regexp_captured 1, regexp_captured 3
+        // Command-line tests
+        "% [a-z][^\n]*\n" ->
+            green regexp_captured 0
+        // Names
+        "[A-Za-z][A-Za-z_0-9]*" ->
             colorize_highlight regexp_captured 0
-        // Process spaces at once
-        " +" ->
-            colorize_highlight regexp_captured 0
+        // Symbols
+        "[^A-Za-z0-9 ""'\n]+" ->
+            navy { colorize_highlight regexp_captured 0 }
+        // Spaces
+        "[ \n]+" ->
+            text regexp_captured 0
+        // Other
         "." ->
-            colorize_highlight regexp_captured 0
+            text regexp_captured 0
     refresh 0.1
     on "pageexit",
         highlight "none"
+
+
+colorize_file Title:text, File:text ->
+// ----------------------------------------------------------------------------
+//   Colorize from a file
+// ----------------------------------------------------------------------------
+    code_box Title,
+        colorize load_text File
+
+
+colorize_file_at Time, Title:text, File:text ->
+// ----------------------------------------------------------------------------
+//   Colorize at a given time
+// ----------------------------------------------------------------------------
+    only_at Time,
+        colorize_file Title, File
 
 
 red     Body -> text_span { color "#AA0022"; render Body }
@@ -650,6 +749,7 @@ ocean   Body -> text_span { color "#229988"; render Body }
 sky     Body -> text_span { color "#3399FF"; render Body }
 navy    Body -> text_span { color "#002266"; render Body }
 purple  Body -> text_span { color "#CC0099"; render Body }
+dpurple Body -> text_span { color "#990066"; render Body }
 gray    Body -> text_span { color "#777";    render Body }
 code    Body -> text_span { font "Menlo";    blue   Body }
 concept Body -> text_span { font "Amaze";    green  Body }
@@ -675,9 +775,9 @@ code_box X:real, Y:real, W:real, H:real, Title, Body ->
                 style "boxtitle"
                 anchor
                     linear_gradient 32, 64, 32, 0, 64, 64,
-                        gradient_color   0%, "lightgray", 70%
-                        gradient_color  10%, "darkgray",  90%
-                        gradient_color 100%, "white", 0%
+                        gradient_color   0%, "#CCF", 70%
+                        gradient_color  10%, "#448",  90%
+                        gradient_color 100%, "#FFF", 0%
                     color "lightblue"
                     rectangle 0, -25, 5 * W, 65
                 paragraph Title
@@ -699,6 +799,13 @@ code_x ->   0.0
 code_y ->   0.0
 code_w -> 700.0
 code_h -> 800.0
+code_size -> theme_size "XL-Lang", slide_master, "code"
+code_size_adjust CS:integer, CV:integer -> CS := CV
+code_size S:integer ->
+    code_size_adjust code_size, S
+    on "pageexit",
+        code_size_adjust code_size, 32
+
 code_position X:real, Y:real, W:real, H:real ->
 // ----------------------------------------------------------------------------
 //    Move the code at the given location
@@ -1009,6 +1116,7 @@ tao "sky"                               -> "#3399FF"
 tao "navy"                              -> "#003388"
 tao "purple"                            -> "#CC0099"
 tao "grey"                              -> "#555"
+
 
 
 // ============================================================================
@@ -1400,6 +1508,23 @@ anim_select X:real, S:integer = TX:real, Rest ->
     anim_select X, Rest
 
 
+anim_text X:text, S:integer = TX:text ->
+// ----------------------------------------------------------------------------
+//   Compute an animated value that sets X to TX at step S
+// ----------------------------------------------------------------------------
+    if anim_step >= S then
+        TX
+    else
+        X
+
+
+anim_text X:text, S:integer = TX:text, Rest ->
+// ----------------------------------------------------------------------------
+//   Compute animated value in a list
+// ----------------------------------------------------------------------------
+    anim_text anim_text(X, S = TX), Rest
+
+
 check_refresh ->
 // ----------------------------------------------------------------------------
 //   Check if we have overly-eager refresh
@@ -1407,3 +1532,152 @@ check_refresh ->
     counter -> 0
     writeln "Refresh ", counter, " step=", smooth_step
     counter := counter + 1
+
+
+
+// ============================================================================
+//
+//   Stacked items
+//
+// ============================================================================
+
+stacked_item_index -> 0
+stacked_item_count -> 1
+stacked_item_unit  -> ""
+stacked_item_total -> 0.0
+stacked_item_sum   -> 0.0
+stacked_item_scale -> 1.0
+
+STACK_HEIGHT -> 600.0
+DESCR_HEIGHT -> 60
+
+
+stacked_scaled Height:real, Value:real, Caption:text, Description:text ->
+    color_hsv 37.311 * stacked_item_index, 90%, 80%
+    rounded_rectangle -650, Height/2, 100, Value * stacked_item_scale, 10
+    translate_y Height + 1
+    stacked_item_total := stacked_item_total + Height + 1
+    stacked_item_sum := stacked_item_sum + Value
+    locally
+        show 30%
+        path
+            move_to -600, -1
+            line_to -600, -(Height + 1)
+            line_to -420, (STACK_HEIGHT - DESCR_HEIGHT * (stacked_item_count-1)) / 2 - stacked_item_total + stacked_item_index * DESCR_HEIGHT - DESCR_HEIGHT/2
+            line_to -420, (STACK_HEIGHT - DESCR_HEIGHT * (stacked_item_count-1)) / 2 - stacked_item_total + stacked_item_index * DESCR_HEIGHT + DESCR_HEIGHT/2
+
+    locally
+        translate_y (STACK_HEIGHT - DESCR_HEIGHT * (stacked_item_count-1)) / 2 - stacked_item_total - Height/2 + stacked_item_index * DESCR_HEIGHT
+        text_box -580, Height/2, 300, Height,
+            style "story"
+            color "#777"
+            align 1
+            vertical_align 0.5
+            font_size 26
+            render Value
+            render stacked_item_unit
+        rounded_rectangle -300, Height/2, 230, DESCR_HEIGHT - 2, 10
+        text_box -300, Height/2, 250, DESCR_HEIGHT,
+            style "story"
+            color "white"
+            font_size 30
+            align 0.5
+            vertical_align 0.4
+            text Caption
+        text_box  450, Height/2, 1200, Height,
+            style "story"
+            align 0
+            vertical_align 0.5
+            text Description
+
+stacked_round X:real -> 0.1 * integer(X * 10)
+
+stacked Height:real, Caption:text, Description:text ->
+    if Height > 0.0 then
+        stacked_scaled Height * stacked_item_scale, stacked_round(Height), Caption, Description
+    stacked_item_index := stacked_item_index + 1
+
+
+reference_scale Height:real, Caption ->
+    locally
+        line_color redhat_blue
+        line_width 6
+        line_arrow -730, 0, none, -730, Height * stacked_item_scale, arrowhead
+    text_box -850, Height * stacked_item_scale - 40, 200, 80,
+        style "story"
+        color redhat_blue
+        align 1
+        render Caption
+
+reference_tick Height:real, Caption ->
+    locally
+        line_color redhat_blue
+        line_width 2
+        line_arrow -740, Height * stacked_item_scale, none, -720, Height * stacked_item_scale, none
+    text_box -850, Height * stacked_item_scale, 200, 80,
+         style "story"
+         color redhat_blue
+         vertical_align 0.5
+         align 100%
+         render Caption
+
+
+stacked_items Unit:text, Scale:real, Body ->
+    locally
+        stacked_item_index := 0
+        stacked_item_unit := Unit
+        stacked_item_scale := Scale
+        stacked_item_total := 0.0
+        stacked_item_sum := 0.0
+        translate 0, -300, 0
+
+        Body
+
+        stacked_item_count := stacked_item_index
+
+
+bar_graph Step:integer, Value1:real, Value2:real, Description ->
+    locally
+        at_step Step
+        color_hsv 37.311 * Step, 90%, 60%
+        translate Step * 100 - 350, 0, 0
+        bar_graph_draw Value1 * fade_at(smooth_step, Step) * stacked_item_scale
+        locally
+            color_hsv 37.311 * Step, 90%, 80%
+            translate_y Value1 * fade_at(smooth_step, Step) * stacked_item_scale
+            bar_graph_draw (Value2 - Value1) * fade_at(smooth_step, Step) * stacked_item_scale
+
+        if stacked_item_sum < Value2 * fade_at(smooth_step, Step) then
+            stacked_item_sum := Value2 * fade_at(smooth_step, Step)
+
+        translate -70, -100, 0
+        rotate_z 40
+        text_box 0, 0, 200, 80,
+            style "story"
+            align 100%
+            vertical_align 30%
+            color_hsv 37.311 * Step, 90%, 20%
+            font_size 20
+            render Description
+
+bar_graph Step:integer, Value:real, Description ->
+    locally
+        at_step Step
+        color_hsv 37.311 * Step, 90%, 80%
+        translate Step * 100 - 350, 0, 0
+        bar_graph_draw Value * fade_at(smooth_step, Step) * stacked_item_scale
+        if stacked_item_sum < Value * fade_at(smooth_step, Step) then
+            stacked_item_sum := Value * fade_at(smooth_step, Step)
+
+        translate -70, -100, 0
+        rotate_z 40
+        text_box 0, 0, 200, 80,
+            style "story"
+            align 100%
+            vertical_align 30%
+            color_hsv 37.311 * Step, 90%, 20%
+            font_size 20
+            render Description
+
+bar_graph_draw Value:real ->
+    rounded_rectangle 0, 0.5 * Value, 90, Value, 10
