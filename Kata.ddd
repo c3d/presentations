@@ -1,0 +1,887 @@
+presentation_title "Honey, I shrunk the pods (and everything else)"
+presentation_logo "KataContainersLogo.png"
+presentation_url "https://github.com/c3d/presentations"
+presentation_tao "https://github.com/c3d/presentations (branch DevConf.cz-2021)"
+presentation_author "Christophe de Dinechin"
+presentation_author_title "Senior Principal Software Engineer"
+presentation_author_mail "dinechin@redhat.com"
+
+// ----------------------------------------------------------------------------
+main_title_slide "Main title",
+// ----------------------------------------------------------------------------
+    title
+        $ "Honey, I shrunk the pods!"
+        $ "(And everything else...)"
+    subtitle
+        $ "How to make Kata Containers small, lean and efficient"
+
+    title_slide_author "Christophe.jpg",
+        $ presentation_author
+        $ { italic presentation_author_title }
+        font "Overpass Mono"
+        $ presentation_author_mail
+
+    title_slide_logo
+
+
+// ----------------------------------------------------------------------------
+section_slide "Kata Containers Refresher",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle
+        $ "Running Containers in Virtual Machines?"
+        $ "Why? How?"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Running containers in virtual machines",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Sandboxed containers, improve isolation, additional features"
+    slide_picture "Square Peg Round Hole.png", 0%, 250
+    stepping
+    story
+        * "Value proposition: speed and security"
+        * "Drop-in replacement for container runtimes"
+        * "Works with docker, podman, kubernetes, etc"
+        * "Do you really get everything at once?"
+    right_picture
+        images "Kata Web Site.png", "Docker and Kata Containers.png", "Kubernetes to VMs.png", "Kata Value Proposition.png"
+
+
+
+// ---------------------------------------------------------------------------
+base_slide "Overhead Overview",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Houston, we have N problems"
+    slide_picture_at OWS_SW..OWS_OS,      "Emoji=Happy.png", 5%, 300
+    slide_picture_at OWS_CHROOT..OWS_KVM, "Emoji=Thinking.png", 5%, 300
+    slide_picture_at OWS_CNTN..OWS_CRI,   "Emoji=Questioning.png", 4%, 350
+    slide_picture_at OWS_KVIRT..OWS_KATA, "Emoji=Crazy.png", 3%, 300
+    stepping
+    picture
+        caption_at OWS_SW, "Software is what matters"
+        caption_at OWS_HW, "Direct hardware access (Original Mac, Unikernel)"
+        caption_at OWS_CLASH, "Sharing resources is both hard and risky"
+        caption_at OWS_OS, "Operating system deal with this problem"
+        caption_at OWS_CHROOT, "chroot gives you a filesystem sandbox"
+        caption_at OWS_VIRT, "Virtualization gives you a full machine sandbox"
+        caption_at OWS_QEMU, "QEMU: User-space interface for virtualization"
+        caption_at OWS_KVM, "KVM: Kernel component supporting virtualization"
+        caption_at OWS_CNTN, "Containers are complete OS-built sandboxes"
+        caption_at OWS_MANY, "Containers scale well"
+        caption_at OWS_DOCKER, "Containers provides rich software components composition and setup"
+        caption_at OWS_K8S, "OpenShift features large-scale orchestration"
+        caption_at OWS_CRI, "A modular interface connects orchestration to system and workloads"
+        caption_at OWS_KVIRT, "You can orchestrate legacy workloads using KubeVirt virtual machines"
+        caption_at OWS_KATA, "Kata Containers run sandboxed containers in isolated virtual machines"
+        overview integer(smooth_step + 0.5)
+
+
+
+// ============================================================================
+//
+section_slide "Memory density",
+//
+// ============================================================================
+    title page_label
+    subtitle "How many containers can you fit?"
+
+
+memory_axis ->
+    if stacked_item_sum > 5120 then
+        reference_scale 6144, "6G"
+        reference_tick  5120, "5G"
+        reference_tick  4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 4096 then
+        reference_scale 5120, "5G"
+        reference_tick  4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 3072 then
+        reference_scale 4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 2048 then
+        reference_scale 3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else
+        reference_scale 2048, "2G"
+        reference_tick  1024, "1G"
+
+
+MEM_START       -> 0
+MEM_HOST        -> 1
+MEM_CONMON      -> 2
+MEM_BASH        -> 3
+MEM_NGINX       -> 4
+MEM_KUBELET     -> 5
+MEM_CRIO        -> 6
+MEM_x100        -> 7
+MEM_x1          -> 8
+MEM_RUNTIME     -> 9
+MEM_SHIM        -> 10
+MEM_QEMU        -> 11
+MEM_VIRTIOFSD   -> 12
+MEM_GUEST       -> 13
+MEM_AGENT       -> 14
+MEM_RUNTIME_OUT -> 15
+MEM_DNF_INSTALL -> 16
+MEM_SCALEx100   -> 17
+MEM_LOADx100    -> 18
+MEM_CONMONx100  -> 19
+MEM_SHIMx100    -> 20
+MEM_SHIMv2      -> 21
+MEM_LAST        -> 22
+
+mem_host        -> anim 0.0, MEM_START=0, MEM_HOST=950
+mem_kubelet     -> anim 0.0, MEM_START=0, MEM_KUBELET=110
+mem_crio        -> anim 0.0, MEM_START=0, MEM_CRIO=28
+mem_conmon      -> anim 0.0, MEM_START=0, MEM_CONMON=2.5, MEM_x100=250, MEM_x1=2.5, MEM_CONMONx100=250, MEM_SHIMv2=0.0
+mem_shim        -> anim 0.0, MEM_START=0, MEM_SHIM=16.8, MEM_SHIMx100=1680, MEM_SHIMv2=19.2
+mem_workload    -> anim 0.0, MEM_START=0, MEM_BASH=4.7, MEM_NGINX=8.4, MEM_x100=840, MEM_x1=8.4, MEM_LOADx100=840
+mem_runtime     -> anim 0.0, MEM_START=0, MEM_RUNTIME=25, MEM_RUNTIME_OUT=0
+mem_qemu        -> anim 0.0, MEM_START=0, MEM_QEMU=30
+mem_virtiofsd   -> anim 0.0, MEM_START=0, MEM_VIRTIOFSD=10, MEM_DNF_INSTALL=350
+mem_guest       -> anim 0.0, MEM_START=0, MEM_GUEST=300, MEM_DNF_INSTALL=880
+mem_agent       -> anim 0.0, MEM_START=0, MEM_AGENT=60
+mem_scale       -> anim 0.1, MEM_START=0.3, MEM_SCALEx100=0.15
+
+name_workload   -> anim_text "Bash", MEM_NGINX="nginx", MEM_x100="nginx x 100", MEM_x1="nginx", MEM_LOADx100="nginx x 100"
+name_conmon     -> anim_text "Conmon", MEM_x100="Conmon x 100", MEM_x1="Conmon", MEM_CONMONx100="Conmon x 100"
+name_shim       -> anim_text "Kata Shim", MEM_SHIMx100="Kata Shim x100", MEM_SHIMv2="shim-v2"
+
+mem_subtitle    -> anim_text "Death by a thousand cuts", MEM_BASH="Running bash", MEM_NGINX="Running a web server", MEM_KUBELET="Kubernetes overhead", MEM_x100="Running 100 containers", MEM_x1="Overhead varies with number of containers", MEM_RUNTIME="Kata adds even more overhead", MEM_RUNTIME_OUT="Kata Runtime is transient", MEM_DNF_INSTALL="I/Os consume memory (buffers, etc)", MEM_SCALEx100="Running 100 containers", MEM_SHIMv2="Kata Containers 2.0: Containerd Shim v2"
+
+mem_cmdline     -> anim_text "", MEM_CONMON="podman run -it --rm fedora bash", MEM_NGINX="podman run -dt --pod new:nginx -p8080:80 nginx", MEM_KUBELET="kubectl apply -f nginx.yaml", MEM_x100="(yaml file with 100x nginx)", MEM_x1="kubectl apply -f nginx.yaml", MEM_RUNTIME="podman run -it --rm --runtime kata fedora bash", MEM_DNF_INSTALL="fedc07a13# dnf install -y procps-ng", MEM_SCALEx100="(runtimeClass kata, 100x nginx)", MEM_SHIMv2="containerd-shim-kata-v2"
+
+// ---------------------------------------------------------------------------
+base_slide "Memory usage",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle mem_subtitle
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        stacked_items "MB", mem_scale,
+            stacked mem_host, "Host", "Host kernel and user-space programs"
+            stacked mem_kubelet, "Kubelet", "Top-level control process"
+            stacked mem_crio, "CRI-O", "Container runtime interface"
+            stacked mem_runtime, "Kata Runtime", "Kata runtime (transient)"
+            stacked mem_conmon, name_conmon, "Process monitoring your container"
+            stacked mem_virtiofsd, "virtiofsd", "Host file access from guest"
+            stacked mem_shim, name_shim, "I/O interface for container"
+            stacked mem_qemu, "QEMU", "Virtual machine monitor"
+            stacked mem_guest, "Guest", "Guest OS kernel, data, user-space"
+            stacked mem_agent, "Agent", "Kata agent in the guest"
+            stacked mem_workload, name_workload, "Actual workload you are running"
+        translate 0, -300, 0
+        memory_axis
+        at_step MEM_LAST
+
+    picture
+        text_box 0, 380, 1200, 100,
+            style "story"
+            align 0.5
+            code mem_cmdline
+
+    picture
+        only_at MEM_DNF_INSTALL..MEM_LOADx100,
+            text_box 750, 0, 400, 500,
+                style "story"
+                color tao "red"
+                text "Possible double accounting of the same physical memory between guest and virtiofsd"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Memory - Comparing runtimes",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Cost of the runtime to run 10 instances of nginx"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+       stacked_item_scale := 0.3 - 0.15 * fade_at(smooth_step, 5)
+       stacked_item_sum := 0.0
+
+       translate 0, -200, 0
+
+       memory_crio      -> 53         // 28 + 2.5x10
+       memory_k8s       -> 163        // memory_crio + 110
+       memory_1pod_k1   -> 561        // memory_crio + 16.8x10 + (30 + 10 + 300)
+       memory_1pod_k1L  -> 911        // memory_1pod_k1L + 350
+       memory_10pods_k1 -> 921        // 1pod + 9*(30 + 10)
+       memory_10pods_k1L-> 3961       // 10pods + 9*350
+       memory_1pod_k2   -> 112.2      // memory_crio + 19.2 + 30 + 10
+       memory_10pods_k2 -> 645        // memory_crio + 10 * (19.2 + 30 + 10)
+
+       bar_graph 0, memory_crio,        "CRI-O"
+       bar_graph 1, memory_k8s,         "Kubernetes"
+       bar_graph 2, memory_1pod_k1,     "One pod, Kata 1.12"
+       bar_graph 3, memory_1pod_k1L,    "One pod, after I/Os"
+       bar_graph 4, memory_10pods_k1,   "Ten pods, Kata 1.12"
+       bar_graph 5, memory_10pods_k1L,  "Ten pods, after I/Os"
+       bar_graph 6, memory_1pod_k2,     "One pod, Kata 2.0"
+       bar_graph 7, memory_10pods_k2,   "Ten pods, Kata 2.0"
+
+       memory_axis
+
+
+// ---------------------------------------------------------------------------
+base_slide "Memory overhead - It's bad",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Huge effort needed to make things better"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    story
+        * "Too many processes"
+        ** "Partially addressed by 2.0"
+        ** "... but single point of failure"
+
+    code_move 300, 0, 1200, 700
+    code_box_at_step 1, "Processes", { text load_text "conmon-dump.log" }
+    code_box_at_step 2..3, "Kata Shim v2", { text load_text "conmon-dump-v2.log" }
+
+
+// ============================================================================
+//
+section_slide "Boot time",
+//
+// ============================================================================
+    title page_label
+    subtitle "How fast does a container start?"
+
+
+boot_axis ->
+    if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else if stacked_item_sum > 15 then
+        reference_scale 20, "20s"
+        reference_tick  15, "15s"
+        reference_tick  10, "10s"
+        reference_tick  5, "5s"
+    else if stacked_item_sum > 10 then
+        reference_scale 15, "15s"
+        reference_tick  10, "10s"
+        reference_tick  5, "5s"
+    else if stacked_item_sum > 5 then
+        reference_scale 10, "10s"
+        reference_tick  8, "8s"
+        reference_tick  6, "6s"
+        reference_tick  4, "4s"
+        reference_tick  2, "2s"
+    else if stacked_item_sum > 2 then
+        reference_scale 5, "5s"
+        reference_tick  4, "4s"
+        reference_tick  3, "3s"
+        reference_tick  2, "2s"
+        reference_tick  1, "1s"
+    else if stacked_item_sum > 1 then
+        reference_scale 2, "2s"
+        reference_tick  1, "1s"
+    else
+        reference_scale 1,   "1s"
+        reference_tick  0.5, "0.5"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Boot time overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Time to boot 20 containers"
+    slide_picture "Boot.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        boot_scale -> anim 0.0, 0=600.0, 1=50.0, 3=30, 4=15
+        stacked_item_scale := boot_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph 0, boot_1busybox_runc,         "1x busybox on runc"
+        bar_graph 1, boot_1busybox_kata,         "1x busybox on Kata"
+        bar_graph 2, boot_20busybox_runc,        "20x busybox on runc"
+        bar_graph 3, boot_20busybox_kata,        "20x busybox on Kata"
+        bar_graph 4, run_20busybox_kata,         "Run 20x busybox"
+        bar_graph 5, run_20alpine_kata,          "Run 20x alpine"
+        bar_graph 6, run_20fedora_kata,          "Run 20x fedora"
+
+        boot_axis
+
+
+//    "http://events17.linuxfoundation.org/sites/events/files/slides/Light%20weight%20virtualization%20with%20QEMU%26KVM_0.pdf"
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm alpine sh -c ; done; )  21.91s user 18.48s system 9% cpu 7:13.45 total
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm --pull=never busybox sh -)  20.31s user 16.98s system 11% cpu 5:19.91 total
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm --pull=never --runtime   )  32.70s user 22.99s system 10% cpu 8:51.73 total
+
+
+// 20 runc alpine containers on turbo
+// real	0m28.406s
+// user	0m3.917s
+// sys	0m3.346s
+run_20alpine_kata -> 28.406
+
+// 20 runc busybox
+// real	0m27.390s
+// user	0m3.881s
+// sys	0m3.262s
+run_20busybox_kata -> 27.390
+
+// real	0m29.531s
+// user	0m3.910s
+// sys	0m3.331s
+run_20fedora_kata -> 29.531
+
+// Start 1 container
+// real	0m0.361s
+// user	0m0.011s
+// sys	0m0.028s
+boot_1busybox_runc -> 0.361
+
+// real	0m7.175s
+// user	0m0.018s
+// sys	0m0.045s
+boot_1busybox_kata -> 7.175
+
+// Start 20 containers
+// real	0m7.921s
+// user	0m0.265s
+//sys	0m0.525s
+boot_20busybox_runc -> 7.921
+
+// real	0m14.349s
+// user	0m0.275s
+// sys	0m0.539s
+boot_20busybox_kata -> 14.349
+
+
+
+// ============================================================================
+//
+section_slide "Disk I/O",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Disk performance with virtiofs:"
+        $ "improved, but still not good"
+
+
+disk_axis ->
+    if stacked_item_sum > 120 then
+        reference_scale 180, "3m"
+        reference_tick  120, "2m"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+        reference_tick   10, "10s"
+    else if stacked_item_sum > 60 then
+        reference_scale 120, "2m"
+        reference_tick   90, "1m30"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+    else if stacked_item_sum > 30 then
+        reference_scale 60, "1m"
+        reference_tick  30, "30s"
+    else if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else
+        reference_scale 20, "20s"
+        reference_tick  10, "10s"
+
+
+
+
+// ---------------------------------------------------------------------------
+base_slide "Disk read overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Copy files from the local file system (20x)"
+    slide_picture "Disk.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        disk_tar_scale -> anim 0.0, 0=10.0, 2=5.0, 2=3.0
+        stacked_item_scale := disk_tar_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph 0,   disk_tar_runc_sys, disk_tar_runc, "tar on runc"
+        bar_graph 1,   disk_tar_runc_blk_sys, disk_tar_runc_blk, "tar on runc+blk"
+        bar_graph 2,   disk_tar_kata_sys, disk_tar_kata, "tar on Kata+virtiofs"
+        bar_graph 3,   disk_tar_kata9p_sys, disk_tar_kata9p, "tar on Kata+9pfs"
+        bar_graph 4,   disk_tar_kata_blk_sys, disk_tar_kata_blk, "tar on Kata+blk"
+
+        disk_axis
+
+        // tar read: time (for ((I=0; I < 20; I++)); do echo $I; tar cf /tmp/usr.tar usr; done)
+        // runc
+        // real	0m34.775s user	0m0.750s sys	0m5.048s
+        disk_tar_runc         -> 34.775
+        disk_tar_runc_sys     -> 5.048
+
+        // real	1m15.780s user	0m1.136s sys	0m9.727s
+        disk_tar_kata         -> 75.780
+        disk_tar_kata_sys     -> 9.727
+
+        // real	2m52.740s user	0m1.310s sys	0m10.733s (many errors)
+        disk_tar_kata9p       -> 172.740
+        disk_tar_kata9p_sys   -> 10.733
+
+        // real	0m20.348s user	0m0.916s sys	0m4.946s
+        disk_tar_runc_blk     -> 20.348
+        disk_tar_runc_blk_sys -> 4.946
+
+        // real	1m8.298s user	0m1.123s sys	0m9.978s
+        disk_tar_kata_blk     -> 68.298
+        disk_tar_kata_blk_sys -> 9.978
+
+
+// ---------------------------------------------------------------------------
+base_slide "Disk write overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Write a 1.0G file from /dev/random"
+    slide_picture "Disk.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        disk_dd_scale -> anim 0.0, 0=30.0
+        stacked_item_scale := disk_dd_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph 0,   disk_dd_runc_sys, disk_dd_runc, "dd 1.0G runc"
+        bar_graph 1,   disk_dd_kata_sys, disk_dd_kata, "dd 1.0G Kata+virtiofs"
+        bar_graph 2,   disk_dd_kata9p_sys, disk_dd_kata9p, "dd 1.0G Kata+9pfs"
+        bar_graph 3,   disk_dd_runc_blk_sys, disk_dd_runc_blk, "dd 1.0G runc+blk"
+        bar_graph 4,   disk_dd_runc_blk2_sys, disk_dd_runc_blk2, "dd 1.0G runc+blk"
+        bar_graph 5,   disk_dd_kata_blk_sys, disk_dd_kata_blk, "dd 1.0G Kata+blk"
+        bar_graph 6,   disk_dd_kata_blk2_sys, disk_dd_kata_blk2, "dd 1.0G Kata+blk"
+
+        disk_axis
+
+        // dd write: dd if=/dev/random of=/usr/glob bs=16384 count=65536
+        // runc
+        // real	0m15.167s user	0m0.043s sys	0m5.152s
+        disk_dd_runc            -> 15.167
+        disk_dd_runc_sys        -> 5.152
+
+        // real	0m10.297s user	0m0.077s sys	0m5.902s
+        disk_dd_kata            -> 10.297
+        disk_dd_kata_sys        -> 5.902
+
+        // real	real	0m18.321s user	0m0.044s sys	0m5.279s
+        disk_dd_kata9p          -> 18.321
+        disk_dd_kata9p_sys      -> 5.279
+
+        // real	0m5.277s user	0m0.036s sys	0m4.698s
+        disk_dd_runc_blk        -> 5.277
+        disk_dd_runc_blk_sys    -> 4.698
+
+        // First run: real	0m8.923s user	0m0.051s sys	0m5.073s
+        disk_dd_kata_blk        -> 8.923
+        disk_dd_kata_blk_sys    -> 5.073
+
+        // Second run (file exists): real	0m15.663s user	0m0.040s sys	0m4.714s
+        disk_dd_runc_blk2        -> 15.663
+        disk_dd_runc_blk2_sys    -> 4.714
+
+        // Second run real	real	0m9.174s user	0m0.074s sys	0m5.146s
+        disk_dd_kata_blk2        -> 9.174
+        disk_dd_kata_blk2_sys    -> 5.146
+
+
+
+// ============================================================================
+//
+section_slide "Networking I/O",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Multiple networking configurations"
+        $ "At least some of them should perform well"
+
+
+net_axis ->
+    if stacked_item_sum > 240 then
+        reference_scale 360, "6m"
+        reference_tick  180, "3m"
+        reference_tick   60, "1m"
+    else if stacked_item_sum > 120 then
+        reference_scale 180, "3m"
+        reference_tick  120, "2m"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+        reference_tick   10, "10s"
+    else if stacked_item_sum > 60 then
+        reference_scale 120, "2m"
+        reference_tick   90, "1m30"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+    else if stacked_item_sum > 30 then
+        reference_scale 60, "1m"
+        reference_tick  30, "30s"
+    else if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else
+        reference_scale 20, "20s"
+        reference_tick  10, "10s"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Network overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Read or write a 10.0G file from local server"
+    slide_picture "Network.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        net_read_scale -> anim 0.0, 0=10.0, 2=1.5
+        stacked_item_scale := net_read_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph 0,   net_read_runc_sys, net_read_runc, "runc 10G read"
+        bar_graph 1,   net_read_kata_sys, net_read_kata, "kata 10G read"
+        bar_graph 2,   net_write_runc_sys, net_write_runc, "runc 10G write"
+        bar_graph 3,   net_write_kata_sys, net_write_kata, "kata 10G write"
+
+        net_axis
+
+        // scp from 10G disk: real	0m38.310s user	0m11.616s sys	0m27.543s
+        net_read_runc            -> 38.310
+        net_read_runc_sys        -> 27.543
+
+        // scp from 10G disk: real	0m56.346s user	0m13.306s sys	0m29.037s
+        net_read_kata            -> 56.346
+        net_read_kata_sys        -> 29.037
+
+        // scp to 10G disk: real	4m53.355s user	0m8.569s sys	0m19.197s
+        net_write_runc           -> 293.355
+        net_write_runc_sys       -> 19.197
+
+        // scp to 10G disk: real	5m30.406s user	0m25.134s sys	0m48.085s
+        net_write_kata           -> 338.406
+        net_write_kata_sys       -> 48.085
+
+
+// ---------------------------------------------------------------------------
+base_slide "The future: SR-IOV support",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Hardware-accelerated virtual network functions"
+    slide_picture "Network.jpg", 0%, 250
+    stepping
+    story
+        * "Hardware support for virtualization, link-level performance"
+        * "Support being added to Kata, some preliminary testing done"
+        * "Preliminary performance testing exhibited interesting issues"
+        ** "For example, all interrupts are piling on boot CPUs"
+        ** "Kata needs support for interrupt rebalancing"
+        * "SR-IOV performance under normal qemu gives us high hopes"
+
+
+
+// ============================================================================
+//
+section_slide "Conclusion",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Kata Containers is a complicated product."
+        $ "Getting it to perform well is a developing art."
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Sandboxing containers comes with a cost"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * { text "The motto """; italic "The speed of containers"; text """ applies to deployments" }
+        ** "Application development cycles are as fast as with other runtimes"
+        ** "Performance in containers may vary"
+
+        * "Memory overhead is large, but fixed and predictable"
+        ** "At the moment, in the order of 350M per pod on average"
+        ** "May be a little higher with high I/Os with virtiofs"
+        ** "But if that happens, chances are you are abusing virtiofs"
+
+        * "Disk and network overhead are large by default"
+        ** "Be mindful that virtiofs and virtual networks have a cost"
+        ** "The overhead grows with the I/O rate"
+        ** "Consider virtio-blk for storage or SR-IOV for networking"
+
+
+
+// ============================================================================
+//
+section_slide "Thank you",
+//
+// ============================================================================
+    title page_label
+    subtitle presentation_url
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at"
+            paragraph presentation_tao
+    title_slide_logo
+
+
+
+// ============================================================================
+//
+//   Overview diagram
+//
+// ============================================================================
+// 0: Your software on hardware
+// 1: Your software conflicting with other software
+// 2: Operating system: takes control
+// 3: Chroot: Carve out your little disk space
+// 4: Virtualization: Carve out your whole machine
+// 5: qemu
+// 6: kvm
+// 7: Containers: Carve out the whole thing
+// 8: Multiplication of containers
+// 9: Docker: declarative software components (dockerd)
+// 10: Kubernetes: declarative orchestration (kubelet)
+// 11: CRI / CRI-O: Runtime abstraction
+// 12: KubeVirt: manage VMs with k8s
+// 13: Kata: put containers in their own VM
+// 14: qemu-mini
+
+OWS_SW          -> 0
+OWS_HW          -> 1
+OWS_CLASH       -> 2
+OWS_OS          -> 3
+OWS_CHROOT      -> 4
+OWS_VIRT        -> 5
+OWS_QEMU        -> 6
+OWS_KVM         -> 7
+OWS_CNTN        -> 8
+OWS_MANY        -> 9
+OWS_DOCKER      -> 10
+OWS_K8S         -> 11
+OWS_CRI         -> 12
+OWS_KVIRT       -> 13
+OWS_KATA        -> 14
+OWS_MINI        -> 15
+
+overview Step:integer ->
+// ----------------------------------------------------------------------------
+//   Overview diagram for "simplified overview" slide
+// ----------------------------------------------------------------------------
+    anim_step Step
+
+    overview_adjust S:real ->
+        translate 0, -100 * S, -50 * S
+        scale 100% - 30% * S
+
+    locally
+        overview_adjust anim(0.0, OWS_SW = 0, OWS_DOCKER = 1)
+
+        locally
+            at_step OWS_HW
+            soft_box -630, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "Hard Disk.png"
+            soft_box -210, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "CPU.png"
+            soft_box 210,  -220, redhat_red2,
+                image 0, 0, 30%, 30%, "RAM.png"
+            soft_box 630, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "Network.png"
+
+        COUNT -> anim 1.0, OWS_SW = 1, OWS_MANY = 12, OWS_KVIRT = 4, OWS_KATA=8
+
+        ys_x -> anim    0.0, OWS_SW =    0, OWS_CLASH = -630, OWS_VIRT = -630, OWS_CNTN = -630, OWS_KVIRT=-630
+        ys_y -> anim    0.0, OWS_SW =    0, OWS_OS    =  220, OWS_VIRT =  250, OWS_CNTN =  220, OWS_KVIRT= 250
+        ys_w -> anim 1650.0, OWS_SW = 1650, OWS_CLASH =  400, OWS_VIRT =  400, OWS_CNTN =  400, OWS_KVIRT= 400
+        ys_h -> anim  200.0, OWS_SW =  200,                   OWS_VIRT =  150, OWS_CNTN =  200, OWS_KVIRT= 150
+        for I in 0..integer(COUNT)-1 loop locally
+            translate I * 420 mod 1680 + I / 4 * 30, I / 4 * 50, -I/4 * 200
+            show exp(-0.1 * I)
+            soft_box ys_x, ys_y, ys_w, ys_h, redhat_blue1, "Your software"
+
+        ts_x -> anim 2000.0, OWS_SW = 2000, OWS_CLASH = -210
+        ts_y -> anim    0.0, OWS_SW =    0, OWS_OS    =  220
+        ts_w -> anim  400.0, OWS_SW =  400
+        ts_h -> anim  200.0, OWS_SW =  200
+        locally
+            show anim (0.0, OWS_SW=0, OWS_CLASH=1, OWS_VIRT=0.5, OWS_CNTN=0)
+            soft_box ts_x, ts_y, ts_w, ts_h, redhat_blue2, "Their software"
+            soft_box ts_x + 420.0, ts_y, ts_w, ts_h, redhat_blue2, "Some software"
+            soft_box ts_x + 840.0, ts_y, ts_w, ts_h, redhat_blue2, "Other software"
+
+        at_step OWS_OS
+        os_x -> anim    0.0, OWS_SW =    0
+        os_y -> anim    0.0, OWS_SW =    0, OWS_VIRT = -60, OWS_CNTN =   0, OWS_KVIRT=-60
+        os_w -> anim 1650.0, OWS_SW = 1650
+        os_h -> anim  200.0, OWS_SW =  200, OWS_VIRT = 100, OWS_CNTN = 200, OWS_KVIRT=100
+        soft_box os_x, os_y, os_w, os_h, redhat_green1, "Operating system"
+
+        locally
+            show anim (0.0, OWS_SW=0, OWS_CHROOT=1, OWS_VIRT=0)
+            soft_box -550, 100, 200, 200, redhat_red2,
+                paragraph "chroot"
+                image 0, 0, 20%, 20%, "Hard Disk.png"
+
+        at_step OWS_VIRT
+        vi_x -> anim -630.0, OWS_SW = -630,                 OWS_CNTN = -3000, OWS_KVIRT=-630
+        vi_y -> anim   60.0, OWS_SW =   60, OWS_VIRT = 60
+        vi_w -> anim  400.0, OWS_SW =  400
+        vi_h -> anim  200.0, OWS_SW =  200, OWS_VIRT = 180
+        for I in 0..integer(COUNT)-1 loop locally
+            translate I * 420 mod 1680 + I / 4 * 30, I / 4 * 50, -I/4 * 200
+            show exp(-0.1 * I)
+            soft_box vi_x, vi_y, vi_w, vi_h, redhat_orange1, "Virtual Machine"
+
+        vm_x -> anim 0.0, OWS_SW = 0, OWS_VIRT = -630
+        vm_y -> anim 0.0, OWS_SW = 0, OWS_VIRT =  180
+        vm_s -> anim 1.0, OWS_SW = 1, OWS_VIRT =   25%
+        vm_c -> anim 1.0, OWS_SW = 1, OWS_CNTN = 0, OWS_KVIRT=1
+        for I in 0..integer(COUNT)-1 loop locally
+            translate I * 420 mod 1680 + I / 4 * 30, I / 4 * 50, -I/4 * 200
+            translate vm_x, vm_y, 10
+            scale vm_s
+            soft_box os_x, os_y, os_w * vm_c, os_h * vm_c, redhat_green1, "Operating system"
+            soft_box -630, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "Hard Disk.png"
+            soft_box -210, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "CPU.png"
+            soft_box 210,  -220, redhat_red2,
+                image 0, 0, 30%, 30%, "RAM.png"
+            soft_box 630, -220, redhat_red2,
+                image 0, 0, 30%, 30%, "Network.png"
+
+        locally
+            show anim (0.0, OWS_SW=0, OWS_QEMU=1, OWS_CNTN=0)
+            qe_x -> anim -630.0, OWS_SW = -630, OWS_QEMU = -350, OWS_CNTN=-3000
+            qe_y -> anim   60.0, OWS_SW =   60, OWS_QEMU =   50
+            qe_w -> anim  400.0, OWS_SW =  400, OWS_QEMU =  300
+            qe_h -> anim  180.0, OWS_SW =  180, OWS_QEMU =   80
+            soft_box qe_x, qe_y, qe_w, qe_h, redhat_orange2, "qemu/libvirt"
+
+        locally
+            show anim (0.0, OWS_SW=0, OWS_KVM=1, OWS_CNTN=0)
+            kv_x -> anim -630.0, OWS_SW = -630, OWS_KVM  = -630, OWS_CNTN=-3000
+            kv_y -> anim   60.0, OWS_SW =   60, OWS_KVM  =  -30
+            kv_w -> anim  400.0, OWS_SW =  400, OWS_KVM  =  300
+            kv_h -> anim  180.0, OWS_SW =  180, OWS_KVM  =   80
+            soft_box kv_x, kv_y, kv_w, kv_h, redhat_orange3, "kvm"
+
+        at_step OWS_MINI
+        qm_x -> anim -630.0, OWS_SW = -630, OWS_MINI= -630
+        qm_y -> anim  -20.0, OWS_SW =  -20, OWS_MINI=  -20
+        qm_w -> anim  250.0, OWS_SW =  250, OWS_MINI=  250
+        qm_h -> anim   80.0, OWS_SW =   80, OWS_MINI=   80
+        for I in 0..integer(COUNT)-1 loop locally
+            translate I * 420 mod 1680 + I / 4 * 30, I / 4 * 50, -I/4 * 200
+            soft_box qm_x, qm_y, qm_w, qm_h, redhat_orange2, "qemu-mini"
+
+    locally
+        show anim (0.0, OWS_SW=0, OWS_DOCKER=1, OWS_KVIRT=0, OWS_KATA=1)
+        do_x -> anim    0.0, OWS_SW =    0, OWS_DOCKER =    0
+        do_y -> anim  300.0, OWS_SW =  300, OWS_DOCKER =  300
+        do_w -> anim 1100.0, OWS_SW = 1100, OWS_DOCKER = 1100
+        do_h -> anim  200.0, OWS_SW =  280, OWS_DOCKER =  200
+        soft_box do_x, do_y, do_w, do_h, redhat_ocean1,
+            image 0, 20, 20%, 20%, "Logo-Red_Hat-Marketplace-Operated_By_IBM-B-Standard-RGB.png"
+
+    at_step OWS_K8S
+    ku_x -> anim -650.0, OWS_SW = -650, OWS_DOCKER = -750
+    ku_y -> anim   30.0, OWS_SW =   30, OWS_DOCKER =   30
+    ku_w -> anim  300.0, OWS_SW =  300, OWS_DOCKER =  300
+    ku_h -> anim  700.0, OWS_SW =  780, OWS_DOCKER =  700
+    soft_box ku_x, ku_y, ku_w, ku_h, redhat_yellow1,
+        image 0, 20, 25%, 25%, "OpenShift.png"
+
+    at_step OWS_CRI
+    cr_x -> anim -550.0, OWS_SW = -550, OWS_CRI = -550
+    cr_y -> anim  -20.0, OWS_SW =  -20, OWS_CRI =  -20, OWS_KVIRT=-120
+    cr_w -> anim  200.0, OWS_SW =  200, OWS_CRI =  200
+    cr_h -> anim   80.0, OWS_SW =   80, OWS_CRI =   80
+    soft_box cr_x, cr_y, cr_w, cr_h, redhat_orange4, "CRI"
+
+
+caption_at TimeSlot, Body ->
+// ----------------------------------------------------------------------------
+//   Show the caption at the given time
+// ----------------------------------------------------------------------------
+    only_at TimeSlot,
+        soft_box -700, 500, 400, 200, "#444", Body
+
+
+page_quote N ->
+// ----------------------------------------------------------------------------
+//   Show a selected quote in a page
+// ----------------------------------------------------------------------------
+    on "pageentry",
+        show_quote N
+    on "pageexit",
+        show_quotes_v := 0.0
+        show_quotes := 0.0
+
+
+show_quote N    ->
+// ----------------------------------------------------------------------------
+//   Show a selected quote from keyboard
+// ----------------------------------------------------------------------------
+    show_quotes := 1
+    quote_step N
+    refresh 0.1
+    on "pageexit",
+        show_quotes_v := 0.0
+        show_quotes := 0.0
+
+show_quotes     -> 0.0
+show_quotes_v   -> 0.0
+
+interpolate 10%, show_quotes, show_quotes_v
+if show_quotes_v > 0.0 then
+    show show_quotes_v
+    quotes
+        quote "For every problem, there is a solution that is simple, clean and wrong", "Henry Louis Mencken"
+        quote "There is more than one way to do it", "Perl motto (Larry Wall)"
+        quote "The good thing about standards is that there are so many to choose from.", "Andrew Tannenbaum"
+        quote "Entropy, i.e. disorder,  always increases with time", "Second law of thermodynamics"
+        quote "Get half of the right thing available so that it spreads like a virus. Once people are hooked on it, improve it to 90% of the right thing.", "Richard P. Gabriel"
+        quote "Break it properly so that you can fix it properly", "Fabiano Fidêncio"
+        quote "I love cunning containers as much as anyone, but I've found that if I get rid of everything I don't need, I often don't need a container at all.", "Gretchen Rubin"

@@ -457,8 +457,8 @@ vec3 clouds(vec3 ro, vec3 rd, vec3 sky)
 //   Compute clouds
 // ----------------------------------------------------------------------------
 {
-    vec2 sc = ro.xz + rd.xz*(1000.0-ro.y)/rd.y + vec2(3231.0) * sin(0.0831 * iGlobalTime) * sign(rd.y);
-    return mix(sky, vec3(1.0,0.95,1.0), 0.7*smoothstep(0.25,0.8,fbm(0.005*sc))*exp(-0.000000005*sc.y*sc.y));
+    vec2 sc = ro.xz + rd.xz*(1000.0-ro.y)/rd.y + vec2(mod(31.0*iGlobalTime, 32000.0) - 16000.0);
+    return mix(sky, vec3(1.0,0.95,1.0), 0.7*smoothstep(0.25,0.8,fbm(0.0009*sc))*exp(-0.000000005*sc.y*sc.y));
 }
 
 
@@ -599,7 +599,7 @@ vec3 camera(float t)
 //    Position of the camera
 // ----------------------------------------------------------------------------
 {
-    return vec3(0.0,-0.3,-0.2) + vec3(0.04,0.3,0.06)*sin(vec3(0.1,0.13,0.17) * t);
+    return vec3(0.0,-2.8,-0.2) + vec3(1.3, 0.2, 0.1) * sin(vec3(0.1, 0.2, 0.31) * t);
 }
 
 
