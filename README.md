@@ -1,385 +1,102 @@
-DevConf.cz 2019 Presentation: Kata Containers and qemu-mini
-===========================================================
+DevConf.cz 2021 Presentation: Honey, I shrunk the pods (and everything else)
+============================================================================
 
-This is a Tao3D presentation given at DevConf.cz 2019 about
-Kata Containers and qemu-mini.
+This is a Tao3D presentation given at DevConf.cz 2021 about
+Kata Containers, about efforts to reduce the overhead of Kata Containers.
 
 Image and movie files not included (they don't belong on GitHub)
 
-You can find Tao3D at https://tao3d.sourceforge.net.
+You can find Tao3D at https://tao3d.sourceforge.net but it is presently barely
+functional, for reasons explained in [another talk][pedprojects]...
 
-![snapshot-11:36:03.png](snapshots/snapshot-11:36:03.png)
+![Snapshot-20210218164436.png](snapshots/Snapshot-20210218164436.png)
 
-![snapshot-11:36:12.png](snapshots/snapshot-11:36:12.png)
+![Snapshot-20210218164437.png](snapshots/Snapshot-20210218164437.png)
 
-![snapshot-11:36:15.png](snapshots/snapshot-11:36:15.png)
+![Snapshot-20210218164440.png](snapshots/Snapshot-20210218164440.png)
 
-![snapshot-11:36:17.png](snapshots/snapshot-11:36:17.png)
+![Snapshot-20210218164441.png](snapshots/Snapshot-20210218164441.png)
 
-![snapshot-11:36:18.png](snapshots/snapshot-11:36:18.png)
+![Snapshot-20210218164442.png](snapshots/Snapshot-20210218164442.png)
 
-![snapshot-11:36:20.png](snapshots/snapshot-11:36:20.png)
+![Snapshot-20210218164443.png](snapshots/Snapshot-20210218164443.png)
 
-![snapshot-11:36:21.png](snapshots/snapshot-11:36:21.png)
+![Snapshot-20210218164444.png](snapshots/Snapshot-20210218164444.png)
 
-![snapshot-11:36:23.png](snapshots/snapshot-11:36:23.png)
+![Snapshot-20210218164446.png](snapshots/Snapshot-20210218164446.png)
 
-![snapshot-11:36:25.png](snapshots/snapshot-11:36:25.png)
+![Snapshot-20210218164447.png](snapshots/Snapshot-20210218164447.png)
 
-![snapshot-11:36:26.png](snapshots/snapshot-11:36:26.png)
+![Snapshot-20210218164449.png](snapshots/Snapshot-20210218164449.png)
 
-![snapshot-11:36:27.png](snapshots/snapshot-11:36:27.png)
+![Snapshot-20210218164450.png](snapshots/Snapshot-20210218164450.png)
 
-![snapshot-11:36:28.png](snapshots/snapshot-11:36:28.png)
+![Snapshot-20210218164452.png](snapshots/Snapshot-20210218164452.png)
 
-![snapshot-11:36:46.png](snapshots/snapshot-11:36:46.png)
+![Snapshot-20210218164453.png](snapshots/Snapshot-20210218164453.png)
 
-![snapshot-11:36:48.png](snapshots/snapshot-11:36:48.png)
+![Snapshot-20210218164455.png](snapshots/Snapshot-20210218164455.png)
 
-![snapshot-11:36:49.png](snapshots/snapshot-11:36:49.png)
+![Snapshot-20210218164457.png](snapshots/Snapshot-20210218164457.png)
 
-![snapshot-11:36:51.png](snapshots/snapshot-11:36:51.png)
+![Snapshot-20210218164459.png](snapshots/Snapshot-20210218164459.png)
 
-![snapshot-11:36:54.png](snapshots/snapshot-11:36:54.png)
+![Snapshot-20210218164502.png](snapshots/Snapshot-20210218164502.png)
 
-![snapshot-11:36:55.png](snapshots/snapshot-11:36:55.png)
+![Snapshot-20210218164504.png](snapshots/Snapshot-20210218164504.png)
 
-![snapshot-11:36:57.png](snapshots/snapshot-11:36:57.png)
+![Snapshot-20210218164506.png](snapshots/Snapshot-20210218164506.png)
 
-![snapshot-11:36:59.png](snapshots/snapshot-11:36:59.png)
+![Snapshot-20210218164508.png](snapshots/Snapshot-20210218164508.png)
 
-![snapshot-11:37:00.png](snapshots/snapshot-11:37:00.png)
+![Snapshot-20210218164510.png](snapshots/Snapshot-20210218164510.png)
 
-![snapshot-11:37:01.png](snapshots/snapshot-11:37:01.png)
+![Snapshot-20210218164515.png](snapshots/Snapshot-20210218164515.png)
 
-![snapshot-11:37:02.png](snapshots/snapshot-11:37:02.png)
+![Snapshot-20210218164523.png](snapshots/Snapshot-20210218164523.png)
 
-![snapshot-11:37:03.png](snapshots/snapshot-11:37:03.png)
+![Snapshot-20210218164526.png](snapshots/Snapshot-20210218164526.png)
 
-![snapshot-11:37:05.png](snapshots/snapshot-11:37:05.png)
+![Snapshot-20210218164534.png](snapshots/Snapshot-20210218164534.png)
 
-![snapshot-11:37:06.png](snapshots/snapshot-11:37:06.png)
+![Snapshot-20210218164537.png](snapshots/Snapshot-20210218164537.png)
 
-![snapshot-11:37:10.png](snapshots/snapshot-11:37:10.png)
+![Snapshot-20210218164549.png](snapshots/Snapshot-20210218164549.png)
 
-![snapshot-11:37:13.png](snapshots/snapshot-11:37:13.png)
+![Snapshot-20210218164552.png](snapshots/Snapshot-20210218164552.png)
 
-![snapshot-11:37:14.png](snapshots/snapshot-11:37:14.png)
+![Snapshot-20210218164556.png](snapshots/Snapshot-20210218164556.png)
 
-![snapshot-11:37:16.png](snapshots/snapshot-11:37:16.png)
+![Snapshot-20210218164610.png](snapshots/Snapshot-20210218164610.png)
 
-![snapshot-11:37:17.png](snapshots/snapshot-11:37:17.png)
+![Snapshot-20210218164613.png](snapshots/Snapshot-20210218164613.png)
 
-![snapshot-11:37:19.png](snapshots/snapshot-11:37:19.png)
+![Snapshot-20210218164627.png](snapshots/Snapshot-20210218164627.png)
 
-![snapshot-11:37:20.png](snapshots/snapshot-11:37:20.png)
+![Snapshot-20210218164630.png](snapshots/Snapshot-20210218164630.png)
 
-![snapshot-11:37:30.png](snapshots/snapshot-11:37:30.png)
+![Snapshot-20210218164632.png](snapshots/Snapshot-20210218164632.png)
 
-![snapshot-11:37:36.png](snapshots/snapshot-11:37:36.png)
+![Snapshot-20210218164634.png](snapshots/Snapshot-20210218164634.png)
 
-![snapshot-11:37:37.png](snapshots/snapshot-11:37:37.png)
+![Snapshot-20210218164643.png](snapshots/Snapshot-20210218164643.png)
 
-![snapshot-11:37:38.png](snapshots/snapshot-11:37:38.png)
+![Snapshot-20210218164646.png](snapshots/Snapshot-20210218164646.png)
 
-![snapshot-11:37:40.png](snapshots/snapshot-11:37:40.png)
+![Snapshot-20210218164703.png](snapshots/Snapshot-20210218164703.png)
 
-![snapshot-11:37:41.png](snapshots/snapshot-11:37:41.png)
+![Snapshot-20210218164714.png](snapshots/Snapshot-20210218164714.png)
 
-![snapshot-11:37:42.png](snapshots/snapshot-11:37:42.png)
+![Snapshot-20210218164719.png](snapshots/Snapshot-20210218164719.png)
 
-![snapshot-11:37:47.png](snapshots/snapshot-11:37:47.png)
+![Snapshot-20210218164728.png](snapshots/Snapshot-20210218164728.png)
 
-![snapshot-11:37:49.png](snapshots/snapshot-11:37:49.png)
+![Snapshot-20210218164737.png](snapshots/Snapshot-20210218164737.png)
 
-![snapshot-11:37:51.png](snapshots/snapshot-11:37:51.png)
+![Snapshot-20210218164739.png](snapshots/Snapshot-20210218164739.png)
 
-![snapshot-11:37:53.png](snapshots/snapshot-11:37:53.png)
+![Snapshot-20210218164747.png](snapshots/Snapshot-20210218164747.png)
 
-![snapshot-11:37:57.png](snapshots/snapshot-11:37:57.png)
+![Snapshot-20210218164750.png](snapshots/Snapshot-20210218164750.png)
 
-![snapshot-11:38:02.png](snapshots/snapshot-11:38:02.png)
-
-![snapshot-11:38:03.png](snapshots/snapshot-11:38:03.png)
-
-![snapshot-11:38:04.png](snapshots/snapshot-11:38:04.png)
-
-![snapshot-11:38:06.png](snapshots/snapshot-11:38:06.png)
-
-![snapshot-11:38:08.png](snapshots/snapshot-11:38:08.png)
-
-![snapshot-11:38:11.png](snapshots/snapshot-11:38:11.png)
-
-![snapshot-11:38:13.png](snapshots/snapshot-11:38:13.png)
-
-![snapshot-11:38:14.png](snapshots/snapshot-11:38:14.png)
-
-![snapshot-11:38:16.png](snapshots/snapshot-11:38:16.png)
-
-![snapshot-11:38:17.png](snapshots/snapshot-11:38:17.png)
-
-![snapshot-11:38:19.png](snapshots/snapshot-11:38:19.png)
-
-![snapshot-11:38:20.png](snapshots/snapshot-11:38:20.png)
-
-![snapshot-11:38:22.png](snapshots/snapshot-11:38:22.png)
-
-![snapshot-11:38:24.png](snapshots/snapshot-11:38:24.png)
-
-![snapshot-11:38:30.png](snapshots/snapshot-11:38:30.png)
-
-![snapshot-11:38:32.png](snapshots/snapshot-11:38:32.png)
-
-![snapshot-11:38:33.png](snapshots/snapshot-11:38:33.png)
-
-![snapshot-11:38:35.png](snapshots/snapshot-11:38:35.png)
-
-![snapshot-11:38:36.png](snapshots/snapshot-11:38:36.png)
-
-![snapshot-11:38:38.png](snapshots/snapshot-11:38:38.png)
-
-![snapshot-11:38:39.png](snapshots/snapshot-11:38:39.png)
-
-![snapshot-11:38:40.png](snapshots/snapshot-11:38:40.png)
-
-![snapshot-11:38:42.png](snapshots/snapshot-11:38:42.png)
-
-![snapshot-11:38:43.png](snapshots/snapshot-11:38:43.png)
-
-![snapshot-11:38:45.png](snapshots/snapshot-11:38:45.png)
-
-![snapshot-11:38:46.png](snapshots/snapshot-11:38:46.png)
-
-![snapshot-11:38:48.png](snapshots/snapshot-11:38:48.png)
-
-![snapshot-11:38:49.png](snapshots/snapshot-11:38:49.png)
-
-![snapshot-11:38:51.png](snapshots/snapshot-11:38:51.png)
-
-![snapshot-11:38:52.png](snapshots/snapshot-11:38:52.png)
-
-![snapshot-11:38:55.png](snapshots/snapshot-11:38:55.png)
-
-![snapshot-11:38:56.png](snapshots/snapshot-11:38:56.png)
-
-![snapshot-11:38:58.png](snapshots/snapshot-11:38:58.png)
-
-![snapshot-11:39:00.png](snapshots/snapshot-11:39:00.png)
-
-![snapshot-11:39:03.png](snapshots/snapshot-11:39:03.png)
-
-![snapshot-11:39:04.png](snapshots/snapshot-11:39:04.png)
-
-![snapshot-11:39:06.png](snapshots/snapshot-11:39:06.png)
-
-![snapshot-11:39:07.png](snapshots/snapshot-11:39:07.png)
-
-![snapshot-11:39:08.png](snapshots/snapshot-11:39:08.png)
-
-![snapshot-11:39:10.png](snapshots/snapshot-11:39:10.png)
-
-![snapshot-11:39:12.png](snapshots/snapshot-11:39:12.png)
-
-![snapshot-11:39:13.png](snapshots/snapshot-11:39:13.png)
-
-![snapshot-11:39:15.png](snapshots/snapshot-11:39:15.png)
-
-![snapshot-11:39:18.png](snapshots/snapshot-11:39:18.png)
-
-![snapshot-11:39:21.png](snapshots/snapshot-11:39:21.png)
-
-![snapshot-11:39:23.png](snapshots/snapshot-11:39:23.png)
-
-![snapshot-11:39:25.png](snapshots/snapshot-11:39:25.png)
-
-![snapshot-11:39:27.png](snapshots/snapshot-11:39:27.png)
-
-![snapshot-11:39:30.png](snapshots/snapshot-11:39:30.png)
-
-![snapshot-11:39:32.png](snapshots/snapshot-11:39:32.png)
-
-![snapshot-11:39:36.png](snapshots/snapshot-11:39:36.png)
-
-![snapshot-11:39:39.png](snapshots/snapshot-11:39:39.png)
-
-![snapshot-11:39:41.png](snapshots/snapshot-11:39:41.png)
-
-![snapshot-11:39:45.png](snapshots/snapshot-11:39:45.png)
-
-![snapshot-11:39:46.png](snapshots/snapshot-11:39:46.png)
-
-![snapshot-11:39:47.png](snapshots/snapshot-11:39:47.png)
-
-![snapshot-11:39:49.png](snapshots/snapshot-11:39:49.png)
-
-![snapshot-11:39:50.png](snapshots/snapshot-11:39:50.png)
-
-![snapshot-11:39:54.png](snapshots/snapshot-11:39:54.png)
-
-![snapshot-11:39:57.png](snapshots/snapshot-11:39:57.png)
-
-![snapshot-11:40:01.png](snapshots/snapshot-11:40:01.png)
-
-![snapshot-11:40:03.png](snapshots/snapshot-11:40:03.png)
-
-![snapshot-11:40:05.png](snapshots/snapshot-11:40:05.png)
-
-![snapshot-11:40:07.png](snapshots/snapshot-11:40:07.png)
-
-![snapshot-11:40:08.png](snapshots/snapshot-11:40:08.png)
-
-![snapshot-11:40:09.png](snapshots/snapshot-11:40:09.png)
-
-![snapshot-11:40:10.png](snapshots/snapshot-11:40:10.png)
-
-![snapshot-11:40:12.png](snapshots/snapshot-11:40:12.png)
-
-![snapshot-11:40:13.png](snapshots/snapshot-11:40:13.png)
-
-![snapshot-11:40:14.png](snapshots/snapshot-11:40:14.png)
-
-![snapshot-11:40:15.png](snapshots/snapshot-11:40:15.png)
-
-![snapshot-11:40:17.png](snapshots/snapshot-11:40:17.png)
-
-![snapshot-11:40:20.png](snapshots/snapshot-11:40:20.png)
-
-![snapshot-11:40:22.png](snapshots/snapshot-11:40:22.png)
-
-![snapshot-11:40:23.png](snapshots/snapshot-11:40:23.png)
-
-![snapshot-11:40:24.png](snapshots/snapshot-11:40:24.png)
-
-![snapshot-11:40:26.png](snapshots/snapshot-11:40:26.png)
-
-![snapshot-11:40:27.png](snapshots/snapshot-11:40:27.png)
-
-![snapshot-11:40:29.png](snapshots/snapshot-11:40:29.png)
-
-![snapshot-11:40:30.png](snapshots/snapshot-11:40:30.png)
-
-![snapshot-11:40:31.png](snapshots/snapshot-11:40:31.png)
-
-![snapshot-11:40:33.png](snapshots/snapshot-11:40:33.png)
-
-![snapshot-11:40:35.png](snapshots/snapshot-11:40:35.png)
-
-![snapshot-11:40:36.png](snapshots/snapshot-11:40:36.png)
-
-![snapshot-11:40:38.png](snapshots/snapshot-11:40:38.png)
-
-![snapshot-11:40:39.png](snapshots/snapshot-11:40:39.png)
-
-![snapshot-11:40:41.png](snapshots/snapshot-11:40:41.png)
-
-![snapshot-11:40:42.png](snapshots/snapshot-11:40:42.png)
-
-![snapshot-11:40:44.png](snapshots/snapshot-11:40:44.png)
-
-![snapshot-11:40:45.png](snapshots/snapshot-11:40:45.png)
-
-![snapshot-11:40:47.png](snapshots/snapshot-11:40:47.png)
-
-![snapshot-11:40:48.png](snapshots/snapshot-11:40:48.png)
-
-![snapshot-11:40:50.png](snapshots/snapshot-11:40:50.png)
-
-![snapshot-11:40:52.png](snapshots/snapshot-11:40:52.png)
-
-![snapshot-11:40:54.png](snapshots/snapshot-11:40:54.png)
-
-![snapshot-11:40:55.png](snapshots/snapshot-11:40:55.png)
-
-![snapshot-11:40:57.png](snapshots/snapshot-11:40:57.png)
-
-![snapshot-11:40:58.png](snapshots/snapshot-11:40:58.png)
-
-![snapshot-11:41:00.png](snapshots/snapshot-11:41:00.png)
-
-![snapshot-11:41:02.png](snapshots/snapshot-11:41:02.png)
-
-![snapshot-11:41:03.png](snapshots/snapshot-11:41:03.png)
-
-![snapshot-11:41:06.png](snapshots/snapshot-11:41:06.png)
-
-![snapshot-11:41:08.png](snapshots/snapshot-11:41:08.png)
-
-![snapshot-11:41:10.png](snapshots/snapshot-11:41:10.png)
-
-![snapshot-11:41:12.png](snapshots/snapshot-11:41:12.png)
-
-![snapshot-11:41:16.png](snapshots/snapshot-11:41:16.png)
-
-![snapshot-11:41:18.png](snapshots/snapshot-11:41:18.png)
-
-![snapshot-11:41:21.png](snapshots/snapshot-11:41:21.png)
-
-![snapshot-11:41:23.png](snapshots/snapshot-11:41:23.png)
-
-![snapshot-11:41:24.png](snapshots/snapshot-11:41:24.png)
-
-![snapshot-11:41:30.png](snapshots/snapshot-11:41:30.png)
-
-![snapshot-11:41:33.png](snapshots/snapshot-11:41:33.png)
-
-![snapshot-11:41:34.png](snapshots/snapshot-11:41:34.png)
-
-![snapshot-11:41:36.png](snapshots/snapshot-11:41:36.png)
-
-![snapshot-11:41:38.png](snapshots/snapshot-11:41:38.png)
-
-![snapshot-11:41:40.png](snapshots/snapshot-11:41:40.png)
-
-![snapshot-11:41:42.png](snapshots/snapshot-11:41:42.png)
-
-![snapshot-11:41:43.png](snapshots/snapshot-11:41:43.png)
-
-![snapshot-11:41:45.png](snapshots/snapshot-11:41:45.png)
-
-![snapshot-11:41:46.png](snapshots/snapshot-11:41:46.png)
-
-![snapshot-11:41:49.png](snapshots/snapshot-11:41:49.png)
-
-![snapshot-11:41:51.png](snapshots/snapshot-11:41:51.png)
-
-![snapshot-11:41:52.png](snapshots/snapshot-11:41:52.png)
-
-![snapshot-11:41:54.png](snapshots/snapshot-11:41:54.png)
-
-![snapshot-11:41:56.png](snapshots/snapshot-11:41:56.png)
-
-![snapshot-11:41:59.png](snapshots/snapshot-11:41:59.png)
-
-![snapshot-11:42:01.png](snapshots/snapshot-11:42:01.png)
-
-![snapshot-11:42:04.png](snapshots/snapshot-11:42:04.png)
-
-![snapshot-11:42:06.png](snapshots/snapshot-11:42:06.png)
-
-![snapshot-11:42:08.png](snapshots/snapshot-11:42:08.png)
-
-![snapshot-11:42:09.png](snapshots/snapshot-11:42:09.png)
-
-![snapshot-11:42:10.png](snapshots/snapshot-11:42:10.png)
-
-![snapshot-11:42:12.png](snapshots/snapshot-11:42:12.png)
-
-![snapshot-11:42:14.png](snapshots/snapshot-11:42:14.png)
-
-![snapshot-11:42:16.png](snapshots/snapshot-11:42:16.png)
-
-![snapshot-11:42:19.png](snapshots/snapshot-11:42:19.png)
-
-![snapshot-11:42:20.png](snapshots/snapshot-11:42:20.png)
-
-![snapshot-11:42:23.png](snapshots/snapshot-11:42:23.png)
-
-![snapshot-11:42:24.png](snapshots/snapshot-11:42:24.png)
-
-![snapshot-11:43:03.png](snapshots/snapshot-11:43:03.png)
-
-![snapshot-11:43:07.png](snapshots/snapshot-11:43:07.png)
-
-![snapshot-11:43:11.png](snapshots/snapshot-11:43:11.png)
-
-![snapshot-11:43:12.png](snapshots/snapshot-11:43:12.png)
+[petprojects]: https://devconfcz2021.sched.com/event/gmKQ/the-pet-projects-of-dr-frank-einstein
