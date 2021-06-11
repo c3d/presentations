@@ -43,7 +43,7 @@ base_slide "Running containers in virtual machines",
     story
         * "Value proposition: speed and security"
         * "Drop-in replacement for container runtimes"
-        * "Works with docker, podman, kubernetes, etc"
+        * "Works with Kubernetes, OpenShift, etc"
         * "Do you really get everything at once?"
     right_picture
         images "Kata Web Site.png", "Docker and Kata Containers.png", "Kubernetes to VMs.png", "Kata Value Proposition.png"
@@ -112,9 +112,12 @@ memory_axis ->
         reference_scale 3072, "3G"
         reference_tick  2048, "2G"
         reference_tick  1024, "1G"
-    else
+    else if stacked_item_sum > 1024 then
         reference_scale 2048, "2G"
         reference_tick  1024, "1G"
+    else
+        reference_scale 1024, "1G"
+        reference_tick   512, "512M"
 
 
 MEM_START       -> 0
@@ -152,7 +155,7 @@ mem_qemu        -> anim 0.0, MEM_START=0, MEM_QEMU=30
 mem_virtiofsd   -> anim 0.0, MEM_START=0, MEM_VIRTIOFSD=10, MEM_DNF_INSTALL=350
 mem_guest       -> anim 0.0, MEM_START=0, MEM_GUEST=300, MEM_DNF_INSTALL=880
 mem_agent       -> anim 0.0, MEM_START=0, MEM_AGENT=60
-mem_scale       -> anim 0.1, MEM_START=0.3, MEM_SCALEx100=0.15
+mem_scale       -> anim 0.1, MEM_START=0.7, MEM_KUBELET=0.35, MEM_x100=0.3, MEM_SCALEx100=0.15
 
 name_workload   -> anim_text "Bash", MEM_NGINX="nginx", MEM_x100="nginx x 100", MEM_x1="nginx", MEM_LOADx100="nginx x 100"
 name_conmon     -> anim_text "Conmon", MEM_x100="Conmon x 100", MEM_x1="Conmon", MEM_CONMONx100="Conmon x 100"
@@ -201,6 +204,15 @@ base_slide "Memory usage",
                 text "Possible double accounting of the same physical memory between guest and virtiofsd"
 
 
+memory_crio      -> 53         // 28 + 2.5x10
+memory_k8s       -> 163        // memory_crio + 110
+memory_1pod_k1   -> 561        // memory_crio + 16.8x10 + (30 + 10 + 300)
+memory_1pod_k1L  -> 911        // memory_1pod_k1L + 350
+memory_10pods_k1 -> 921        // 1pod + 9*(30 + 10)
+memory_10pods_k1L-> 3961       // 10pods + 9*350
+memory_1pod_k2   -> 112        // memory_crio + 19.2 + 30 + 10
+memory_10pods_k2 -> 645        // memory_crio + 10 * (19.2 + 30 + 10)
+
 // ---------------------------------------------------------------------------
 base_slide "Memory - Comparing runtimes",
 // ----------------------------------------------------------------------------
@@ -209,28 +221,50 @@ base_slide "Memory - Comparing runtimes",
     slide_picture "Memory.jpg", 10%, 250
     stepping
     picture
-       stacked_item_scale := 0.3 - 0.15 * fade_at(smooth_step, 5)
+       stacked_item_scale := 0.5 - 0.35 * fade_at(smooth_step, 7)
        stacked_item_sum := 0.0
 
        translate 0, -200, 0
 
-       memory_crio      -> 53         // 28 + 2.5x10
-       memory_k8s       -> 163        // memory_crio + 110
-       memory_1pod_k1   -> 561        // memory_crio + 16.8x10 + (30 + 10 + 300)
-       memory_1pod_k1L  -> 911        // memory_1pod_k1L + 350
-       memory_10pods_k1 -> 921        // 1pod + 9*(30 + 10)
-       memory_10pods_k1L-> 3961       // 10pods + 9*350
-       memory_1pod_k2   -> 112.2      // memory_crio + 19.2 + 30 + 10
-       memory_10pods_k2 -> 645        // memory_crio + 10 * (19.2 + 30 + 10)
+       bar_graph_unit "M"
 
        bar_graph 0, memory_crio,        "CRI-O"
        bar_graph 1, memory_k8s,         "Kubernetes"
        bar_graph 2, memory_1pod_k1,     "One pod, Kata 1.12"
-       bar_graph 3, memory_1pod_k1L,    "One pod, after I/Os"
-       bar_graph 4, memory_10pods_k1,   "Ten pods, Kata 1.12"
-       bar_graph 5, memory_10pods_k1L,  "Ten pods, after I/Os"
-       bar_graph 6, memory_1pod_k2,     "One pod, Kata 2.0"
-       bar_graph 7, memory_10pods_k2,   "Ten pods, Kata 2.0"
+       bar_graph 3, memory_10pods_k1,   "Ten pods, Kata 1.12"
+       bar_graph 4, memory_1pod_k2,     "One pod, Kata 2.0"
+       bar_graph 5, memory_10pods_k2,   "Ten pods, Kata 2.0"
+
+       last_graph 6,
+           * "Kata requires a lot of memory for qemu, guest kernel and virtiofs."
+           * "Reusing pods can help, but is not common practice."
+
+       memory_axis
+
+
+// ---------------------------------------------------------------------------
+base_slide "Memory - disk caches",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Perform a dnf install inside the running pods"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+       stacked_item_scale := 0.5 - 0.35 * fade_at(smooth_step, 3)
+       stacked_item_sum := 0.0
+
+       translate 0, -200, 0
+
+       bar_graph_unit "M"
+
+       bar_graph 0, memory_1pod_k1,     "One pod, Kata 1.12"
+       bar_graph 1, memory_10pods_k1,   "Ten pods, Kata 1.12"
+       bar_graph 2, memory_1pod_k1L,    "One pod, after I/Os"
+       bar_graph 3, memory_10pods_k1L,  "Ten pods, after I/Os"
+
+       last_graph 4,
+           * "I/O buffers consume a lot of memory."
+           * "DAX allows host and guests to share that memory"
 
        memory_axis
 
@@ -246,6 +280,8 @@ base_slide "Memory overhead - It's bad",
         * "Too many processes"
         ** "Partially addressed by 2.0"
         ** "... but single point of failure"
+        * "A lot of memory in buffer caches"
+        ** "DAX allows host buffer caches to be used"
 
     code_move 300, 0, 1200, 700
     code_box_at_step 1, "Processes", { text load_text "conmon-dump.log" }
@@ -299,25 +335,58 @@ boot_axis ->
 base_slide "Boot time overhead",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Time to boot 20 containers"
+    subtitle "Time to boot containers"
     slide_picture "Boot.jpg", 10%, 250
 
     stepping
     picture
         anim_step integer(smooth_step + 0.5)
-        boot_scale -> anim 0.0, 0=600.0, 1=50.0, 3=30, 4=15
+        boot_scale -> anim 0.0, 0=600.0, 1=50.0, 3=30
         stacked_item_scale := boot_scale
         stacked_item_sum := 0.0
 
         translate 0, -200, 0
 
+        bar_graph_unit "s"
+
         bar_graph 0, boot_1busybox_runc,         "1x busybox on runc"
         bar_graph 1, boot_1busybox_kata,         "1x busybox on Kata"
         bar_graph 2, boot_20busybox_runc,        "20x busybox on runc"
         bar_graph 3, boot_20busybox_kata,        "20x busybox on Kata"
-        bar_graph 4, run_20busybox_kata,         "Run 20x busybox"
-        bar_graph 5, run_20alpine_kata,          "Run 20x alpine"
-        bar_graph 6, run_20fedora_kata,          "Run 20x fedora"
+
+        last_graph 4,
+            * "Pod boot time is relatively constant (about 7s here)"
+            * "But can you run multiple containers in a single pod?"
+
+        boot_axis
+
+// ---------------------------------------------------------------------------
+base_slide "Run time overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Shutting down also takes time"
+    slide_picture "Boot.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        run_scale -> anim 0.0, 0=50.0, 1=30, 2=15
+        stacked_item_scale := run_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0, boot_20busybox_runc,        "20x busybox on runc"
+        bar_graph 1, boot_20busybox_kata,        "20x busybox on Kata"
+        bar_graph 2, run_20busybox_kata,         "Run 20x busybox"
+        bar_graph 3, run_20alpine_kata,          "Run 20x alpine"
+        bar_graph 4, run_20fedora_kata,          "Run 20x fedora"
+
+        last_graph 5,
+            * "Shutting down a Kata pod also takes time"
+            * "With Kata, the container base you use is not as relevant"
 
         boot_axis
 
@@ -413,23 +482,30 @@ disk_axis ->
 base_slide "Disk read overhead",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Copy files from the local file system (20x)"
+    subtitle "Copy files from the local file system"
     slide_picture "Disk.jpg", 10%, 250
 
     stepping
     picture
         anim_step integer(smooth_step + 0.5)
-        disk_tar_scale -> anim 0.0, 0=10.0, 2=5.0, 2=3.0
+        disk_tar_scale -> anim 0.0, 0=10.0, 2=5.0, 3=3.0
         stacked_item_scale := disk_tar_scale
         stacked_item_sum := 0.0
 
         translate 0, -200, 0
 
-        bar_graph 0,   disk_tar_runc_sys, disk_tar_runc, "tar on runc"
-        bar_graph 1,   disk_tar_runc_blk_sys, disk_tar_runc_blk, "tar on runc+blk"
-        bar_graph 2,   disk_tar_kata_sys, disk_tar_kata, "tar on Kata+virtiofs"
-        bar_graph 3,   disk_tar_kata9p_sys, disk_tar_kata9p, "tar on Kata+9pfs"
-        bar_graph 4,   disk_tar_kata_blk_sys, disk_tar_kata_blk, "tar on Kata+blk"
+        bar_graph_unit "s"
+
+        bar_graph 0,   disk_tar_runc_sys, disk_tar_runc, "runc"
+        bar_graph 1,   disk_tar_runc_blk_sys, disk_tar_runc_blk, "runc+blk"
+        bar_graph 2,   disk_tar_kata_sys, disk_tar_kata, "Kata+virtiofs"
+        bar_graph 3,   disk_tar_kata9p_sys, disk_tar_kata9p, "Kata+9pfs"
+        bar_graph 4,   disk_tar_kata_blk_sys, disk_tar_kata_blk, "Kata+blk"
+
+        last_graph 5,
+            * "File reads are markedly slower with Kata"
+            * "virtiofs improves a lot over 9pfs"
+            * "Kata benefits less from blk than runc"
 
         disk_axis
 
@@ -472,13 +548,20 @@ base_slide "Disk write overhead",
 
         translate 0, -200, 0
 
-        bar_graph 0,   disk_dd_runc_sys, disk_dd_runc, "dd 1.0G runc"
-        bar_graph 1,   disk_dd_kata_sys, disk_dd_kata, "dd 1.0G Kata+virtiofs"
-        bar_graph 2,   disk_dd_kata9p_sys, disk_dd_kata9p, "dd 1.0G Kata+9pfs"
-        bar_graph 3,   disk_dd_runc_blk_sys, disk_dd_runc_blk, "dd 1.0G runc+blk"
-        bar_graph 4,   disk_dd_runc_blk2_sys, disk_dd_runc_blk2, "dd 1.0G runc+blk"
-        bar_graph 5,   disk_dd_kata_blk_sys, disk_dd_kata_blk, "dd 1.0G Kata+blk"
-        bar_graph 6,   disk_dd_kata_blk2_sys, disk_dd_kata_blk2, "dd 1.0G Kata+blk"
+        bar_graph_unit "s"
+
+        bar_graph 0,   disk_dd_runc_sys, disk_dd_runc, "runc"
+        bar_graph 1,   disk_dd_kata_sys, disk_dd_kata, "Kata+virtiofs"
+        bar_graph 2,   disk_dd_kata9p_sys, disk_dd_kata9p, "Kata+9pfs"
+        bar_graph 3,   disk_dd_runc_blk_sys, disk_dd_runc_blk, "runc+blk"
+        bar_graph 4,   disk_dd_runc_blk2_sys, disk_dd_runc_blk2, "rewrite runc+blk"
+        bar_graph 5,   disk_dd_kata_blk_sys, disk_dd_kata_blk, "Kata+blk"
+        bar_graph 6,   disk_dd_kata_blk2_sys, disk_dd_kata_blk2, "rewrite Kata+blk"
+
+        last_graph 7,
+            * "Kata with virtiofs outperforms runc here"
+            * "Overwriting a file is more expensive"
+            * "The effect is less marked with Kata"
 
         disk_axis
 
@@ -557,40 +640,71 @@ net_axis ->
 base_slide "Network overhead",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Read or write a 10.0G file from local server"
+    subtitle "Read or write a 1G file from local server"
     slide_picture "Network.jpg", 10%, 250
 
     stepping
     picture
         anim_step integer(smooth_step + 0.5)
-        net_read_scale -> anim 0.0, 0=10.0, 2=1.5
+        net_read_scale -> anim 0.0, 0=10.0, 6=1.5
         stacked_item_scale := net_read_scale
         stacked_item_sum := 0.0
 
         translate 0, -200, 0
 
-        bar_graph 0,   net_read_runc_sys, net_read_runc, "runc 10G read"
-        bar_graph 1,   net_read_kata_sys, net_read_kata, "kata 10G read"
-        bar_graph 2,   net_write_runc_sys, net_write_runc, "runc 10G write"
-        bar_graph 3,   net_write_kata_sys, net_write_kata, "kata 10G write"
+        bar_graph_unit "s"
+
+        bar_graph 0,   net_read_runc_sys, net_read_runc, "runc read"
+        bar_graph 1,   net_read_kata_sys, net_read_kata, "kata read"
+        bar_graph 2,   net_write_runc_sys, net_write_runc, "runc write"
+        bar_graph 3,   net_write_kata_sys, net_write_kata, "kata write"
+        bar_graph 4,   net_local_read_runc_sys, net_local_read_runc, "runc read host"
+        bar_graph 5,   net_local_read_kata_sys, net_local_read_kata, "kata read host"
+        bar_graph 6,   net_local_write_runc_sys, net_local_write_runc, "runc write host"
+        bar_graph 7,   net_local_write_kata_sys, net_local_write_kata, "kata write host"
+
+        last_graph 8,
+            * "Kata overhead is modest"
+            ** "Lower system usage in guest (moved to host)"
+            * "Host networking is rather bad for Kata"
+            ** "Writing is really bad"
 
         net_axis
 
+
+        // runc read real	0m42.238s user	0m2.833s sys	0m8.870s
+        net_read_runc            -> 42.328
+        net_read_runc_sys        -> 8.870
+
+        // kata read real	0m43.324s user	0m2.590s sys	0m6.145s
+        net_read_kata            -> 43.324
+        net_read_kata_sys        -> 6.145
+
+        // runc write: real	0m41.703s user	0m2.455s sys	0m2.952s
+        net_write_runc           -> 41.703
+        net_write_runc_sys       -> 2.952
+
+        // kata write: real	0m43.462s user	0m2.931s sys	0m3.712s
+        net_write_kata           -> 43.462
+        net_write_kata_sys       -> 3.712
+
+        // Runs from local diskL writes are really bad
+
         // scp from 10G disk: real	0m38.310s user	0m11.616s sys	0m27.543s
-        net_read_runc            -> 38.310
-        net_read_runc_sys        -> 27.543
+        net_local_read_runc            -> 38.310
+        net_local_read_runc_sys        -> 27.543
 
         // scp from 10G disk: real	0m56.346s user	0m13.306s sys	0m29.037s
-        net_read_kata            -> 56.346
-        net_read_kata_sys        -> 29.037
+        net_local_read_kata            -> 56.346
+        net_local_read_kata_sys        -> 29.037
 
         // scp to 10G disk: real	4m53.355s user	0m8.569s sys	0m19.197s
-        net_write_runc           -> 293.355
-        net_write_runc_sys       -> 19.197
+        net_local_write_runc           -> 293.355
+        net_local_write_runc_sys       -> 19.197
 
         // scp to 10G disk: real	5m30.406s user	0m25.134s sys	0m48.085s
-        net_write_kata           -> 338.406
-        net_write_kata_sys       -> 48.085
+        net_local_write_kata           -> 338.406
+        net_local_write_kata_sys       -> 48.085
 
 
 // ---------------------------------------------------------------------------

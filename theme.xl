@@ -1125,7 +1125,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 2700 // 20 minutes
+TOTAL_DURATION -> 900 // 20 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -1636,11 +1636,27 @@ stacked_items Unit:text, Scale:real, Body ->
         stacked_item_count := stacked_item_index
 
 
+last_graph_index -> 0.0
+last_graph S:integer, Information ->
+    if last_graph_index <> S then
+        last_graph_index := S
+        refresh 0.0
+    else
+        locally
+            at_step S
+            text_box 650, 250, 500, 600,
+                style "story"
+                render Information
+
+bar_graph_unit   -> ""
+bar_graph_unit U -> bar_graph_unit := U
+
+
 bar_graph Step:integer, Value1:real, Value2:real, Description ->
     locally
         at_step Step
         color_hsv 37.311 * Step, 90%, 60%
-        translate Step * 100 - 350, 0, 0
+        translate Step * 100 - 50 * last_graph_index - 100, 0, 0
         bar_graph_draw Value1 * fade_at(smooth_step, Step) * stacked_item_scale
         locally
             color_hsv 37.311 * Step, 90%, 80%
@@ -1650,33 +1666,53 @@ bar_graph Step:integer, Value1:real, Value2:real, Description ->
         if stacked_item_sum < Value2 * fade_at(smooth_step, Step) then
             stacked_item_sum := Value2 * fade_at(smooth_step, Step)
 
+        style "story"
+        align 100%
+        vertical_align 30%
+        color_hsv 37.311 * Step, 90%, 40%
+        font_size 20
+
+        text_box 0, Value1 * fade_at(smooth_step, Step) * stacked_item_scale + 50, 100, 100,
+            align 50%
+            vertical_align 100%
+            color "white"
+            text "" & integer(Value1 * 10) * 0.1 & bar_graph_unit
+
+        text_box 0, Value2 * fade_at(smooth_step, Step) * stacked_item_scale + 50, 100, 100,
+            align 50%
+            vertical_align 100%
+            text "" & integer(Value2 * 10) * 0.1 & bar_graph_unit
+
         translate -70, -100, 0
         rotate_z 40
         text_box 0, 0, 200, 80,
-            style "story"
-            align 100%
-            vertical_align 30%
-            color_hsv 37.311 * Step, 90%, 20%
-            font_size 20
+            font_size 26
             render Description
 
 bar_graph Step:integer, Value:real, Description ->
     locally
         at_step Step
         color_hsv 37.311 * Step, 90%, 80%
-        translate Step * 100 - 350, 0, 0
+        translate Step * 100 - 50 * last_graph_index - 100, 0, 0
         bar_graph_draw Value * fade_at(smooth_step, Step) * stacked_item_scale
         if stacked_item_sum < Value * fade_at(smooth_step, Step) then
             stacked_item_sum := Value * fade_at(smooth_step, Step)
 
+        style "story"
+        align 100%
+        vertical_align 30%
+        color_hsv 37.311 * Step, 90%, 40%
+        font_size 20
+
+        text_box 0, Value * fade_at(smooth_step, Step) * stacked_item_scale + 50, 100, 100,
+            align 50%
+            vertical_align 100%
+            text "" & integer(Value * 10) * 0.1 & bar_graph_unit
+
         translate -70, -100, 0
         rotate_z 40
         text_box 0, 0, 200, 80,
-            style "story"
-            align 100%
-            vertical_align 30%
-            color_hsv 37.311 * Step, 90%, 20%
-            font_size 20
+            font_size 26
             render Description
 
 bar_graph_draw Value:real ->
