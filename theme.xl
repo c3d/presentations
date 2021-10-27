@@ -540,7 +540,7 @@ title_slide_logo ->
         title_slide_logo_internal 0, H -> false
         title_slide_logo_internal W, 0 -> false
         title_slide_logo_internal W:integer, H:integer ->
-            scale min(200.0 / W, 300.0 / H)
+            scale min(400.0 / W, 300.0 / H)
             locally
                 texture ""
                 rounded_rectangle 0, 0, W*120%, H*120%, 60
@@ -1125,7 +1125,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 900 // 20 minutes
+TOTAL_DURATION -> 1500 // 25 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1

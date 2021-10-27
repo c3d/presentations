@@ -1,7 +1,7 @@
-presentation_title "Honey, I shrunk the pods (and everything else)"
+presentation_title "Confidential Containers - Distrusting your VM host"
 presentation_logo "KataContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch DevConf.cz-2021)"
+presentation_tao "https://github.com/c3d/presentations (branch hipeac-2021)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
@@ -10,10 +10,10 @@ presentation_author_mail "dinechin@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Honey, I shrunk the pods!"
-        $ "(And everything else...)"
+        $ "Confidential Containers"
+        $ "Distrusting your VM host"
     subtitle
-        $ "How to make Kata Containers small, lean and efficient"
+        $ "Keeping live in-memory data from prying eyes"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -23,38 +23,48 @@ main_title_slide "Main title",
 
     title_slide_logo
 
+    contents 0,
+        text_box -500, -540, 800, 200,
+            style "story"
+            $ "HiPEAC CSW Autumn 2021 in Lyon"
 
-// ----------------------------------------------------------------------------
-section_slide "Kata Containers Refresher",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle
-        $ "Running Containers in Virtual Machines?"
-        $ "Why? How?"
 
 
 // ---------------------------------------------------------------------------
-base_slide "Running containers in virtual machines",
+base_slide "Agenda",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Sandboxed containers, improve isolation, additional features"
-    slide_picture "Square Peg Round Hole.png", 0%, 250
+    subtitle "Key topics we are going to cover today"
+    slide_picture "Agenda.png", 0%, 250
     stepping
     story
-        * "Value proposition: speed and security"
-        * "Drop-in replacement for container runtimes"
-        * "Works with Kubernetes, OpenShift, etc"
-        * "Do you really get everything at once?"
-    right_picture
-        images "Kata Web Site.png", "Docker and Kata Containers.png", "Kubernetes to VMs.png", "Kata Value Proposition.png"
+        * "Why should someone else be able to see your data?"
+        * "Confidential computing & encrypted virtualization"
+        * "Adding ""Confidential"" to Kata Containers"
+        * "Securing image download"
+        * "Attestation: knowing what you run and where it runs"
+        * "Separating tenant and host realms"
+        * "Performance - Not all that great"
 
+    right_picture
+        images "Nosy Neighbour.jpg", "Canal+ Scrambled.jpg", "Kata Confidential Containers.png", "Matrix disintegration.png", "Attestation.jpg", "Tenants.jpg", "Snail.jpg"
+
+
+// ============================================================================
+//
+section_slide "Problem statement",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Can we trust your infrastructure?"
 
 
 // ---------------------------------------------------------------------------
-base_slide "Overhead Overview",
+base_slide "Sandboxing workloads",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Houston, we have N problems"
+    subtitle "From your software to containers in VMs..."
     slide_picture_at OWS_SW..OWS_OS,      "Emoji=Happy.png", 5%, 300
     slide_picture_at OWS_CHROOT..OWS_KVM, "Emoji=Thinking.png", 5%, 300
     slide_picture_at OWS_CNTN..OWS_CRI,   "Emoji=Questioning.png", 4%, 350
@@ -78,6 +88,159 @@ base_slide "Overhead Overview",
         caption_at OWS_KATA, "Kata Containers run sandboxed containers in isolated virtual machines"
         overview integer(smooth_step + 0.5)
 
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Computing",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Why should infrastructure see your data?"
+    slide_picture "Confidential Computing.jpg", 5%, 350
+    stepping
+
+    picture
+        caption_at CNF_HOST, "Software now runs on hardware you do not own, like a cloud provider"
+        caption_at CNF_RESOURCES, "Hardware resources are owned by the host"
+        caption_at CNF_CONTAINERS, "Containers carve out resources from the host"
+        caption_at CNF_SANDBOX_OUT, "Classical sandboxing only protects the host from the containers running on it"
+        caption_at CNF_SANDBOX_IN, "The host can freely peek insdie the container, for example read its memory"
+        caption_at CNF_TENANTS, "Multiple tenants do not want to share hardware when processing sensitive data"
+        caption_at CNF_SAFE_TODAY, "Data on disk or in network can already be encrypted today, so the VM host cannot read it nor tamper with it"
+        caption_at CNF_MEMORY_VM, "In current architectures, data in memory is not encrypted, so it can be accessed by the host"
+        caption_at CNF_MEMORY_HOST, "Encrypted memory stores live data as cypher text, so that it becomes garbled when read by the host"
+        caption_at CNF_INTEGRITY, "Integrity ensures the host cannot corrupt nor poison CPU state or RAM contents"
+        caption_at CNF_ATTESTATION, "Attestation proves where you are running and what you are running"
+        confidential integer(smooth_step + 0.5)
+
+
+// ----------------------------------------------------------------------------
+base_slide "Vendor landscape",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Different vendors with different approaches?"
+    slide_picture "Confidential Computing.jpg", 5%, 350
+    stepping
+    story
+        * "AMD: Secure Encrypted Virtualization (SEV)"
+        ** "SEV-ES adds Encrypted State (e.g. CPU register file)"
+        ** "SEV-SNP adds Secure Nested Pages (integrity protection)"
+        * "Intel: Trusted Domain Extensions (TDX)"
+        * "IBM S390: Secure Execution (SE)"
+        * "Power: Protected Execution Facility (PEF)"
+        * "Arm: Confidential Computing Architecture (CCA)"
+        * "All these technologies are based on virtualization"
+        * "They all work differently"
+
+    right_picture
+        images "AMD.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
+
+
+one_picture Body ->
+    picture
+        at_step 1
+        rotate_y 90 * fade_out_at(smooth_step, 1)
+        Body
+
+// ----------------------------------------------------------------------------
+base_slide "Kata Containers Overview",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Running Containers in Virtual Machines"
+    slide_picture "KataContainersLogo.png", 5%, 350
+    stepping
+
+    one_picture
+        image 0, 0, 60%, 60%, "Kata Architecture.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Containers in Kata",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Taking advantage of confidential computing"
+    slide_picture "Confidential - Top Secret.png", 5%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 60%, 60%, "Kata Confidential Computing.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Phase 1: Hardware enablement",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Just activating the confidential computing technologies"
+    slide_picture "Confidential - Top Secret.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 55%, 55%, "Kata CC Enablement.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Phase 2: Securing image pull",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Download images from within the guest"
+    slide_picture "Secure Cloud.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 75%, 75%, "Kata Pull Image.png"
+
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Measuring what we run using crypto"
+    slide_picture "Measuring.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 75%, 75%, "Kata Measurement.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation process",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Exchanging keys with the relying party"
+    slide_picture "Key Exchange.jpg", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 75%, 75%, "Kata Attestation.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Immutable Pods",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "You cannot change what you certified"
+    slide_picture "Certified.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Immutable Pods.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Two Control Planes",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Host and Tenant security realms"
+    slide_picture "Two Steering Wheels.jpg", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Dual Control Plane.png"
+
+
+// ============================================================================
+//
+section_slide "Performance considerations",
+//
+// ============================================================================
+    title page_label
+    subtitle "Impact of running virtualized"
 
 
 // ============================================================================
@@ -641,7 +804,7 @@ base_slide "Network overhead",
 // ----------------------------------------------------------------------------
     title page_label
     subtitle "Read or write a 1G file from local server"
-    slide_picture "Network.jpg", 10%, 250
+    slide_picture "Network card.png", 10%, 250
 
     stepping
     picture
@@ -707,20 +870,37 @@ base_slide "Network overhead",
         net_local_write_kata_sys       -> 48.085
 
 
-// ---------------------------------------------------------------------------
-base_slide "The future: SR-IOV support",
+// ----------------------------------------------------------------------------
+base_slide "Network bandwidth",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Hardware-accelerated virtual network functions"
-    slide_picture "Network.jpg", 0%, 250
+    subtitle "Path length increase make it harder to saturate link"
+    slide_picture "Network card.png", 3%, 300
     stepping
-    story
-        * "Hardware support for virtualization, link-level performance"
-        * "Support being added to Kata, some preliminary testing done"
-        * "Preliminary performance testing exhibited interesting issues"
-        ** "For example, all interrupts are piling on boot CPUs"
-        ** "Kata needs support for interrupt rebalancing"
-        * "SR-IOV performance under normal qemu gives us high hopes"
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Network Bandwidth.png"
+
+        translate 0, -400, 0
+        last_graph 2,
+            * "Hot-plugged vCPUs don't help much"
+            * "Increased path length, notably on the host"
+
+// ----------------------------------------------------------------------------
+base_slide "Network latency",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Strong dependency on cgroup limits"
+    slide_picture "Network card.png", 3%, 300
+    stepping
+
+    one_picture
+        image -250 * fade_at(smooth_step, 2), 50, 60%, 60%, "Kata Network Latency.png"
+
+        translate 0, -400, 0
+        last_graph 2,
+            * "Need > 2 VCPUs"
+            * "CPU constraints hurt"
 
 
 
@@ -731,32 +911,31 @@ section_slide "Conclusion",
 // ============================================================================
     title page_label
     subtitle
-        $ "Kata Containers is a complicated product."
-        $ "Getting it to perform well is a developing art."
+        $ "Confidential Containers are an opportunity"
+        $ "but a real challenge in terms of performance"
 
 
 // ---------------------------------------------------------------------------
 base_slide "Key takeaways",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Sandboxing containers comes with a cost"
+    subtitle "High cost of confidentiality and sandboxing"
     slide_picture "Pile of Cash.png", 0%, 250
     stepping
     story
         * { text "The motto """; italic "The speed of containers"; text """ applies to deployments" }
         ** "Application development cycles are as fast as with other runtimes"
-        ** "Performance in containers may vary"
+        ** "Performance in containers may / does vary"
 
         * "Memory overhead is large, but fixed and predictable"
         ** "At the moment, in the order of 350M per pod on average"
-        ** "May be a little higher with high I/Os with virtiofs"
-        ** "But if that happens, chances are you are abusing virtiofs"
+        ** "Likely to double with confidential containers"
 
         * "Disk and network overhead are large by default"
-        ** "Be mindful that virtiofs and virtual networks have a cost"
-        ** "The overhead grows with the I/O rate"
-        ** "Consider virtio-blk for storage or SR-IOV for networking"
+        ** "Confidential computing adds disk usage for images"
+        ** "Technologies such as SR-IOV and VDPA are necessary"
 
+        * "Watch out for upcoming blogs"
 
 
 // ============================================================================
@@ -954,6 +1133,222 @@ overview Step:integer ->
     cr_h -> anim   80.0, OWS_SW =   80, OWS_CRI =   80
     soft_box cr_x, cr_y, cr_w, cr_h, redhat_orange4, "CRI"
 
+
+// ============================================================================
+//
+//   Confidential Containers
+//
+// ============================================================================
+
+CNF_START       -> 0            // Blank
+CNF_HOST        -> 1            // Show the host
+CNF_RESOURCES   -> 2            // Resources
+CNF_CONTAINERS  -> 3            // Containers
+CNF_SANDBOX_OUT -> 4            // Sandboxing going out
+CNF_SANDBOX_IN  -> 5            // Sandboxing going in
+CNF_TENANTS     -> 6            // Multiple tenants
+CNF_SAFE_TODAY  -> 7            // What is safe today
+CNF_MEMORY_VM   -> 8            // Memory in the guest
+CNF_MEMORY_HOST -> 9            // Memory encryption
+CNF_INTEGRITY   -> 10           // State integrity
+CNF_ATTESTATION -> 11           // Attestation
+CNF_LAST        -> 11
+
+confidential Step:integer ->
+// ----------------------------------------------------------------------------
+//   Overview diagram for "simplified overview" slide
+// ----------------------------------------------------------------------------
+    anim_step Step
+
+    locally
+        light 0
+        light_position 50, 50, 120
+
+        rotate_x 10
+        rotate_y 10 * sin (0.3 * time)
+
+        locally
+            color "lightgray"
+            scale fade_at(smooth_step, CNF_HOST)
+            cube 0, 0, -150, 1500, 400, 300
+
+            color "black"
+            text_box 0,0, 1500, 400,
+                style "story"
+                align 90%
+                vertical_align 95%
+                $ "Virtual machine host"
+
+        locally
+            color safe_color CNF_ATTESTATION
+            translate 0, -270, 0
+            scale fade_at(smooth_step, CNF_RESOURCES)
+            cube 0, 0, -150, 1500, 100, 300
+
+            color "black"
+            text_box 0,0, 1500, 100,
+                style "story"
+                align 90%
+                vertical_align 95%
+                $ "Physical resources"
+
+            translate -300, 0, 25
+            scale 50%
+            extrude_depth 20
+            extrude_radius 20
+            soft_box -630, -20, safe_color CNF_INTEGRITY,
+                image 0, 0, 30%, 30%, "CPU.png"
+            soft_box -210, -20, safe_color CNF_MEMORY_HOST,
+                image 0, 0, 30%, 30%, "RAM.png"
+            soft_box  210,  -20, safe_color CNF_SAFE_TODAY,
+                image 0, 0, 30%, 30%, "Hard Disk.png"
+            soft_box  630, -20, safe_color CNF_SAFE_TODAY,
+                image 0, 0, 30%, 30%, "Network.png"
+
+
+        locally
+            CONTAINERS_COUNT -> anim 0.0, CNF_START=0, CNF_CONTAINERS=12
+            for I in  0..integer(CONTAINERS_COUNT)-1 loop locally
+                color_hsv I * 37, 80%, 80%
+                cube -650 + 120 * I, 0, 100, 100, 100, 100
+
+            at_step CNF_CONTAINERS
+            color "black"
+            text_box 0, 50, 1500, 100,
+                style "story"
+                align 50%
+                vertical_align 5%
+                $ "Containers"
+
+
+        locally
+            extrude_depth 50
+            translate -410, -50, 200
+            rotate_x -40
+            locally
+                color "red"
+                rotate_z -90
+                scale fade_between(smooth_step, CNF_SANDBOX_OUT, CNF_SANDBOX_IN)
+                arrow 0, 0, 100, 100, 50, 60%
+                translate_z 20
+                rotate_z 45
+                cube 0, 0, 0, 120, 10, 10
+                rotate_z 90
+                cube 0, 0, 0, 120, 10, 10
+            locally
+                translate 120, 0, 0
+                color "green"
+                rotate_z 90
+                scale fade_between(smooth_step, CNF_SANDBOX_IN, CNF_SANDBOX_IN)
+                arrow 0, 0, 100, 100, 50, 60%
+                color "white"
+                rotate_z 90
+                extrude_depth 0
+                image 0, 90 + 50 * sin(1.1*time), 10%, 10%, "BlueEyeIcon.png"
+
+        locally
+            show fade_between(smooth_step, CNF_TENANTS, CNF_TENANTS)
+            translate -120, 0, 150
+            for I in 0..3 loop
+                image I * -120 - 60, 0, 1%, 1%, "Apple.png"
+            image 320, 0, 10%, 10%, "Samsung.png"
+            image 520, 0, 10%, 10%, "Samsung.png"
+
+        memory_cone Color, X, Y, Z, Start, Stop, Body ->
+            locally
+                color Color
+                translate X, Y, Z
+                locally
+                scale fade_between(smooth_step, Start, Stop)
+                rotate_y 10 * sin (0.32 * time)
+                rotate_x 150
+                truncated_cone 0, 0, -200, 100, 100, 400, 0.0
+                rotate_x 180
+                translate_z 400
+                frame_texture 512, 150,
+                    color "white"
+                    rectangle 999, 999
+                    text_box 0, 0, 450, 200,
+                        style "story"
+                        align 50%
+                        vertical_align 50%
+                        Body
+                texture_transform
+                    scale 1, 3, 1
+                    translate_y -0.3 * time mod 1
+                    texture_wrap true, true
+                ellipse 0, 0, 200, 200
+
+        locally
+            refresh 0
+            memory_cone "lightblue", -290, 0, 120, CNF_MEMORY_VM, CNF_INTEGRITY,
+                text "Hello World, value " & integer(time * 40 mod 1000)
+                line_break
+                text "is absolutely secret!"
+            memory_cone "lightgreen", -410, -250, 0, CNF_MEMORY_HOST, CNF_MEMORY_HOST,
+                text "h3110 W0r1D, vA1u3 " & integer(time * 40 mod 997)
+                line_break
+                text "15 @B501ùT31y 53cR3t¡"
+
+        only_at CNF_INTEGRITY,
+            for I in 0..1 loop locally
+                translate -600 + 200 * I, -200 + 20 * sin((3.41 + I) * time), 100
+
+                locally
+                    color "white"
+                    translate_z 125
+                    extrude_depth 20
+                    rectangle 0, 120, 180, 120
+                    extrude_depth 0
+                    text_box 0, 120, 150, 100,
+                        font "Menlo", 14
+                        color "darkblue"
+                        align 0
+                        if I = 0 then
+                            $ "RAX = 0x0BADDA7A"
+                            $ "RCX = 0x0BADC0DE"
+                            $ "CR3 = 0xDEADBEEF"
+                        else
+                            $ "while (*ptr++=0);"
+                            $ "if (!dead)"
+                            $ "    goto retry;"
+
+                rotate_z -90
+                color "red"
+                scale fade_between(smooth_step, CNF_INTEGRITY, CNF_INTEGRITY)
+                arrow 0, 0, 100, 100, 50, 60%
+                color "darkred"
+                translate_z 20
+                rotate_z 45
+                cube 0, 0, 0, 120, 10, 10
+                rotate_z 90
+                cube 0, 0, 0, 120, 10, 10
+
+        only_at CNF_ATTESTATION,
+            color "green"
+            font "Arial Unicode MS", 160
+            align 50%
+            vertical_align 50%
+            extrude_depth 55
+            translate_z 50
+            text_box 700, -210, 100, 100, { text "✓" }
+            text_box 700,  250, 100, 100, { text "✓" }
+            translate_z 140
+            text_box -360,  80, 100, 100, { text "✓" }
+            text_box 480,   80, 100, 100, { text "✓" }
+            text_box 360,   80, 100, 100, { text "✓" }
+
+     at_step CNF_LAST
+     if integer(smooth_step + 0.5) in CNF_MEMORY_VM..CNF_INTEGRITY then refresh 0
+
+     safe_color Limit ->  if integer(smooth_step + 0.5) < Limit then redhat_red1 else "darkgreen"
+
+
+// ============================================================================
+//
+//   Utlities
+//
+// ============================================================================
 
 caption_at TimeSlot, Body ->
 // ----------------------------------------------------------------------------
