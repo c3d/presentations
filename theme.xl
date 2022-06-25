@@ -252,6 +252,10 @@ theme_background "RedHat", "section" ->
         color "white"
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
 
+    contents -50,
+        color "white"
+        image 600, 410, 35%, 35%, "Logo SophiaConf 100% OpenSource.png"
+
 
 
 theme_background "RedHat", "movie" ->
@@ -300,6 +304,9 @@ theme_background "RedHat", Master ->
         color "white"
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
     contents -50,
+        color "white"
+        image 550, -510, 15%, 15%, "Logo SophiaConf 100% OpenSource.png"
+    contents -50,
         box -790, -510, 120, 50,
             vertical_align 0.5
             font_size 22
@@ -313,7 +320,7 @@ theme_background "RedHat", Master ->
             font_size 22
             text presentation_title
     contents -20,
-        box 0, -510, 1400, 50,
+        box 0, -510, 800, 50,
             vertical_align 0.5
             font_size 22
             align_right
@@ -454,7 +461,7 @@ theme_layout "RedHat", Master:text ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flows   0,  400, 1800, 220, "title", "subtitle"
+    flows   0,  400, 1800, 300, "title", "subtitle"
     flow    0,  -80, 1800, 700, "story"
     flow -475,  -80,  850, 700, "left"
     flow  475,  -80,  850, 700, "right"
@@ -565,6 +572,16 @@ stepping ->
     on "pageentry",
         skip_directly_to 0
         highest_step := 0
+
+
+one_picture Body ->
+// ----------------------------------------------------------------------------
+//   Just draw a single picture
+// ----------------------------------------------------------------------------
+    picture
+        at_step 1
+        rotate_y 90 * fade_out_at(smooth_step, 1)
+        Body
 
 
 at_current_step ->
@@ -1468,6 +1485,7 @@ soft_box X:real, Y:real, W:real, H:real, Color:text, Body ->
 
 
 anim_step               -> 0
+anim_smooth_step        -> 0.0
 anim_step_selected      -> 0.0
 anim_step Step:integer  ->
 // ----------------------------------------------------------------------------
@@ -1476,6 +1494,8 @@ anim_step Step:integer  ->
     if Step <> anim_step then
         anim_step := Step
         refresh 0.1
+    interpolate 0.1, anim_step, anim_smooth_step
+
 
 anim X:real -> X
 anim X:real, Values ->
@@ -1489,6 +1509,13 @@ anim X:real, Values ->
     else
         interpolate 10%, anim_step_selected, X
     X + 0.0
+
+
+at_anim Step:real ->
+// ----------------------------------------------------------------------------
+//   Show at the given animation step
+// ----------------------------------------------------------------------------
+    show fade_at(anim_smooth_step, Step)
 
 
 anim_select X:real, S:integer = TX:real ->
@@ -1717,3 +1744,18 @@ bar_graph Step:integer, Value:real, Description ->
 
 bar_graph_draw Value:real ->
     rounded_rectangle 0, 0.5 * Value, 90, Value, 10
+
+
+
+// ============================================================================
+//
+//    Multilingual support
+//
+// ============================================================================
+
+LANG -> "fr"
+English fr French -> if LANG="fr" then French else English
+english Body -> if LANG="en" then Body
+french  Body -> if LANG="fr" then Body
+key "f" -> LANG := "fr"; refresh 0
+key "e" -> LANG := "en"; refresh 0
