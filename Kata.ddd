@@ -22,7 +22,7 @@ main_title_slide "Main title",
         $ "Confidential Containers" fr "Les conteneurs sécurisés"
         $ "Distrusting your VM host" fr "Ne faites confiance à personne!"
     subtitle
-        $ "Keeping live in-memory data from prying eyes" fr "en cryptant même la mémoire vive"
+        $ "Keeping live in-memory data from prying eyes" fr "en chiffrant même la mémoire vive"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -55,7 +55,7 @@ base_slide "Agenda",
     stepping
     story
         * "Why should someone else be able to see your data?" fr "Pourquoi révéler vos données à n'importe qui?"
-        * "Confidential computing & encrypted virtualization" fr "Le ""Confidential Computing"" et la mémoire cryptée"
+        * "Confidential computing & encrypted virtualization" fr "Le ""Confidential Computing"" et la mémoire chiffrée"
         * "Adding ""Confidential"" to Kata Containers" fr "Intégration à Kata Containers"
         * "Securing image download" fr "Sécuriser le téléchargement des containers"
         * "Attestation: knowing what you run and where it runs" fr "Attestation: contrôler ce que vous exécutez et où ça s'exécute"
@@ -146,7 +146,7 @@ base_slide "Confidential Computing" fr "L'informatique sécurisée",
         caption_at CNF_SANDBOX_OUT, "Classical sandboxing only protects the host from the containers running on it" fr "L'isolation classique est conçue pour protéger l'hébergeur des conteneurs"
         caption_at CNF_SANDBOX_IN, "The host can freely peek insdie the container, for example read its memory" fr "À l'inverse, l'hébergeur peut tout à fait regarder dans un conteneur"
         caption_at CNF_TENANTS, "Multiple tenants do not want to share hardware when processing sensitive data" fr "Des concurrents ne voudront pas partager le même matériel pour des données sensibles"
-        caption_at CNF_SAFE_TODAY, "Data on disk or in network can already be encrypted today, so the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà cryptées aujourd'hui, donc OK"
+        caption_at CNF_SAFE_TODAY, "Data on disk or in network can already be encrypted today, so the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà chiffrées aujourd'hui, donc OK"
         caption_at CNF_MEMORY_VM, "In current architectures, data in memory is not encrypted, so it can be accessed by the host" fr "Pour les données en mémoire vive, il faut le nouveau matériel"
         caption_at CNF_MEMORY_HOST, "Encrypted memory stores live data as cypher text, so that it becomes garbled when read by the host" fr "Les données ainsi protégées deviennent illisibles pour l'hébergeur"
         caption_at CNF_INTEGRITY, "Integrity ensures the host cannot corrupt nor poison CPU state or RAM contents" fr "Il faut aussi protéger l'intégrité de l'état du CPU ou de la mémoire"
@@ -244,34 +244,69 @@ base_slide "Confidential Containers in Kata" fr "Conteneurs sécurisés avec Kat
             font_size 24
             color "#C22"
             rectangle 0, 7, 50, 20
-            bold { text " Trusted platform: " fr " Plateforme sécurisée: "}
+            bold " Trusted platform: " fr " Plateforme sécurisée: "
             color "black"
             $ "Offers confidential guarantees using hardware-level cryptographic enforcement." fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle."
             at_step CC_HOST
             color "#24C"
             rectangle 0, 7, 50, 20
-            bold { text " Host: " fr " Hébergeur: " }
+            bold " Host: " fr " Hébergeur: "
             color "black"
             $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
             at_step CC_TENANT
             color "#2A2"
             rectangle 0, 7, 50, 20
-            bold { text " Tenant: " fr " Locataire: " }
+            bold " Tenant: " fr " Locataire: "
             color "black"
             $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
 
 
 
 // ----------------------------------------------------------------------------
-base_slide "Phase 1: Hardware enablement",
+base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Just activating the confidential computing technologies"
+    subtitle "Just activating the confidential computing technologies" fr "Mise en place des technologies sécurisées"
     slide_picture "Confidential - Top Secret.png", 3%, 300
     stepping
 
-    one_picture
-        image 0, 0, 55%, 55%, "Kata CC Enablement.png"
+    picture
+        adjust_he_diagram S:real ->
+            scale 70%
+            translate -300, 130, 0
+        adjust_he_diagram fade_at(smooth_step, HE_RUNTIME_CC)
+        kata_containers integer(KC_ENABLEMENT + smooth_step + 0.5)
+
+    contents 0,
+        at_step 1
+        locally
+            line_color "black"
+            line_width 2
+            color "white", 0.8
+            rectangle 680, -190, 550, 450
+        text_box 680, -190, 500, 400,
+            style "story"
+            font_size 20
+            at_step HE_HARDWARE
+            bold "Hardware: " fr "Matériel: "
+            $ "Encryption support in memory controller" fr "Support du chiffrage dans le contrôleur de mémoire"
+            at_step HE_FIRMWARE_CC
+            bold "Firmware: " fr "Microgiciel: "
+            $ "Special services like physical page validation" fr "Services spéciaux comme la validation de pages"
+            at_step HE_KERNEL
+            bold "Kernel: " fr "Noyau: "
+            $ "Low-level hardware support, e.g. SEV, TDX" fr "Support bas niveau, p.ex. SEV, TDX"
+            at_step HE_RUNTIME_CC
+            bold "Runtime: " fr "Runtime: "
+            $ "Pass the right options to hypervisor" fr "Passe des options à l'hyperviseur"
+            at_step HE_HYPER_CC
+            bold "Hypervisor: " fr "Hyperviseur: "
+            $ "Setup virtual machines with encryption, etc" fr "Machines virtuelles avec chiffrage mémoire"
+            at_step HE_AGENTCC
+            bold "Agent: " fr "Agent: "
+            $ "Image download, confidential services" fr "Téléchargement d'images, services confidentiels"
+
+
 
 
 // ----------------------------------------------------------------------------
@@ -1465,6 +1500,17 @@ KC_KATA_CTR     -> 12
 KC_CTR_ECOSYS   -> 13
 KC_VM_ISOL      -> 14
 
+KC_CONFIDENTIAL -> KC_VM_ISOL
+KC_LINUX_KERNEL -> KC_CONFIDENTIAL + CC_LINUX_KERNEL
+KC_FIRMWARE     -> KC_CONFIDENTIAL + CC_FIRMWARE
+KC_SHIM_V2      -> KC_CONFIDENTIAL + CC_SHIM_V2
+KC_CC_HYPERVISOR-> KC_CONFIDENTIAL + CC_HYPERVISOR
+KC_ENCRYPTING   -> KC_CONFIDENTIAL + CC_ENCRYPTING
+KC_RELYING      -> KC_CONFIDENTIAL + CC_RELYING
+KC_PLATFORM     -> KC_CONFIDENTIAL + CC_PLATFORM
+KC_HOST         -> KC_CONFIDENTIAL + CC_HOST
+KC_TENANT       -> KC_CONFIDENTIAL + CC_TENANT
+
 CC_LINUX_KERNEL ->  1
 CC_FIRMWARE     ->  2
 CC_SHIM_V2      ->  3
@@ -1475,17 +1521,20 @@ CC_PLATFORM     ->  7
 CC_HOST         ->  8
 CC_TENANT       ->  9
 
+KC_ENABLEMENT   -> KC_TENANT
+KC_HARDWARE     -> KC_ENABLEMENT + HE_HARDWARE
+KC_FIRMWARE_CC  -> KC_ENABLEMENT + HE_FIRMWARE_CC
+KC_RUNTIME_CC   -> KC_ENABLEMENT + HE_RUNTIME_CC
+KC_HYPER_CC     -> KC_ENABLEMENT + HE_HYPER_CC
+KC_KERNEL       -> KC_ENABLEMENT + HE_KERNEL
+KC_AGENTCC      -> KC_ENABLEMENT + HE_AGENTCC
+HE_HARDWARE     -> 1
+HE_FIRMWARE_CC  -> 2
+HE_KERNEL       -> 3
+HE_RUNTIME_CC   -> 4
+HE_HYPER_CC     -> 5
+HE_AGENTCC      -> 6
 
-KC_CONFIDENTIAL -> 14
-KC_LINUX_KERNEL -> KC_CONFIDENTIAL + CC_LINUX_KERNEL
-KC_FIRMWARE     -> KC_CONFIDENTIAL + CC_FIRMWARE
-KC_SHIM_V2      -> KC_CONFIDENTIAL + CC_SHIM_V2
-KC_CC_HYPERVISOR-> KC_CONFIDENTIAL + CC_HYPERVISOR
-KC_ENCRYPTING   -> KC_CONFIDENTIAL + CC_ENCRYPTING
-KC_RELYING      -> KC_CONFIDENTIAL + CC_RELYING
-KC_PLATFORM     -> KC_CONFIDENTIAL + CC_PLATFORM
-KC_HOST         -> KC_CONFIDENTIAL + CC_HOST
-KC_TENANT       -> KC_CONFIDENTIAL + CC_TENANT
 
 
 kata_containers Step:integer ->
@@ -1499,48 +1548,48 @@ kata_containers Step:integer ->
     at_anim KC_KUBELET
     framed_box "#38E", -700, 300, 300, 80, "Kubelet"
     at_anim KC_CRI
-    framed_box "#38E", -250, -300, 1200, 80, "CRI (cri-o or containerd)"
+    framed_box "#38E", -250, -300, 1200, 80, "CRI (cri-o or containerd)" fr "CRI (cri-o ou containerd)"
     locally
         line_color "#38E"
-        line_width 25
+        line_width 15
         line_arrow -700, 280, none, -700, -280, arrowhead
 
     at_anim KC_RUNC
     framed_box "#14A",  -300, -200, 400, 80, "Runtime (runc)"
     at_anim KC_CONTAINER
     framed_box "#026",  -300, -50, 400, 200, ""
-    framed_box "#026",  -300, -50, 380, 180, "Container"
+    framed_box "#026",  -300, -50, 380, 180, "Container" fr "Conteneur"
 
     at_anim KC_CNI_AND_CSI
-    framed_box "#38E",  480, -300, 200, 80, "CNI"
-    framed_box "#38E",  710, -300, 200, 80, "CSI"
-    image 480, -220, 40%, 40%, "Network card.png"
-    image 710, -220, 50%, 50%, "Hard Disk.png"
+    framed_box "#38E",  490, -300, 220, 80, "CNI"
+    framed_box "#38E",  740, -300, 220, 80, "CSI"
+    image 490, -220, 40%, 40%, "Network card.png"
+    image 740, -220, 50%, 50%, "Hard Disk.png"
 
     at_anim KC_STORAGE
     locally
-        line_color anim_text("#38E", KC_ENCRYPTING = "#3E8")
-        color anim_text("#38E", KC_ENCRYPTING = "#3E8"), 80%
+        line_color anim_text("#38E", KC_ENCRYPTING = "#3A5")
+        color anim_text("#38E", KC_ENCRYPTING = "#3A5"), 80%
         line_width 5
-        rounded_rectangle 710, 120, 160, 140, 20
+        rounded_rectangle 740, 120, 160, 140, 20
     locally
         color "#CDF"
-        image 730, 140, 40%, 40%, "Hard Disk.png"
-        image 710, 120, 40%, 40%, "Hard Disk.png"
-        image 690, 100, 40%, 40%, "Hard Disk.png"
+        image 760, 140, 40%, 40%, "Hard Disk.png"
+        image 740, 120, 40%, 40%, "Hard Disk.png"
+        image 720, 100, 40%, 40%, "Hard Disk.png"
     locally
         line_color "#38E"
         line_width 15
-        line_arrow 710, 60, arrowhead, 710, -160, arrowhead
+        line_arrow 740, 60, arrowhead, 740, -180, arrowhead
 
-    text_box 480, 120, 250, 160,
+    text_box 500, 120, 250, 160,
         color "#02B"
         font "Overpass", "Arial", 30
         align 100%
         vertical_align 50%
         if anim_step >= KC_ENCRYPTING then
-            color "#0B2"
-            $ "Encrypted" fr "Encodage"
+            color "#082"
+            $ "Encrypted" fr "Chiffrage des"
         $ "Images &"
         $ "Volumes"
 
@@ -1557,15 +1606,15 @@ kata_containers Step:integer ->
     framed_box "#062",   150, 250, 380, 180, "Container" fr "Conteneur"
 
     at_anim KC_LINUX_KERNEL
-    framed_box "#E22",     0, -400, 1800, 80, "Linux kernel"
+    framed_box "#E22",     0, -400, 1700, 80, "Linux kernel" fr "Noyau Linux"
     at_anim KC_FIRMWARE
-    framed_box "#811",     0, -500, 1800, 80, "Firmware"
+    framed_box "#811",     0, -500, 1700, 80, "Firmware / Hardware" fr "Microgiciel / Matériel"
 
     at_anim KC_RELYING
     locally
         line_color "#0A4"
         color "#0A4", 20%
-        translate 1200, 250, 0
+        translate 1100, 250, 0
         path
             move_to 0, 100
             for I in 1..16 loop
@@ -1573,17 +1622,33 @@ kata_containers Step:integer ->
     locally
         line_color "#0A4"
         line_width 8
-        line_arrow 350, 250, arrowhead, 1020, 250, arrowhead
-    text_box 1200, 250, 300, 80,
+        line_arrow 350, 250, arrowhead, 920, 250, arrowhead
+    text_box 1100, 250, 300, 80,
         style "story"
         font_size 30
         color "#081"
         align 0.0
         vertical_align 0.5
         $ "Relying party" fr "Contrôleur"
-    framed_box "#0A4",   1400, 300, 320, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
-    framed_box "#0A4",   1400, 200, 320, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
+    show 0.99
+    framed_box "#0A4",   1250, 300, 280, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
+    framed_box "#0A4",   1250, 200, 280, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
 
+    locally
+        line_color "#E22"
+        color "transparent"
+        line_width 6 + 2 * sin(2.5 * time)
+        at_anim KC_HARDWARE
+        rectangle 5, -500, 1710, 80
+        at_anim KC_FIRMWARE_CC
+        at_anim KC_KERNEL
+        rectangle 5, -400, 1710, 80
+        at_anim KC_RUNTIME_CC
+        rectangle 155, -200, 400, 80
+        at_anim KC_HYPER_CC
+        rectangle 155, -100, 400, 80
+        at_anim KC_AGENTCC
+        rectangle 155, 100, 400,  80
 
 
 
