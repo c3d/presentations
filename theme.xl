@@ -1759,3 +1759,17 @@ english Body -> if LANG="en" then Body
 french  Body -> if LANG="fr" then Body
 key "f" -> LANG := "fr"; refresh 0
 key "e" -> LANG := "en"; refresh 0
+
+
+
+// ============================================================================
+//
+//   Image snapshots
+//
+// ============================================================================
+
+key "t" -> snapshot timestamp
+
+snapshot Time:text ->
+    screenshot "snapshots/Snapshot-" & timestamp & ".png"
+    writeln "![Snapshot-", timestamp, ".png](snapshots/Snapshot-",timestamp,".png)"

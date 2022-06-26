@@ -50,7 +50,7 @@ disabled
 base_slide "Agenda",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Key topics we are going to cover today" fr "Le sujet du jour"
+    subtitle "Key topics we are going to cover today" fr "Les sujets du jour"
     slide_picture "Agenda.jpg", 0%, 320 // https://www.pexels.com/fr-fr/photo/programme-startup-a-faire-concept-7376/
     stepping
     story
@@ -398,38 +398,57 @@ base_slide "Attestation" fr "Attestation",
             $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
 
 
+// ----------------------------------------------------------------------------
+base_slide "The cost of confidentiality" fr "Combien ça coûte de sécuriser?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Confidentiality is in the way of deduplication" fr "Le chiffrage empêche la déduplication"
+    slide_picture "Pile of Cash.png", 3%, 300
+    stepping
+
+    story
+        * "Downloaded images are now encrypted" fr "Les images de conteneur sont chiffrées"
+        ** "So they can't be shared" fr "Donc elles ne peuvent pas être réutilisées"
+        ** "This increases disk and networking costs" fr "Cela augment les coûts de disque et de réseau"
+        * "Disks too must be crypted" fr "Les disques sont aussi cryptés"
+        ** "Therefore, no deduplication" fr "Donc pas de déduplication"
+        * "Memory is crypted too" fr "La mémoire aussi est chiffrée"
+        ** "No kernel same-page merging" fr "Pas de KSM (unification des pages identiques)"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * { text "The motto """ fr "Le slogan """; italic "The speed of containers" fr "La vitesse des conteneurs"; text """ applies to deployments" fr """ s'applique aux déploiments" }
+        ** "Application development cycles are as fast as with other runtimes" fr "Le cycle de développement est aussi rapide qu'avec les autres runtimes"
+        ** "Performance in containers may / does vary" fr "Mais la performance change"
+
+        * "Memory overhead is large, but fixed and predictable" fr "Il faut plus de mémoire (mais c'est prévisible)"
+        ** "At the moment, in the order of 350M per pod on average" fr "Pour l'instant de l'ordre de 350M"
+        ** "Likely to double with confidential containers" fr "Mais cela va augmenter avec l'informatique sécurisée"
+
+        * "Disk and network overhead are large by default" fr "Le coût en disque et réseau est élevé"
+        ** "Confidential computing adds disk usage for images" fr "En mode sécurisé, c'est aussi vrai des images"
+        ** "Technologies such as SR-IOV and VDPA are necessary" fr "Il existe des technologies qui aident (genre SR-IOV et VDPA)"
+
+        * "Watch out for upcoming blogs" fr "Il y a des articles de blog faciles à trouver"
+
+
 // ============================================================================
 //
-section_slide "Conclusion",
+section_slide "Conclusion" fr "Conclusion",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Confidential Containers are an opportunity"
-        $ "but a real challenge in terms of performance"
+        $ "Confidential Containers are an opportunity" fr "Les conteneurs sécurisés, une opportunité"
+        $ "but a real challenge in terms of performance" fr "mais la performance reste un vrai problème"
 
-
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "High cost of confidentiality and sandboxing"
-    slide_picture "Pile of Cash.png", 0%, 250
-    stepping
-    story
-        * { text "The motto """; italic "The speed of containers"; text """ applies to deployments" }
-        ** "Application development cycles are as fast as with other runtimes"
-        ** "Performance in containers may / does vary"
-
-        * "Memory overhead is large, but fixed and predictable"
-        ** "At the moment, in the order of 350M per pod on average"
-        ** "Likely to double with confidential containers"
-
-        * "Disk and network overhead are large by default"
-        ** "Confidential computing adds disk usage for images"
-        ** "Technologies such as SR-IOV and VDPA are necessary"
-
-        * "Watch out for upcoming blogs"
 
 // ============================================================================
 //

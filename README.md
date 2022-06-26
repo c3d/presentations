@@ -1,7 +1,7 @@
 HiPEAC 2021 Presentation: Confidential Containers - Distrusting you VM Host
 ============================================================================
 
-This is a Tao3D presentation given at [HiPEAC CCW Autumn 2021][hipeac] about
+This is a Tao3D presentation given at [SophiaConf 2022][sophiaconf2022] about
 Confidential Containers and the predictable performance impact.
 
 Image and movie files not included (they don't belong on GitHub)
@@ -9,8 +9,7 @@ Image and movie files not included (they don't belong on GitHub)
 You can find Tao3D at https://tao3d.sourceforge.net but it is presently barely
 functional, for reasons explained in [another talk][pedprojects]...
 
-[petprojects]: https://devconfcz2021.sched.com/event/gmKQ/the-pet-projects-of-dr-frank-einstein
-[hipeac]: https://www.hipeac.net/csw/2021/lyon/#/program/
+[sophiaconf2022]: https://www.telecom-valley.fr/sophiaconf-2022/
 
 ![Snapshot-20211027142738.png](snapshots/Snapshot-20211027142738.png)
 
