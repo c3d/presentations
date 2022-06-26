@@ -1,7 +1,7 @@
 presentation_title "Confidential Containers - Distrusting your VM host" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch sophiaconf-2022)"
+presentation_tao "https://github.com/c3d/presentations (branch sophiaconf-2022)" fr "https://github.com/c3d/presentations (branche sophiaconf-2022)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
@@ -271,10 +271,10 @@ base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
     stepping
 
     picture
-        adjust_he_diagram S:real ->
+        adjust_he_diagram ->
             scale 70%
             translate -300, 130, 0
-        adjust_he_diagram fade_at(smooth_step, HE_RUNTIME_CC)
+        adjust_he_diagram
         kata_containers integer(KC_ENABLEMENT + smooth_step + 0.5)
 
     contents 0,
@@ -307,37 +307,179 @@ base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
             $ "Image download, confidential services" fr "Téléchargement d'images, services confidentiels"
 
 
-
-
 // ----------------------------------------------------------------------------
-base_slide "Phase 2: Securing image pull",
+base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le téléchargement",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Download images from within the guest"
+    subtitle "Download images from within the guest" fr "Télécharger les images depuis la machine virtuelle"
     slide_picture "Secure Cloud.png", 3%, 300
     stepping
 
-    one_picture
-        image 0, 0, 75%, 75%, "Kata Pull Image.png"
+    picture
+        adjust_si_diagram ->
+            scale 70%
+            translate -300, 130, 0
+        adjust_si_diagram
+        kata_containers integer(KC_PULLIMAGE + smooth_step + 0.5)
+
+    contents 0,
+        at_step 1
+        locally
+            line_color "black"
+            line_width 2
+            color "white", 0.8
+            rectangle 680, -190, 550, 450
+        text_box 680, -190, 500, 400,
+            style "story"
+            font_size 20
+            at_step PI_INSIDE_GUEST
+            bold "Pull Image " fr "Téléchargement d'images "
+            $ "from inside the guest instead of from the host" fr "depuis la machine virtuelle et non depuis la machine physique hôte"
+            at_step PI_ENCRYPTED
+            bold "Store Images " fr "Stockage les images "
+            $ "on an encrypted volume, with guest-only decryption keys" fr "sur un disque chiffré, où seul la machine virtuelle a les clefs"
+            at_step PI_API_CHANGE
+            bold "Architectural changes " fr "Changement d'architecture "
+            $ "to delegate PullImage to the runtime" fr "pour déléguer PullImage au Runtime"
 
 
 
 // ----------------------------------------------------------------------------
-base_slide "Attestation",
+base_slide "Attestation" fr "Attestation",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Measuring what we run using crypto"
+    subtitle "Measuring what we run using cryptography" fr "Mesurer pour contrôler ce qui tourne"
     slide_picture "Measuring.png", 3%, 300
     stepping
 
-    one_picture
-        image 0, 0, 75%, 75%, "Kata Measurement.png"
+    picture
+        adjust_at_diagram ->
+            scale 70%
+            translate -300, 130, 0
+        adjust_at_diagram
+        kata_containers integer(KC_ATTEST + smooth_step + 0.5)
 
-// ----------------------------------------------------------------------------
-base_slide "Attestation process",
+    contents 0,
+        at_step 1
+        locally
+            line_color "black"
+            line_width 2
+            color "white", 0.8
+            rectangle 680, -190, 550, 450
+        text_box 680, -190, 500, 400,
+            style "story"
+            font_size 20
+
+            at_step AT_PREATTEST
+            color "#C22"
+            bold "Preattestation: " fr "Pré-attestation: "
+            color "black"
+            $ "Measure the payload before allowing it to start" fr "Mesure le contenu avant d'autoriser l'exécution"
+
+            at_step AT_POSTATTEST
+            color "#2A2"
+            bold "Postattestation: " fr "Post-attestation: "
+            color "black"
+            $ "Code in the payload can confirm the measurement" fr "Le code peut soumettre la mesure lui-même"
+
+            at_step AT_MEASURING
+            bold "Measuring: " fr "Qui mesure? "
+            $ "Cryptographic exchange to respond to a challenge" fr "Échange cryptographique pour répondre à un test"
+            at_step AT_MEASURED
+            bold "Measured: " fr "Que mesurer? "
+            $ "Can be only firmware+kernel, or payload itself" fr "Noyau et microgiciel, voire le contenu"
+
+            at_step AT_KEY_DELIVERY
+            bold "Secret delivery " fr "Révéler des secrets "
+            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
+
+            at_step AT_REMOTE
+            bold "Remote attestation: " fr "Attestation distante "
+            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
+
+
+// ============================================================================
+//
+section_slide "Conclusion",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Confidential Containers are an opportunity"
+        $ "but a real challenge in terms of performance"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Exchanging keys with the relying party"
+    subtitle "High cost of confidentiality and sandboxing"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * { text "The motto """; italic "The speed of containers"; text """ applies to deployments" }
+        ** "Application development cycles are as fast as with other runtimes"
+        ** "Performance in containers may / does vary"
+
+        * "Memory overhead is large, but fixed and predictable"
+        ** "At the moment, in the order of 350M per pod on average"
+        ** "Likely to double with confidential containers"
+
+        * "Disk and network overhead are large by default"
+        ** "Confidential computing adds disk usage for images"
+        ** "Technologies such as SR-IOV and VDPA are necessary"
+
+        * "Watch out for upcoming blogs"
+
+// ============================================================================
+//
+section_slide "Thank you" fr "Merci",
+//
+// ============================================================================
+    title page_label
+    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    translate_y -50
+    title_slide_logo
+
+
+// ============================================================================
+//
+section_slide "Overflow sides" fr "En savoir plus",
+//
+// ============================================================================
+    title page_label
+    subtitle presentation_url
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+    title_slide_logo
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation process" fr "Le processus d'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Exchanging keys with the relying party" fr "Comment échanger ses clefs en toute sécurité"
     slide_picture "Key Exchange.jpg", 3%, 300
     stepping
 
@@ -1039,62 +1181,6 @@ base_slide "Network latency",
 
 // ============================================================================
 //
-section_slide "Conclusion",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Confidential Containers are an opportunity"
-        $ "but a real challenge in terms of performance"
-
-
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "High cost of confidentiality and sandboxing"
-    slide_picture "Pile of Cash.png", 0%, 250
-    stepping
-    story
-        * { text "The motto """; italic "The speed of containers"; text """ applies to deployments" }
-        ** "Application development cycles are as fast as with other runtimes"
-        ** "Performance in containers may / does vary"
-
-        * "Memory overhead is large, but fixed and predictable"
-        ** "At the moment, in the order of 350M per pod on average"
-        ** "Likely to double with confidential containers"
-
-        * "Disk and network overhead are large by default"
-        ** "Confidential computing adds disk usage for images"
-        ** "Technologies such as SR-IOV and VDPA are necessary"
-
-        * "Watch out for upcoming blogs"
-
-
-// ============================================================================
-//
-section_slide "Thank you",
-//
-// ============================================================================
-    title page_label
-    subtitle presentation_url
-    stepping
-
-    contents 0,
-        text_box 200, -400, 600, 200,
-            style "story"
-            font_size 30
-            anchor
-                color "white"
-                image -80, -40, 10%, 10%, "Tao3D.png"
-            paragraph "This Tao3D presentation is available at"
-            paragraph presentation_tao
-    title_slide_logo
-
-
-
-// ============================================================================
-//
 //   Overview diagram
 //
 // ============================================================================
@@ -1535,6 +1621,27 @@ HE_RUNTIME_CC   -> 4
 HE_HYPER_CC     -> 5
 HE_AGENTCC      -> 6
 
+KC_PULLIMAGE    -> KC_AGENTCC + 1
+KC_INSIDE_GUEST -> KC_PULLIMAGE + PI_INSIDE_GUEST
+KC_ENCRYPTED    -> KC_PULLIMAGE + PI_ENCRYPTED
+KC_API_CHANGE   -> KC_PULLIMAGE + PI_API_CHANGE
+PI_INSIDE_GUEST -> 1
+PI_ENCRYPTED    -> 2
+PI_API_CHANGE   -> 3
+
+KC_ATTEST       -> KC_API_CHANGE + 1
+KC_PREATTEST    -> KC_ATTEST + AT_PREATTEST
+KC_POSTATTEST   -> KC_ATTEST + AT_POSTATTEST
+KC_MEASURING    -> KC_ATTEST + AT_MEASURING
+KC_MEASURED     -> KC_ATTEST + AT_MEASURED
+KC_KEY_DELIVERY -> KC_ATTEST + AT_KEY_DELIVERY
+KC_REMOTE       -> KC_ATTEST + AT_REMOTE
+AT_PREATTEST    -> 1
+AT_POSTATTEST   -> 2
+AT_MEASURING    -> 3
+AT_MEASURED     -> 4
+AT_KEY_DELIVERY -> 5
+AT_REMOTE       -> 6
 
 
 kata_containers Step:integer ->
@@ -1593,6 +1700,13 @@ kata_containers Step:integer ->
         $ "Images &"
         $ "Volumes"
 
+    if Step <= KC_API_CHANGE then
+        locally
+            at_anim KC_API_CHANGE
+            line_color "#A22", 90%
+            line_width 15
+            line_arrow 320, -280, none, 320, 50, arrowhead
+
     at_anim KC_KATA_SHIM
     framed_box anim_text("#1A4", KC_SHIM_V2 = "#A21"),   150, -200, 400, 80, "Runtime (shim-v2)"
     at_anim KC_HYPERVISOR
@@ -1634,21 +1748,48 @@ kata_containers Step:integer ->
     framed_box "#0A4",   1250, 300, 280, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
     framed_box "#0A4",   1250, 200, 280, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
 
-    locally
-        line_color "#E22"
-        color "transparent"
-        line_width 6 + 2 * sin(2.5 * time)
-        at_anim KC_HARDWARE
-        rectangle 5, -500, 1710, 80
-        at_anim KC_FIRMWARE_CC
-        at_anim KC_KERNEL
-        rectangle 5, -400, 1710, 80
-        at_anim KC_RUNTIME_CC
-        rectangle 155, -200, 400, 80
-        at_anim KC_HYPER_CC
-        rectangle 155, -100, 400, 80
-        at_anim KC_AGENTCC
-        rectangle 155, 100, 400,  80
+    if Step <= KC_AGENTCC then
+        locally
+            line_color "#E22"
+            color "transparent"
+            line_width 6 + 2 * sin(2.5 * time)
+            at_anim KC_HARDWARE
+            rectangle 5, -500, 1710, 80
+            at_anim KC_FIRMWARE_CC
+            at_anim KC_KERNEL
+            rectangle 5, -400, 1710, 80
+            at_anim KC_RUNTIME_CC
+            rectangle 155, -200, 400, 80
+            at_anim KC_HYPER_CC
+            rectangle 155, -100, 400, 80
+            at_anim KC_AGENTCC
+            rectangle 155, 100, 400,  80
+
+    if Step <= KC_API_CHANGE then
+        at_anim KC_INSIDE_GUEST
+        locally
+            translate 920 - 300 * page_time mod 570, 250, 10
+            image 0, 0, 20%, 20%, "Container Package.png"
+
+        at_anim KC_ENCRYPTED
+        locally
+            line_color "#0A4"
+            line_width 8
+            line_arrow 350, 100, arrowhead, 520, 100, arrowhead
+        locally
+            translate 350 + 100 * page_time mod 170, 100, 10
+            image 0, 0, 10%, 10%, "Container Package.png"
+
+        at_anim KC_API_CHANGE
+        locally
+            translate -720, 0, 0
+            rotate_z 90
+            text_box 0, 10, 300, 80,
+                style "story"
+                align 0.5
+                vertical_align 0.5
+                font_size 35
+                code "PullImage"
 
 
 
