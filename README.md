@@ -1,5 +1,5 @@
-SophiaConf 2022 Presentation: Containers sécurisés: ne faites confiance à personne!
-===============---=============================================================----
+SophiaConf 2022: Containers sécurisés: ne faites confiance à personne!
+======================================================================
 
 This is a Tao3D presentation given at [SophiaConf 2022][sophiaconf2022] about
 Confidential Containers and the predictable performance impact.
