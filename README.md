@@ -1,5 +1,5 @@
-HiPEAC 2021 Presentation: Confidential Containers - Distrusting you VM Host
-============================================================================
+SophiaConf 2022 Presentation: Containers sécurisés: ne faites confiance à personne!
+===============---=============================================================----
 
 This is a Tao3D presentation given at [SophiaConf 2022][sophiaconf2022] about
 Confidential Containers and the predictable performance impact.
