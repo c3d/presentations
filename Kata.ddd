@@ -1,28 +1,20 @@
 presentation_title "Confidential Containers - Distrusting your VM host" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch sophiaconf-2022)" fr "https://github.com/c3d/presentations (branche sophiaconf-2022)"
+presentation_tao "https://github.com/c3d/presentations (branch kvm-forum-2022)" fr "https://github.com/c3d/presentations (branche kvm-forum-2022)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
 
-blank_slide "SophiaConf 2022",
-// ----------------------------------------------------------------------------
-//   Parking slide withi SophiaConf 2022 logo
-// ----------------------------------------------------------------------------
-    contents 120,
-        color "white"
-        image 0, 0, 120%, 120%, "SophiaConfLogo.png"
 
 
 // ----------------------------------------------------------------------------
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Confidential Containers" fr "Les conteneurs sécurisés"
-        $ "Distrusting your VM host" fr "Ne faites confiance à personne!"
+        $ "Five big problems with confidential containers" fr "Cinq gros problèmes avec les containers sécurisés"
     subtitle
-        $ "Keeping live in-memory data from prying eyes" fr "en chiffrant même la mémoire vive"
+        $ "and why we need KVM developers to help"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -32,17 +24,6 @@ main_title_slide "Main title",
 
     title_slide_logo
 
-    contents 10,
-        color "white", 85%
-        rounded_rectangle 600, -450, 500, 150, 20
-        color "white"
-        image 600, -450, 25%, 25%, "Logo SophiaConf 100% OpenSource.png"
-
-disabled
-    contents 120,
-        show fade_between(page_time mod 10, 2, 6)
-        color "white"
-        image 0, 0, 120%, 120%, "SophiaConfLogo.png"
 
 
 
@@ -54,16 +35,15 @@ base_slide "Agenda",
     slide_picture "Agenda.jpg", 0%, 320 // https://www.pexels.com/fr-fr/photo/programme-startup-a-faire-concept-7376/
     stepping
     story
-        * "Why should someone else be able to see your data?" fr "Pourquoi révéler vos données à n'importe qui?"
-        * "Confidential computing & encrypted virtualization" fr "Le ""Confidential Computing"" et la mémoire chiffrée"
-        * "Adding ""Confidential"" to Kata Containers" fr "Intégration à Kata Containers"
-        * "Securing image download" fr "Sécuriser le téléchargement des containers"
-        * "Attestation: knowing what you run and where it runs" fr "Attestation: contrôler ce que vous exécutez et où ça s'exécute"
-        * "Separating tenant and host realms" fr "Séparation des domaines de sécurité"
-        * "Performance - Not all that great" fr "Et la performance? Bof..."
+        * "Quick primer on confidential containers"
+        * "Attestation: ensuring you know what's running"
+        * "Performance overhead: A hardware vendor's dream"
+        * "Image download: Lather, Rinse, Repeat!"
+        * "Access control: Rethinking Kubernetes credentials"
+        * "Debuggability: even printf-debugging is out"
 
     right_picture
-        images "Nosy Neighbour.jpg", "Canal+ Scrambled.jpg", "Kata Confidential Containers.png", "Matrix disintegration.png", "Attestation.png", "Tenants.jpg", "Snail.jpg"
+        images "Nosy Neighbour.jpg", "Attestation.png", "Snail.jpg", "Deja Vu Glitch.jpg", "Tenants.jpg", "Debugging Nightmare.png"
 
         // Nosy Neighbour.jpg: https://www.pexels.com/fr-fr/photo/photographie-de-personne-qui-regarde-906018/
         // Canal+ Scrambled: image from https://www.youtube.com/watch?v=GhkmSoBmAWA
@@ -72,6 +52,18 @@ base_slide "Agenda",
         // Attestation.png: https://pngimg.com/image/46040 (Creative Commons)
         // Tenants.jpg: http://www.readyelements.com/one-hand-giving-key-to-another-on-isolated-white-background-process-of-buying-renting-selling-5 (Creative Commons)
         // Snail.jpg: https://www.pexels.com/fr-fr/photo/escargot-noir-et-brun-blanc-sur-feuille-verte-209074/
+
+
+// ============================================================================
+//
+section_slide "Confidential Containers",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "A quick primer"
+    stepping
+    page_quote 0
 
 
 // ----------------------------------------------------------------------------
@@ -91,46 +83,6 @@ base_slide "A very active project" fr "Un projet très actif",
         rectangle 0, -510, 2000, 80
 
 
-// ============================================================================
-//
-section_slide "Problem statement" fr "C'est quoi le problème?",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Can we trust your infrastructure?" fr "Confiance, oui, mais je donne pas les clefs"
-
-
-// ---------------------------------------------------------------------------
-base_slide "Sandboxing workloads" fr "Toujours plus d'isolation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "From your software to containers in VMs..." fr "Du logiciel au tombe-du-ciel"
-    slide_picture_at OWS_SW..OWS_OS,      "Emoji=Happy.png", 5%, 300
-    slide_picture_at OWS_CHROOT..OWS_KVM, "Emoji=Thinking.png", 5%, 300
-    slide_picture_at OWS_CNTN..OWS_CRI,   "Emoji=Questioning.png", 4%, 350
-    slide_picture_at OWS_KVIRT..OWS_KATA, "Emoji=Crazy.png", 3%, 300
-    stepping
-    picture
-        caption_at OWS_SW, "Software is what matters" fr "Le logiciel, c'est ça qui compte vraiment"
-        caption_at OWS_HW, "Direct hardware access (Original Mac, Unikernel)" fr "Accès direct au matériel (MS-DOS, Unikernel)"
-        caption_at OWS_CLASH, "Sharing resources is both hard and risky" fr "Partager les resources est difficile et risqué"
-        caption_at OWS_OS, "Operating system deal with this problem" fr "C'est le rôle du système d'exploitation"
-        caption_at OWS_CHROOT, "chroot gives you a filesystem sandbox" fr "On peut isoler une partie des fichierts"
-        caption_at OWS_VIRT, "Virtualization gives you a full machine sandbox" fr "On peut isoler en créant une machine virtuelle"
-        caption_at OWS_QEMU, "QEMU: User-space interface for virtualization" fr "QEMU: première solution de virtualisation complète en logiciel libre"
-        caption_at OWS_KVM, "KVM: Kernel component supporting virtualization" fr "KVM: support de la virtualisation directement dans le noyau Linux"
-        caption_at OWS_CNTN, "Containers are complete OS-built sandboxes" fr "Les conteneurs sont une isolation par le système"
-        caption_at OWS_MANY, "Containers scale well" fr "Ce qui est bien, c'est qu'on peut empiler vraiment beaucoup de conteneurs"
-        caption_at OWS_DOCKER, "Containers provides rich software components composition and setup" fr "Les composants logiciels: distribution et assemblage"
-        caption_at OWS_K8S, "OpenShift features large-scale orchestration" fr "Faire marcher tout ça demande une orchestration"
-        caption_at OWS_CRI, "A modular interface connects orchestration to system and workloads" fr "Une architecture applicative repensée pour gérer tout ça"
-        caption_at OWS_KVIRT, "You can orchestrate legacy workloads using KubeVirt virtual machines" fr "Pour les vieilles applis, retour à la virtualisation"
-        caption_at OWS_KATA, "Kata Containers run sandboxed containers in isolated virtual machines" fr "Isoler les conteneurs par la virtualisation (Kata)"
-        overview integer(smooth_step + 0.5)
-
-
-
 // ----------------------------------------------------------------------------
 base_slide "Confidential Computing" fr "L'informatique sécurisée",
 // ----------------------------------------------------------------------------
@@ -145,9 +97,9 @@ base_slide "Confidential Computing" fr "L'informatique sécurisée",
         caption_at CNF_CONTAINERS, "Containers carve out resources from the host" fr "Le conteneurs empruntent les resources dont ils ont besoin à cet hébergeur"
         caption_at CNF_SANDBOX_OUT, "Classical sandboxing only protects the host from the containers running on it" fr "L'isolation classique est conçue pour protéger l'hébergeur des conteneurs"
         caption_at CNF_SANDBOX_IN, "The host can freely peek insdie the container, for example read its memory" fr "À l'inverse, l'hébergeur peut tout à fait regarder dans un conteneur"
-        caption_at CNF_TENANTS, "Multiple tenants do not want to share hardware when processing sensitive data" fr "Des concurrents ne voudront pas partager le même matériel pour des données sensibles"
-        caption_at CNF_SAFE_TODAY, "Data on disk or in network can already be encrypted today, so the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà chiffrées aujourd'hui, donc OK"
-        caption_at CNF_MEMORY_VM, "In current architectures, data in memory is not encrypted, so it can be accessed by the host" fr "Pour les données en mémoire vive, il faut le nouveau matériel"
+        caption_at CNF_TENANTS, "For that reason, multiple tenants do not want to share hardware when processing sensitive data" fr "Des concurrents ne voudront pas partager le même matériel pour des données sensibles"
+        caption_at CNF_SAFE_TODAY, "Data on disk or in network is already encrypted today, so the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà chiffrées aujourd'hui, donc OK"
+        caption_at CNF_MEMORY_VM, "In non-CC architectures, data in memory is not encrypted, so it can be accessed by the host" fr "Pour les données en mémoire vive, il faut le nouveau matériel"
         caption_at CNF_MEMORY_HOST, "Encrypted memory stores live data as cypher text, so that it becomes garbled when read by the host" fr "Les données ainsi protégées deviennent illisibles pour l'hébergeur"
         caption_at CNF_INTEGRITY, "Integrity ensures the host cannot corrupt nor poison CPU state or RAM contents" fr "Il faut aussi protéger l'intégrité de l'état du CPU ou de la mémoire"
         caption_at CNF_ATTESTATION, "Attestation proves where you are running and what you are running" fr "L'attestation permet de contrôler ce qui tourne, mais aussi où ça tourne"
@@ -176,10 +128,15 @@ base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
         images "AMD SEV.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
 
     right_picture
+        entry_time -> 0.0
+        if smooth_step < 9 then
+            entry_time := page_time
         only_at 9,
+            jump_factor -> fade_at(page_time - entry_time, 5)
             show sin(2.5 * time)^2
-            translate 100, 100, 50
-            rotate_z 23 * sin(0.21 * time)
+            translate 100 - 500 * jump_factor, 100 - 100 * fade_out(page_time, 10), 50 + 600 * jump_factor
+            scale 1 + 5 * jump_factor + 0.3 * jump_factor * sin(45.3 * time)
+            rotate_z 23 * sin((0.21 + 2.1 * jump_factor) * time) * (1.0 - 0.7 * jump_factor) + sin(30.2 * time) * jump_factor
             style "boxtitle"
             color_hsv 20 * time, 1, 1
             line_color "green"
@@ -187,6 +144,43 @@ base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
                 vertical_align 0.5
                 align 0.5
                 $ "There be zombies!" fr "Des zombies partout!"
+
+
+// Position of the "Talk box"
+TALK_X          -> anim   650.0
+TALK_Y          -> anim  -70.0, KC_CONFIDENTIAL=-180
+TALK_W          -> anim  500.0
+TALK_H          -> anim  600.0, KC_CONFIDENTIAL= 540
+TALK_O          -> anim   50.0
+
+talk_frame Body ->
+// ----------------------------------------------------------------------------
+//   Display the "talk" frame
+// ----------------------------------------------------------------------------
+    locally
+        line_color "black"
+        line_width 2
+        color "white", 0.8
+        rectangle TALK_X, TALK_Y, TALK_W + TALK_O, TALK_H + TALK_O
+    text_box TALK_X, TALK_Y, TALK_W, TALK_H,
+        style "story"
+        vertical_align 30%
+        font_size 32
+        Body
+
+
+// Adjustment to the main diagram
+DIAGRAM_Scale   -> anim  1.0, 0=1, KC_CTR_ECOSYS=  75%, KC_CONFIDENTIAL=100%, KC_LINUX_KERNEL= 80%, KC_RELYING=  75%, KC_MSMTS= 100%
+DIAGRAM_X       -> anim  0.0, 0=0, KC_CTR_ECOSYS=-300,  KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=  0,  KC_RELYING=-280,  KC_MSMTS= -800
+DIAGRAM_Y       -> anim  0.0, 0=0,                      KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=110,  KC_RELYING= 100,  KC_MSMTS=    0
+
+adjust_diagram ->
+// ----------------------------------------------------------------------------
+//   Adjust the position of the diagram
+// ----------------------------------------------------------------------------
+    // writeln "Step=", anim_step, " Scale=", DIAGRAM_Scale, " X=", DIAGRAM_X, " Y=", DIAGRAM_Y
+    translate DIAGRAM_X, DIAGRAM_Y, 0
+    scale DIAGRAM_Scale
 
 
 // ----------------------------------------------------------------------------
@@ -197,24 +191,17 @@ base_slide "Kata Containers Overview" fr "La base: Kata Containers",
     slide_picture "KataContainersLogo.png", 5%, 350
     stepping
 
-    picture
-        adjust_kata_containers_diagram S:real ->
-            scale 100% - 30% * S
-            translate_x -300 * S
-        adjust_kata_containers_diagram fade_at(smooth_step, KC_CTR_ECOSYS)
-        kata_containers integer(smooth_step + 0.5)
-
+    kata_containers integer(smooth_step + 0.5)
     contents 0,
-        text_box 600, 0, 430 fr 400, 600,
-            style "story"
-            align 0
-            vertical_align 30%
-            at_step KC_CTR_ECOSYS
+        at_step KC_CTR_ECOSYS
+        talk_frame
+            font_size 42
             color "#14E"
             $ "Containers ecosystem" fr "L'écosystème des conteneurs"
             at_step KC_VM_ISOL
             color "#184"
             $ "Virtual machine isolation" fr "L'isolation des machines virtuelles"
+
 
 
 // ----------------------------------------------------------------------------
@@ -225,28 +212,15 @@ base_slide "Confidential Containers in Kata" fr "Conteneurs sécurisés avec Kat
     slide_picture "Confidential - Top Secret.png", 5%, 300
     stepping
 
-    picture
-        adjust_cc_diagram S:real, T:real ->
-            scale 70% + 10% * (S - T)
-            translate (1-S) * -300 - 300 * T, S * 130, 0
-        adjust_cc_diagram fade_at(smooth_step, CC_LINUX_KERNEL), fade_at(smooth_step, CC_RELYING)
-        kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
-
+    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
     contents 0,
         at_step CC_PLATFORM
-        locally
-            line_color "black"
-            line_width 2
-            color "white", 0.8
-            rectangle 700, -170, 450, 450
-        text_box 700, -170, 400, 400,
-            style "story"
-            font_size 24
+        talk_frame
             color "#C22"
             rectangle 0, 7, 50, 20
             bold " Trusted platform: " fr " Plateforme sécurisée: "
             color "black"
-            $ "Offers confidential guarantees using hardware-level cryptographic enforcement." fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle."
+            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
             at_step CC_HOST
             color "#24C"
             rectangle 0, 7, 50, 20
@@ -261,7 +235,6 @@ base_slide "Confidential Containers in Kata" fr "Conteneurs sécurisés avec Kat
             $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
 
 
-
 // ----------------------------------------------------------------------------
 base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
 // ----------------------------------------------------------------------------
@@ -270,23 +243,11 @@ base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
     slide_picture "Confidential - Top Secret.png", 3%, 300
     stepping
 
-    picture
-        adjust_he_diagram ->
-            scale 70%
-            translate -300, 130, 0
-        adjust_he_diagram
-        kata_containers integer(KC_ENABLEMENT + smooth_step + 0.5)
-
+    kata_containers integer(KC_ENABLEMENT + smooth_step + 0.5)
     contents 0,
         at_step 1
-        locally
-            line_color "black"
-            line_width 2
-            color "white", 0.8
-            rectangle 680, -190, 550, 450
-        text_box 680, -190, 500, 400,
-            style "story"
-            font_size 20
+        talk_frame
+            font_size 32 - 6 * fade_at(smooth_step, HE_RUNTIME_CC)
             at_step HE_HARDWARE
             bold "Hardware: " fr "Matériel: "
             $ "Encryption support in memory controller" fr "Support du chiffrage dans le contrôleur de mémoire"
@@ -307,6 +268,10 @@ base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
             $ "Image download, confidential services" fr "Téléchargement d'images, services confidentiels"
 
 
+        at_step HE_COMPLETE
+        stamp "green", "Complete!" fr "Terminé!"
+
+
 // ----------------------------------------------------------------------------
 base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le téléchargement",
 // ----------------------------------------------------------------------------
@@ -315,23 +280,10 @@ base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le télécharg
     slide_picture "Secure Cloud.png", 3%, 300
     stepping
 
-    picture
-        adjust_si_diagram ->
-            scale 70%
-            translate -300, 130, 0
-        adjust_si_diagram
-        kata_containers integer(KC_PULLIMAGE + smooth_step + 0.5)
-
+    kata_containers integer(KC_PULLIMAGE + smooth_step + 0.5)
     contents 0,
         at_step 1
-        locally
-            line_color "black"
-            line_width 2
-            color "white", 0.8
-            rectangle 680, -190, 550, 450
-        text_box 680, -190, 500, 400,
-            style "story"
-            font_size 20
+        talk_frame
             at_step PI_INSIDE_GUEST
             bold "Pull Image " fr "Téléchargement d'images "
             $ "from inside the guest instead of from the host" fr "depuis la machine virtuelle et non depuis la machine physique hôte"
@@ -340,8 +292,11 @@ base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le télécharg
             $ "on an encrypted volume, with guest-only decryption keys" fr "sur un disque chiffré, où seul la machine virtuelle a les clefs"
             at_step PI_API_CHANGE
             bold "Architectural changes " fr "Changement d'architecture "
-            $ "to delegate PullImage to the runtime" fr "pour déléguer PullImage au Runtime"
+            $ { text "to delegate PullImage to the runtime, implemented in "  fr "pour déléguer PullImage au runtime, codé pour "; code "containerd"; text ", but patches rejected" fr "mais le code a été rejetée" }
 
+        at_step PI_COMPLETE
+        translate 150, -350, 0
+        stamp "orange", "Rework!" fr "À revoir"
 
 
 // ----------------------------------------------------------------------------
@@ -352,91 +307,354 @@ base_slide "Attestation" fr "Attestation",
     slide_picture "Measuring.png", 3%, 300
     stepping
 
-    picture
-        adjust_at_diagram ->
-            scale 70%
-            translate -300, 130, 0
-        adjust_at_diagram
-        kata_containers integer(KC_ATTEST + smooth_step + 0.5)
-
+    kata_containers integer(KC_ATTEST + smooth_step + 0.5)
     contents 0,
         at_step 1
-        locally
-            line_color "black"
-            line_width 2
-            color "white", 0.8
-            rectangle 680, -190, 550, 450
-        text_box 680, -190, 500, 400,
-            style "story"
-            font_size 20
-
+        talk_frame
             at_step AT_PREATTEST
             color "#C22"
             bold "Preattestation: " fr "Pré-attestation: "
             color "black"
-            $ "Measure the payload before allowing it to start" fr "Mesure le contenu avant d'autoriser l'exécution"
+            $ "Measure the payload before allowing it to start (original SEV)" fr "Mesure le contenu avant d'autoriser l'exécution (SEV)"
 
             at_step AT_POSTATTEST
-            color "#2A2"
+            color "#C62"
             bold "Postattestation: " fr "Post-attestation: "
             color "black"
-            $ "Code in the payload can confirm the measurement" fr "Le code peut soumettre la mesure lui-même"
+            $ "Code in the payload can confirm its identity using the measurement in order to get secrets" fr "Le code peut s'identifier à l'aide d'une mesure pour obtenir des secrets"
 
-            at_step AT_MEASURING
-            bold "Measuring: " fr "Qui mesure? "
-            $ "Cryptographic exchange to respond to a challenge" fr "Échange cryptographique pour répondre à un test"
-            at_step AT_MEASURED
-            bold "Measured: " fr "Que mesurer? "
-            $ "Can be only firmware+kernel, or payload itself" fr "Noyau et microgiciel, voire le contenu"
+            at_step AT_WORKLOAD
+            color "#2A2"
+            bold "Workload attestation" fr "Attestation de contenu"
+            color "black"
+            $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
 
-            at_step AT_KEY_DELIVERY
+
+// ----------------------------------------------------------------------------
+base_slide "How does attestation work?" fr "Comment marche l'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
+    slide_picture "Customs.jpg", 3%, 300
+    stepping
+
+    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step MS_MEASURING
+            bold "Cryptographic measurement: " fr "Mesure cryptographique "
+            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
+            at_step MS_CHALLENGE
+            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
+            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
+
+            at_step MS_KEY_DELIVERY
             bold "Secret delivery " fr "Révéler des secrets "
             $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
 
-            at_step AT_REMOTE
+            at_step MS_REMOTE
             bold "Remote attestation: " fr "Attestation distante "
             $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
+
+
+// ----------------------------------------------------------------------------
+base_slide "So, what is the problem?" fr "Du coup, c'est quoi le problème?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "It looks like you got everything under control" fr "On dirait que tout est sous contrôle"
+    stepping
+    picture
+        image 0, 30, 140%, 140%, "So what is the problem.jpg"
+
+
+// ============================================================================
+//
+section_slide "Let's start with attestation" fr "Commençons par l'attestation",
+//
+// ============================================================================
+    title page_label
+    subtitle "The problem with standards..."
+    stepping
+    page_quote 1
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation is a very general thing" fr "L'attestation est un principe général",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "So there is More One Way To Do It™"
+    slide_picture "Attestation.png", 3%, 300
+
+    stepping
+    story
+        * "Remote Attestation Procedures (RATS)"
+        ** "A relatively complex topic in itself"
+        * "Secure Boot and Trusted Platform Module"
+        ** "How about manufacturing transient virtual TPMs?"
+        $
+        * "Confidential Containers have their own attestation"
+        ** "Which needs to plug into all existing technologies"
+        $
+        color "darkgreen"
+        * "Hide platform differences from user-space"
+
+    right_picture
+        images "RATS.jpg", "RATS roles.png", "TPM.png", "Magic Smoke.jpg", "CCont Attestation.png", "CCont Attestation platforms.jpg", "Hard Drive Abstraction.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation and Key Brokering",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Attestation is robust only if it hands you secrets"
+    slide_picture "Keys.png", 3%, 300
+
+    stepping
+    story
+        * "Attestation Service (AS, aka Verifier): Checks your ID"
+        * "Key Broker Service (KBS): Hands over secrets"
+        * { text "Your workload must "; italic "need"; text " that secret" }
+        $
+        * "KBS protocol defined by Confidential Containers"
+        ** "... first implemented by Sergio Lopez for libkrun"
+        $
+        * "Services will come from different players"
+        color "darkgreen"
+        ** "So we need to define protocols, not just code"
+
+
+    right_picture
+        images "Attestation Service.png", "Key Broker Service.png", "Gossip.jpg", "KBS Protocol.png", "Attestation Server.png", "Azure Attestation.png", "Protocols.png"
+
+
+// ============================================================================
+//
+section_slide "Then there is performance" fr "Ensuite, il y a la performance",
+//
+// ============================================================================
+    title page_label
+    subtitle "A hardware vendor's dream..."
+    stepping
+    page_quote 2
 
 
 // ----------------------------------------------------------------------------
 base_slide "The cost of confidentiality" fr "Combien ça coûte de sécuriser?",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Confidentiality is in the way of deduplication" fr "Le chiffrage empêche la déduplication"
-    slide_picture "Pile of Cash.png", 3%, 300
+    subtitle "Confidentiality gets in the way of deduplication" fr "Le chiffrage empêche la déduplication"
+    slide_picture "Good Cheap Fast.png", 3%, 300
     stepping
 
     story
         * "Downloaded images are now encrypted" fr "Les images de conteneur sont chiffrées"
-        ** "So they can't be shared" fr "Donc elles ne peuvent pas être réutilisées"
+        ** "So they can't be shared between pods" fr "Donc elles ne peuvent pas être réutilisées"
         ** "This increases disk and networking costs" fr "Cela augment les coûts de disque et de réseau"
         * "Disks too must be crypted" fr "Les disques sont aussi cryptés"
         ** "Therefore, no deduplication" fr "Donc pas de déduplication"
         * "Memory is crypted too" fr "La mémoire aussi est chiffrée"
         ** "No kernel same-page merging" fr "Pas de KSM (unification des pages identiques)"
+        $
+        color "darkgreen"
+        * "Who has a patch for Crypto KSM?"
 
 
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+    right_picture
+        images "Canal+ Scrambled.jpg", "Disk image sharing.png", "Nydus Image download.png", "Disk Encryption.jpg", "Disk Deduplication.png", "Memory Encryption.jpg", "KSM Efficiency.png", "Crypto KSM.jpg"
+
+
+RUNTIME_SCALE -> 3 + 5 * fade_at(smooth_step, 1)
+
+// ----------------------------------------------------------------------------
+base_slide "Good news: manageable runtime cost",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
-    slide_picture "Pile of Cash.png", 0%, 250
+    subtitle "We encrypt memory on the fly, but it's ""cheap"""
+    slide_picture "Pile of Cash.png", 3%, 300
     stepping
-    story
-        * { text "The motto """ fr "Le slogan """; italic "The speed of containers" fr "La vitesse des conteneurs"; text """ applies to deployments" fr """ s'applique aux déploiments" }
-        ** "Application development cycles are as fast as with other runtimes" fr "Le cycle de développement est aussi rapide qu'avec les autres runtimes"
-        ** "Performance in containers may / does vary" fr "Mais la performance change"
 
-        * "Memory overhead is large, but fixed and predictable" fr "Il faut plus de mémoire (mais c'est prévisible)"
-        ** "At the moment, in the order of 350M per pod on average" fr "Pour l'instant de l'ordre de 350M"
-        ** "Likely to double with confidential containers" fr "Mais cela va augmenter avec l'informatique sécurisée"
+    picture
+        text_box -300, 300, 900, 200,
+            style "story"
+            color "#444"
+            $ { rounded_rectangle 25, 8, 50, 20,  0; text "   Regular virtual machine" }
+            $ { rounded_rectangle 25, 8, 50, 20, 6;  text "   Confidential Workload (krun)" }
 
-        * "Disk and network overhead are large by default" fr "Le coût en disque et réseau est élevé"
-        ** "Confidential computing adds disk usage for images" fr "En mode sécurisé, c'est aussi vrai des images"
-        ** "Technologies such as SR-IOV and VDPA are necessary" fr "Il existe des technologies qui aident (genre SR-IOV et VDPA)"
+    picture
+        line_color "lightblue", 80%
+        translate 0, 100, 0
+        style "story"
+        font_size 24
+        for Y in -20..20 loop locally
+            show fade_out_at(RUNTIME_SCALE * abs Y, 33) * fade_out_at((abs Y mod 2), 1 + smooth_step)
+            line -850, RUNTIME_SCALE * 10 * Y, 950, RUNTIME_SCALE * 10 * Y
+            text_box -980, RUNTIME_SCALE * 10 * Y, 300, 100,
+                align 100%
+                vertical_align 50%
+                color "darkblue"
+                text "" & (Y * 5) & "%"
 
-        * "Watch out for upcoming blogs" fr "Il y a des articles de blog faciles à trouver"
+    picture
+        sev_step -> 0
+        sev_step := 0
+
+        load_csv "SEV Runs.csv", "sev_runs"
+        sev_runs Name:text,Container:real,Workload:real,VM:real,Name2:text,PctCC:real,PctVM:real ->
+            translate_x 70
+            sev_step := sev_step + 1
+            refresh 0.0
+            locally
+                show fade_at(page_time * 15, sev_step)
+                translate -850, -200, 0
+                rotate_z 65
+                text_box 0, 0, 120, 80,
+                    style "story"
+                    font_size 24
+                    align 100%
+                    text Name
+
+            locally
+                translate -850, 100, 0
+                show fade_at(page_time * 14, sev_step)
+                color_hsv 60 - 1.5 * PctVM, 70%, 60%
+                rounded_rectangle -12, PctVM * RUNTIME_SCALE, 20, PctVM * RUNTIME_SCALE * 2, 0
+                color_hsv 60 - 1.5 * PctCC, 70%, 60%
+                rounded_rectangle  12, PctCC * RUNTIME_SCALE, 20, PctCC * RUNTIME_SCALE * 2, 6
+        sev_runs X -> false
+        at_step 1
+
+
+
+// ============================================================================
+//
+section_slide "Image (re)download",
+//
+// ============================================================================
+    title page_label
+    subtitle "The ""Lather, Rinse, Repeat"" school of programming"
+    stepping
+    page_quote 3
+
+
+// ----------------------------------------------------------------------------
+base_slide "Cache + Dedup + Crypto?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Can we get something like Nydus on encrypted blocks?"
+    slide_picture "Crazy Frog.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 60, 85%, 85%, "Nydus image download.png"
+        at_step 1
+        image 3000, 60, 95%, 95%, "Nydus design.png"
+        image 6000, 60, 125%, 125%, "Device Mapper.jpg"
+        image 9000, 60, 85%, 85%, "Attest and Decrypt Whole Layer.jpg"
+        image 12000, 20, 65%, 65%, "Building Signed Images.jpg"
+        image 15000, 20, 50%, 50%, "Block-based Image Download.jpg"
+
+        at_step 5
+
+
+// ============================================================================
+//
+section_slide "Access Control",
+//
+// ============================================================================
+    title page_label
+    subtitle "We just need to rewrite the Kubernetes access-control model from scratch"
+    stepping
+    page_quote 4
+
+
+// ----------------------------------------------------------------------------
+base_slide "Going from two to three",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "It's the beginning of counting, folks"
+    slide_picture "Counting.jpg", 3%, 300
+    stepping
+
+    on "pageentry",
+        skip_to CC_PLATFORM
+
+    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
+    contents 0,
+        at_step CC_PLATFORM
+        talk_frame
+            color "#C22"
+            rectangle 0, 7, 50, 20
+            bold " Trusted platform: " fr " Plateforme sécurisée: "
+            color "black"
+            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
+            at_step CC_HOST
+            color "#24C"
+            rectangle 0, 7, 50, 20
+            bold " Host: " fr " Hébergeur: "
+            color "black"
+            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
+            at_step CC_TENANT
+            color "#2A2"
+            rectangle 0, 7, 50, 20
+            bold " Tenant: " fr " Locataire: "
+            color "black"
+            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
+
+// ----------------------------------------------------------------------------
+base_slide "The host/tenant split API",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Let's just decide which credentials we use on the fly"
+    slide_picture "Crazy Frog.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 30, 55%, 55%, "Host-tenant Split API.jpg"
+        at_step 1
+
+
+// ============================================================================
+//
+section_slide "Debuggability",
+//
+// ============================================================================
+    title page_label
+    subtitle "The FBI school of debugging"
+    stepping
+    page_quote 5
+
+
+// ----------------------------------------------------------------------------
+base_slide "Tell us what you need to know",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "and we'll teach you why you don't need it"
+    slide_picture "Don't Panic.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 30, 135%, 135%, "Debugging Nightmare.png"
+        at_step 1
+        image 2500, 30, 75%, 75%, "Don't Panic Is A Command.png"
+        text_box 3400, 0, 800, 600,
+            style "story"
+            $ "It's not a suggestion, it's a rule"
+            $ "Really, we mean it"
+            $
+            $ { text "if you " ; code "panic()" ; text ", we offer a cryptographic, hardware-enforced guarantee that you that you won't see the logs" }
+            $
+            color "darkgreen"
+            $ "Any good ideas on how to address this in a sensible manner is welcome"
+
+
+
 
 
 // ============================================================================
@@ -447,7 +665,24 @@ section_slide "Conclusion" fr "Conclusion",
     title page_label
     subtitle
         $ "Confidential Containers are an opportunity" fr "Les conteneurs sécurisés, une opportunité"
-        $ "but a real challenge in terms of performance" fr "mais la performance reste un vrai problème"
+        $ "but a real challenge in terms of everything" fr "mais à peu près tout reste un vrai problème"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * "Relase 1 of confidential containers is around the corner"
+        * "Practical, portable, uniform attestation is a challenge"
+        * "Performance issues are mostly vastly enhanced resource usage"
+        * "Image download is a huge contributor to this"
+        * "Access control has to be re-thought (not in release 1)"
+        * "Debuggability or confidentiality, pick one"
+
 
 
 // ============================================================================
@@ -491,6 +726,8 @@ section_slide "Overflow sides" fr "En savoir plus",
                 image -80, -40, 10%, 10%, "Tao3D.png"
             paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
             paragraph presentation_tao
+
+    translate_y -50
     title_slide_logo
 
 
@@ -1197,6 +1434,36 @@ base_slide "Network latency",
             * "CPU constraints hurt"
 
 
+// ---------------------------------------------------------------------------
+base_slide "Sandboxing workloads" fr "Toujours plus d'isolation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "From your software to containers in VMs..." fr "Du logiciel au tombe-du-ciel"
+    slide_picture_at OWS_SW..OWS_OS,      "Emoji=Happy.png", 5%, 300
+    slide_picture_at OWS_CHROOT..OWS_KVM, "Emoji=Thinking.png", 5%, 300
+    slide_picture_at OWS_CNTN..OWS_CRI,   "Emoji=Questioning.png", 4%, 350
+    slide_picture_at OWS_KVIRT..OWS_KATA, "Emoji=Crazy.png", 3%, 300
+    stepping
+    picture
+        caption_at OWS_SW, "Software is what matters" fr "Le logiciel, c'est ça qui compte vraiment"
+        caption_at OWS_HW, "Direct hardware access (Original Mac, Unikernel)" fr "Accès direct au matériel (MS-DOS, Unikernel)"
+        caption_at OWS_CLASH, "Sharing resources is both hard and risky" fr "Partager les resources est difficile et risqué"
+        caption_at OWS_OS, "Operating system deal with this problem" fr "C'est le rôle du système d'exploitation"
+        caption_at OWS_CHROOT, "chroot gives you a filesystem sandbox" fr "On peut isoler une partie des fichierts"
+        caption_at OWS_VIRT, "Virtualization gives you a full machine sandbox" fr "On peut isoler en créant une machine virtuelle"
+        caption_at OWS_QEMU, "QEMU: User-space interface for virtualization" fr "QEMU: première solution de virtualisation complète en logiciel libre"
+        caption_at OWS_KVM, "KVM: Kernel component supporting virtualization" fr "KVM: support de la virtualisation directement dans le noyau Linux"
+        caption_at OWS_CNTN, "Containers are complete OS-built sandboxes" fr "Les conteneurs sont une isolation par le système"
+        caption_at OWS_MANY, "Containers scale well" fr "Ce qui est bien, c'est qu'on peut empiler vraiment beaucoup de conteneurs"
+        caption_at OWS_DOCKER, "Containers provides rich software components composition and setup" fr "Les composants logiciels: distribution et assemblage"
+        caption_at OWS_K8S, "OpenShift features large-scale orchestration" fr "Faire marcher tout ça demande une orchestration"
+        caption_at OWS_CRI, "A modular interface connects orchestration to system and workloads" fr "Une architecture applicative repensée pour gérer tout ça"
+        caption_at OWS_KVIRT, "You can orchestrate legacy workloads using KubeVirt virtual machines" fr "Pour les vieilles applis, retour à la virtualisation"
+        caption_at OWS_KATA, "Kata Containers run sandboxed containers in isolated virtual machines" fr "Isoler les conteneurs par la virtualisation (Kata)"
+        overview integer(smooth_step + 0.5)
+
+
+
 
 // ============================================================================
 //
@@ -1295,7 +1562,7 @@ overview Step:integer ->
                 image 0, 0, 50%, 50%, "Hard Disk.png"
 
         at_step OWS_VIRT
-        vi_x -> anim -630.0, OWS_SW = -630,                 OWS_CNTN = -3000, OWS_KVIRT=-630
+        vi_x -> anim -630.0, OWS_SW = -630,                 OWS_CNTN = -5000, OWS_KVIRT=-630
         vi_y -> anim   60.0, OWS_SW =   60, OWS_VIRT = 60
         vi_w -> anim  400.0, OWS_SW =  400
         vi_h -> anim  200.0, OWS_SW =  200, OWS_VIRT = 180
@@ -1605,7 +1872,7 @@ KC_KATA_CTR     -> 12
 KC_CTR_ECOSYS   -> 13
 KC_VM_ISOL      -> 14
 
-KC_CONFIDENTIAL -> KC_VM_ISOL
+KC_CONFIDENTIAL -> KC_VM_ISOL + 1
 KC_LINUX_KERNEL -> KC_CONFIDENTIAL + CC_LINUX_KERNEL
 KC_FIRMWARE     -> KC_CONFIDENTIAL + CC_FIRMWARE
 KC_SHIM_V2      -> KC_CONFIDENTIAL + CC_SHIM_V2
@@ -1626,189 +1893,350 @@ CC_PLATFORM     ->  7
 CC_HOST         ->  8
 CC_TENANT       ->  9
 
-KC_ENABLEMENT   -> KC_TENANT
+KC_ENABLEMENT   -> KC_TENANT + 1
 KC_HARDWARE     -> KC_ENABLEMENT + HE_HARDWARE
 KC_FIRMWARE_CC  -> KC_ENABLEMENT + HE_FIRMWARE_CC
 KC_RUNTIME_CC   -> KC_ENABLEMENT + HE_RUNTIME_CC
 KC_HYPER_CC     -> KC_ENABLEMENT + HE_HYPER_CC
 KC_KERNEL       -> KC_ENABLEMENT + HE_KERNEL
 KC_AGENTCC      -> KC_ENABLEMENT + HE_AGENTCC
+KC_ENABLEMENT_C -> KC_ENABLEMENT + HE_COMPLETE
 HE_HARDWARE     -> 1
 HE_FIRMWARE_CC  -> 2
 HE_KERNEL       -> 3
 HE_RUNTIME_CC   -> 4
 HE_HYPER_CC     -> 5
 HE_AGENTCC      -> 6
+HE_COMPLETE     -> 7
 
-KC_PULLIMAGE    -> KC_AGENTCC + 1
+KC_PULLIMAGE    -> KC_ENABLEMENT_C + 1
 KC_INSIDE_GUEST -> KC_PULLIMAGE + PI_INSIDE_GUEST
 KC_ENCRYPTED    -> KC_PULLIMAGE + PI_ENCRYPTED
 KC_API_CHANGE   -> KC_PULLIMAGE + PI_API_CHANGE
+KC_PULLIMAGE_C  -> KC_PULLIMAGE + PI_COMPLETE
 PI_INSIDE_GUEST -> 1
 PI_ENCRYPTED    -> 2
 PI_API_CHANGE   -> 3
+PI_COMPLETE     -> 4
 
-KC_ATTEST       -> KC_API_CHANGE + 1
+KC_ATTEST       -> KC_PULLIMAGE_C + 1
 KC_PREATTEST    -> KC_ATTEST + AT_PREATTEST
 KC_POSTATTEST   -> KC_ATTEST + AT_POSTATTEST
-KC_MEASURING    -> KC_ATTEST + AT_MEASURING
-KC_MEASURED     -> KC_ATTEST + AT_MEASURED
-KC_KEY_DELIVERY -> KC_ATTEST + AT_KEY_DELIVERY
-KC_REMOTE       -> KC_ATTEST + AT_REMOTE
+KC_WORKLOAD     -> KC_ATTEST + AT_WORKLOAD
 AT_PREATTEST    -> 1
 AT_POSTATTEST   -> 2
-AT_MEASURING    -> 3
-AT_MEASURED     -> 4
-AT_KEY_DELIVERY -> 5
-AT_REMOTE       -> 6
+AT_WORKLOAD     -> 3
+
+KC_MSMTS        -> KC_WORKLOAD + 1
+KC_MEASURING    -> KC_MSMTS + MS_MEASURING
+KC_CHALLENGE    -> KC_MSMTS + MS_CHALLENGE
+KC_KEY_DELIVERY -> KC_MSMTS + MS_KEY_DELIVERY
+KC_REMOTE       -> KC_MSMTS + MS_REMOTE
+MS_MEASURING    -> 1
+MS_CHALLENGE    -> 2
+MS_KEY_DELIVERY -> 3
+MS_REMOTE       -> 4
+
+
+transfer_gradient Scale:real, Speed: real ->
+// ----------------------------------------------------------------------------
+//   Animated gradient for "marching ants" lines
+// ----------------------------------------------------------------------------
+    linear_gradient 0, 0, 256, 0, 256, 256,
+        gradient_color 0%, "darkgray", 0.3
+        gradient_color 10%, "darkgray", 0.9
+        gradient_color 20%, "lightgray", 0.3
+        gradient_color 50%, "white", 0.9
+        gradient_color 80%, "darkgray", 0.9
+        gradient_color 90%, "lightgray", 0.3
+        gradient_color 100%, "darkgray", 0.0
+    transfer_gradient Scale, Speed, 0
+transfer_gradient Scale:real, Speed:real, Angle:real->
+    texture_wrap true, true
+    texture_transform
+        translate_x -Speed*time mod 1
+        rotate_z Angle
+        scale_x Scale
+
+
+marching_ants Step:integer, X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//   Draw marching-ants style box
+// ----------------------------------------------------------------------------
+    at_anim Step
+    if anim_step = Step then
+        line_width 16
+        linear_gradient 0, 0, 256, 0, 256, 256,
+            gradient_color 0%, "darkgray", 0.3
+            gradient_color 10%, "gray", 0.9
+            gradient_color 20%, "lightgray", 0.3
+            gradient_color 50%, "white", 0.9
+            gradient_color 80%, "gray", 0.9
+            gradient_color 90%, "lightgray", 0.3
+            gradient_color 100%, "darkgray", 0.0
+        locally
+            transfer_gradient W / 100, 2.5,  0
+            line X-8-W/2, Y+0+H/2, X+8+W/2, Y+0+H/2
+        locally
+            transfer_gradient H / 100, 2.5, 90
+            line X+0+W/2, Y-8+H/2, X+0+W/2, Y+8-H/2
+        locally
+            transfer_gradient W / 100, 2.5, 180
+            line X+8+W/2, Y-0-H/2, X-8-W/2, Y-0-H/2
+        locally
+            transfer_gradient H / 100, 2.5, 270
+            line X-0-W/2, Y+8-H/2, X-0-W/2, Y-8+H/2
+    else
+        line_width 8
+        rectangle X, Y, W, H
+
+
+security_frame Color, DarkColor, X, Y, W, H, Icon, IconScale ->
+// ----------------------------------------------------------------------------
+//   Draw a little yellow/black box with a padlock
+// ----------------------------------------------------------------------------
+    background 0,
+        line_width 4
+        line_color Color
+        color "transparent"
+        translate_z 2
+        rectangle X, Y, W, H
+        line_color DarkColor
+        rectangle X, Y, W+10, H+10
+        rectangle X, Y, W-10, H-10
+        color "white"
+        line_color "transparent"
+        translate_z 5
+        image X + W/2, Y + H/2, IconScale, IconScale, Icon
+
+SECURITY_TOP    -> anim 60.0, KC_PREATTEST=60, KC_POSTATTEST=150, KC_WORKLOAD=360
+SECURITY_Y      -> (SECURITY_TOP - 40) / 2
+SECURITY_H      -> (SECURITY_TOP + 40)
+ATTESTATION_TARGET_Y -> anim 0.0, 0=-130, KC_POSTATTEST=10, KC_WORKLOAD=200
+RELYING_X       -> anim 1100.0, 0=1100, KC_ATTEST=800
 
 
 kata_containers Step:integer ->
 // ----------------------------------------------------------------------------
 //   Representation of kata containers
 // ----------------------------------------------------------------------------
-    anim_step Step
+    picture
+        anim_step Step
+        adjust_diagram
 
-    at_anim KC_OPENSHIFT
-    image -700, 370, 12%, 12%, "Logo-Red_Hat-Marketplace-Operated_By_IBM-B-Standard-RGB.png"
-    at_anim KC_KUBELET
-    framed_box "#38E", -700, 300, 300, 80, "Kubelet"
-    at_anim KC_CRI
-    framed_box "#38E", -250, -300, 1200, 80, "CRI (cri-o or containerd)" fr "CRI (cri-o ou containerd)"
-    locally
-        line_color "#38E"
-        line_width 15
-        line_arrow -700, 280, none, -700, -280, arrowhead
+        if Step < KC_MSMTS then
+            at_anim KC_OPENSHIFT
+            image -700, 370, 12%, 12%, "Logo-Red_Hat-Marketplace-Operated_By_IBM-B-Standard-RGB.png"
+            at_anim KC_KUBELET
+            framed_box "#38E", -700, 300, 300, 80, "Kubelet"
+            at_anim KC_CRI
+            framed_box "#38E", -250, -300, 1200, 80, "CRI (cri-o or containerd)" fr "CRI (cri-o ou containerd)"
+            locally
+                line_color "#38E"
+                line_width 15
+                line_arrow -700, 280, none, -700, -280, arrowhead
 
-    at_anim KC_RUNC
-    framed_box "#14A",  -300, -200, 400, 80, "Runtime (runc)"
-    at_anim KC_CONTAINER
-    framed_box "#026",  -300, -50, 400, 200, ""
-    framed_box "#026",  -300, -50, 380, 180, "Container" fr "Conteneur"
+            at_anim KC_RUNC
+            framed_box "#14A",  -300, -200, 400, 80, "Runtime (runc)"
+            at_anim KC_CONTAINER
+            framed_box "#026",  -300, -50, 400, 200, ""
+            framed_box "#026",  -300, -50, 380, 180, "Container" fr "Conteneur"
 
-    at_anim KC_CNI_AND_CSI
-    framed_box "#38E",  490, -300, 220, 80, "CNI"
-    framed_box "#38E",  740, -300, 220, 80, "CSI"
-    image 490, -220, 40%, 40%, "Network card.png"
-    image 740, -220, 50%, 50%, "Hard Disk.png"
+            at_anim KC_CNI_AND_CSI
+            framed_box "#38E",  490, -300, 220, 80, "CNI"
+            framed_box "#38E",  740, -300, 220, 80, "CSI"
+            image 490, -220, 40%, 40%, "Network card.png"
+            image 740, -220, 50%, 50%, "Hard Disk.png"
 
-    at_anim KC_STORAGE
-    locally
-        line_color anim_text("#38E", KC_ENCRYPTING = "#3A5")
-        color anim_text("#38E", KC_ENCRYPTING = "#3A5"), 80%
-        line_width 5
-        rounded_rectangle 740, 120, 160, 140, 20
-    locally
-        color "#CDF"
-        image 760, 140, 40%, 40%, "Hard Disk.png"
-        image 740, 120, 40%, 40%, "Hard Disk.png"
-        image 720, 100, 40%, 40%, "Hard Disk.png"
-    locally
-        line_color "#38E"
-        line_width 15
-        line_arrow 740, 60, arrowhead, 740, -180, arrowhead
+        if Step < KC_ATTEST then
+            at_anim KC_STORAGE
+            locally
+                line_color anim_text("#38E", KC_ENCRYPTING = "#3A5")
+                color anim_text("#38E", KC_ENCRYPTING = "#3A5"), 80%
+                line_width 5
+                rounded_rectangle 740, 120, 160, 140, 20
 
-    text_box 500, 120, 250, 160,
-        color "#02B"
-        font "Overpass", "Arial", 30
-        align 100%
-        vertical_align 50%
-        if anim_step >= KC_ENCRYPTING then
-            color "#082"
-            $ "Encrypted" fr "Chiffrage des"
-        $ "Images &"
-        $ "Volumes"
+            locally
+                color "#CDF"
+                image 760, 140, 40%, 40%, "Hard Disk.png"
+                image 740, 120, 40%, 40%, "Hard Disk.png"
+                image 720, 100, 40%, 40%, "Hard Disk.png"
 
-    if Step <= KC_API_CHANGE then
+            locally
+                line_color "#38E"
+                line_width 15
+                line_arrow 740, 60, arrowhead, 740, -180, arrowhead
+
+            text_box 500, 120, 250, 160,
+                color "#02B"
+                font "Overpass", "Arial", 30
+                align 100%
+                vertical_align 50%
+                if anim_step >= KC_ENCRYPTING then
+                    color "#082"
+                    $ "Encrypted" fr "Chiffrage des"
+                $ "Images &"
+                $ "Volumes"
+
+        if Step <= KC_PULLIMAGE_C then
+            locally
+                at_anim KC_API_CHANGE
+                line_color "#A22", 90%
+                line_width 15
+                line_arrow 320, -280, none, 320, 50, arrowhead
+
+        at_anim KC_KATA_SHIM
+        framed_box anim_text("#1A4", KC_SHIM_V2 = "#A21"),   150, -200, 400, 80, "Runtime (shim-v2)"
+        at_anim KC_HYPERVISOR
+        framed_box anim_text("#061", KC_CC_HYPERVISOR = "#610"),   150, -100, 400, 80, "Hypervisor (qemu)"
+        at_anim KC_VM
         locally
-            at_anim KC_API_CHANGE
-            line_color "#A22", 90%
-            line_width 15
-            line_arrow 320, -280, none, 320, 50, arrowhead
+            framed_box "#3C6",   150, 160, 420, 400, { vertical_align 100%; $ "VM (Linux)" }
+            at_anim KC_KATA_AGENT
+            framed_box "#062",   150, 100, 400,  80, "Kata Agent"
+            at_anim KC_KATA_CTR
+            framed_box "#062",   150, 250, 400, 200, ""
+            framed_box "#062",   150, 250, 380, 180, "Container" fr "Conteneur"
+            if Step = KC_PREATTEST then
+                locally
+                    color "white", 0.8 + 0.1 * sin(5 * time)
+                    line_color "transparent"
+                    texture ""
+                    rectangle 150, 160, 430, 430
+                    color "white"
+                    rectangle 150, 250, 430, 350
 
-    at_anim KC_KATA_SHIM
-    framed_box anim_text("#1A4", KC_SHIM_V2 = "#A21"),   150, -200, 400, 80, "Runtime (shim-v2)"
-    at_anim KC_HYPERVISOR
-    framed_box anim_text("#061", KC_CC_HYPERVISOR = "#610"),   150, -100, 400, 80, "Hypervisor (qemu)"
-    at_anim KC_VM
-    framed_box "#3C6",   150, 160, 420, 400, { vertical_align 100%; $ "VM (Linux)" }
-    at_anim KC_KATA_AGENT
-    framed_box "#062",   150, 100, 400,  80, "Kata Agent"
-    at_anim KC_KATA_CTR
-    framed_box "#062",   150, 250, 400, 200, ""
-    framed_box "#062",   150, 250, 380, 180, "Container" fr "Conteneur"
 
-    at_anim KC_LINUX_KERNEL
-    framed_box "#E22",     0, -400, 1700, 80, "Linux kernel" fr "Noyau Linux"
-    at_anim KC_FIRMWARE
-    framed_box "#811",     0, -500, 1700, 80, "Firmware / Hardware" fr "Microgiciel / Matériel"
+        if Step < KC_MSMTS then
+            at_anim KC_LINUX_KERNEL
+            framed_box "#E22",     0, -400, 1700, 80, "Linux kernel" fr "Noyau Linux"
+            at_anim KC_FIRMWARE
+            framed_box "#811",     0, -500, 1700, 80, "Firmware / Hardware" fr "Microgiciel / Matériel"
 
-    at_anim KC_RELYING
-    locally
-        line_color "#0A4"
-        color "#0A4", 20%
-        translate 1100, 250, 0
-        path
-            move_to 0, 100
-            for I in 1..16 loop
-               quad_to (230 + 5 * sin I) * sin((I - 0.5) * pi / 8), (120 + 7 * sin I) * cos((I - 0.5) * pi / 8), 200 * sin(I * pi / 8), 100 * cos(I * pi / 8)
-    locally
-        line_color "#0A4"
-        line_width 8
-        line_arrow 350, 250, arrowhead, 920, 250, arrowhead
-    text_box 1100, 250, 300, 80,
-        style "story"
-        font_size 30
-        color "#081"
-        align 0.0
-        vertical_align 0.5
-        $ "Relying party" fr "Contrôleur"
-    show 0.99
-    framed_box "#0A4",   1250, 300, 280, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
-    framed_box "#0A4",   1250, 200, 280, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
-
-    if Step <= KC_AGENTCC then
-        locally
+        only_at_anim KC_PREATTEST..KC_WORKLOAD,
+            security_frame "yellow", "black", 150, SECURITY_Y, 415, SECURITY_H, "Padlock-16.png", 30%
+        only_at_anim KC_MEASURING..KC_KEY_DELIVERY,
+            security_frame "yellow", "black", 150, SECURITY_Y, 415, SECURITY_H, "Padlock-16.png", 30%
+        only_at_anim KC_PREATTEST..KC_WORKLOAD,
             line_color "#E22"
             color "transparent"
-            line_width 6 + 2 * sin(2.5 * time)
-            at_anim KC_HARDWARE
-            rectangle 5, -500, 1710, 80
-            at_anim KC_FIRMWARE_CC
-            at_anim KC_KERNEL
-            rectangle 5, -400, 1710, 80
-            at_anim KC_RUNTIME_CC
-            rectangle 155, -200, 400, 80
-            at_anim KC_HYPER_CC
-            rectangle 155, -100, 400, 80
-            at_anim KC_AGENTCC
-            rectangle 155, 100, 400,  80
+            line_width 20
+            line_arrow 320, ATTESTATION_TARGET_Y, arrowhead, 320, -470, arrowhead
+            marching_ants KC_PREATTEST, 150, -100, 400, 80
 
-    if Step <= KC_API_CHANGE then
-        at_anim KC_INSIDE_GUEST
-        locally
-            translate 920 - 300 * page_time mod 570, 250, 10
-            image 0, 0, 20%, 20%, "Container Package.png"
-
-        at_anim KC_ENCRYPTED
+        at_anim KC_RELYING
         locally
             line_color "#0A4"
-            line_width 8
-            line_arrow 350, 100, arrowhead, 520, 100, arrowhead
-        locally
-            translate 350 + 100 * page_time mod 170, 100, 10
-            image 0, 0, 10%, 10%, "Container Package.png"
+            color "#0A4", 20%
+            translate RELYING_X, 250, 0
+            path
+                move_to 0, 100
+                for I in 1..16 loop
+                   quad_to (230 + 5 * sin I) * sin((I - 0.5) * pi / 8), (120 + 7 * sin I) * cos((I - 0.5) * pi / 8), 200 * sin(I * pi / 8), 100 * cos(I * pi / 8)
+        if Step <= KC_PULLIMAGE then
+            locally
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 250, arrowhead, 920, 250, arrowhead
 
-        at_anim KC_API_CHANGE
-        locally
-            translate -720, 0, 0
-            rotate_z 90
-            text_box 0, 10, 300, 80,
-                style "story"
-                align 0.5
-                vertical_align 0.5
-                font_size 35
-                code "PullImage"
+        text_box RELYING_X - 20, 250, 300, 80,
+            style "story"
+            font_size 30
+            color "#081"
+            align 0.0
+            vertical_align 0.5
+            $ "Relying party" fr "Contrôleur"
+        show 0.99
+        framed_box "#0A4",   150 + RELYING_X, 300, 280, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
+        framed_box "#0A4",   150 + RELYING_X, 200, 280, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
+
+        if Step <= KC_ENABLEMENT_C then
+            background -50,
+                line_color "#E22"
+                color "transparent"
+                marching_ants KC_HARDWARE,      0, -500, 1700, 80
+                marching_ants KC_FIRMWARE_CC,   0, -500, 1700, 80
+                marching_ants KC_KERNEL,        0, -400, 1700, 80
+                marching_ants KC_RUNTIME_CC,  150, -200, 400, 80
+                marching_ants KC_HYPER_CC,    150, -100, 400, 80
+                line_color "#082"
+                marching_ants KC_AGENTCC,     150, 100, 400,  80
+
+        if Step <= KC_PULLIMAGE_C then
+            at_anim KC_INSIDE_GUEST
+            locally
+                transfer_gradient (920-350)*0.01, -2.5
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 250, arrowhead, 920, 250, arrowhead
+            locally
+                translate 920 - 300 * page_time mod 570, 250, 10
+                image 0, 0, 20%, 20%, "Container Package.png"
+
+            at_anim KC_ENCRYPTED
+            locally
+                transfer_gradient (520-350)*0.01, 2.5/ 3
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 100, arrowhead, 520, 100, arrowhead
+            locally
+                translate 350 + 100 * page_time mod 170, 100, 10
+                image 0, 0, 10%, 10%, "Container Package.png"
+
+            at_anim KC_API_CHANGE
+            locally
+                translate -720, 0, 0
+                rotate_z 90
+                text_box 0, 10, 300, 80,
+                    style "story"
+                    align 0.5
+                    vertical_align 0.5
+                    font_size 35
+                    code "PullImage"
+
+        only_at_anim KC_CHALLENGE,
+            image 440 + time * 0.5 mod 1 * (RELYING_X - 290), -20, 0.8,0.8, "ID Card.jpg"
+            line_width 15
+            line_color "#0A4"
+            color "transparent"
+            path
+                endpoints_style none, arrowhead
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 180
+            line_color "#082"
+            marching_ants KC_CHALLENGE, 150 + RELYING_X, 200, 280, 80
+
+        only_at_anim KC_KEY_DELIVERY,
+            line_width 15
+            line_color "#0A4"
+            color "transparent"
+            path
+                endpoints_style arrowhead, none
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 280
+            line_color "#082"
+            marching_ants KC_KEY_DELIVERY, 150 + RELYING_X, 300, 280, 80
+            line_width 0
+            color "white"
+            image 440 + time * -0.5 mod 1 * (RELYING_X - 290), 20, 0.4,0.4, "Keys.png"
+
+        only_at_anim KC_REMOTE,
+            line_width 15
+            line_color "#F33"
+            color "transparent"
+            path
+                endpoints_style arrowhead, none
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 160
+            line_color "#F33"
+            marching_ants KC_REMOTE, 150 + RELYING_X, 200, 280, 80
+            line_width 0
+            color "white"
+            image 440 + time * -0.5 mod 1 * (RELYING_X - 290), 20, 0.4,0.4, "T1000 Just Says No.jpg"
+
 
 
 
@@ -1830,6 +2258,9 @@ page_quote N ->
 // ----------------------------------------------------------------------------
 //   Show a selected quote in a page
 // ----------------------------------------------------------------------------
+    locally
+        show_quotes step
+        at_step 1
     on "pageentry",
         show_quote N
     on "pageexit",
@@ -1849,16 +2280,25 @@ show_quote N    ->
         show_quotes := 0.0
 
 show_quotes     -> 0.0
+show_quotes S   -> show_quotes := S
 show_quotes_v   -> 0.0
 
 interpolate 10%, show_quotes, show_quotes_v
 if show_quotes_v > 0.0 then
     show show_quotes_v
     quotes
-        quote "For every problem, there is a solution that is simple, clean and wrong", "Henry Louis Mencken"
-        quote "There is more than one way to do it", "Perl motto (Larry Wall)"
-        quote "The good thing about standards is that there are so many to choose from.", "Andrew Tannenbaum"
-        quote "Entropy, i.e. disorder,  always increases with time", "Second law of thermodynamics"
-        quote "Get half of the right thing available so that it spreads like a virus. Once people are hooked on it, improve it to 90% of the right thing.", "Richard P. Gabriel"
-        quote "Break it properly so that you can fix it properly", "Fabiano Fidêncio"
-        quote "I love cunning containers as much as anyone, but I've found that if I get rid of everything I don't need, I often don't need a container at all.", "Gretchen Rubin"
+        quote "Gretchen Rubin", "I love cunning containers as much as anyone, but I've found that if I get rid of everything I don't need, I often don't need a container at all."
+        quote "Andrew Tannenbaum", "The good thing about standards is", " that there are so many to choose from."
+        quote "Edward Teller", "A state-of-the-art calculation requires 100 hours of CPU time on the state-of-the-art computer, independent of the decade."
+        quote "Will Durant", "History is always repeating itself,", "but each time the price goes up"
+        quote "Henry Louis Mencken", "For every problem, there is a solution that is simple, clean and wrong"
+        quote "Julian Assange", "A nation can't solve", "what the press won't let it perceive"
+disabled
+        quote "Second law of thermodynamics", "Entropy, i.e. disorder,  always increases with time"
+        quote  "Perl motto (Larry Wall)", "There is more than one way to do it"
+        quote "Richard P. Gabriel", "Get half of the right thing available so that it spreads like a virus. Once people are hooked on it, improve it to 90% of the right thing."
+        quote "Fabiano Fidêncio", "Break it properly so that you can fix it properly"
+
+key "q" -> show_quotes (if show_quotes <> 0.0 then 0.0 else 1.0); refresh 0
+key "]" -> quote_step := quote_step + 1; refresh 0
+key "[" -> quote_step := quote_step - 1; refresh 0
