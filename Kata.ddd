@@ -12,9 +12,9 @@ presentation_author_mail "dinechin@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Five big problems with confidential containers" fr "Cinq gros problèmes avec les containers sécurisés"
+        $ "Confidential Containers" fr "Les conteneurs sécurisés"
     subtitle
-        $ "and why we need KVM developers to help"
+        $ "Red Hat Engineering Days 2023" fr "Journées Engineering Red Hat 2023"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -25,6 +25,23 @@ main_title_slide "Main title",
     title_slide_logo
 
 
+my_picture_page with files "Trucs/*"
+
+my_picture_page Name ->
+    base_slide Name,
+        picture
+            if Name contains ".mov" then
+                movie_texture Name
+                on "pageexit",
+                    movie_drop Name
+            else
+                texture Name
+            writeln "Picture for ", Name, "width=", texture_width, " height=", texture_height
+            if texture_width > 0 and texture_height > 0 then
+                scale min(real slide_width/texture_width, real slide_height/texture_height)
+            else
+                writeln "No texture for ", Name
+            rectangle 0,160,texture_width, texture_height
 
 
 // ---------------------------------------------------------------------------
@@ -451,9 +468,9 @@ base_slide "The cost of confidentiality" fr "Combien ça coûte de sécuriser?",
         * "Downloaded images are now encrypted" fr "Les images de conteneur sont chiffrées"
         ** "So they can't be shared between pods" fr "Donc elles ne peuvent pas être réutilisées"
         ** "This increases disk and networking costs" fr "Cela augment les coûts de disque et de réseau"
-        * "Disks too must be crypted" fr "Les disques sont aussi cryptés"
+        * "Disks too must be encrypted" fr "Les disques sont aussi cryptés"
         ** "Therefore, no deduplication" fr "Donc pas de déduplication"
-        * "Memory is crypted too" fr "La mémoire aussi est chiffrée"
+        * "Memory is encrypted too" fr "La mémoire aussi est chiffrée"
         ** "No kernel same-page merging" fr "Pas de KSM (unification des pages identiques)"
         $
         color "darkgreen"
