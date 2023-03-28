@@ -252,10 +252,6 @@ theme_background "RedHat", "section" ->
         color "white"
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
 
-    contents -50,
-        color "white"
-        image 600, 410, 35%, 35%, "Logo SophiaConf 100% OpenSource.png"
-
 
 
 theme_background "RedHat", "movie" ->
@@ -303,9 +299,6 @@ theme_background "RedHat", Master ->
     contents -50,
         color "white"
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
-    contents -50,
-        color "white"
-        image 550, -510, 15%, 15%, "Logo SophiaConf 100% OpenSource.png"
     contents -50,
         box -790, -510, 120, 50,
             vertical_align 0.5

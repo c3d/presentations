@@ -1,18 +1,10 @@
 presentation_title "Confidential Containers - Distrusting your VM host" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch sophiaconf-2022)" fr "https://github.com/c3d/presentations (branche sophiaconf-2022)"
+presentation_tao "https://github.com/c3d/presentations (branch anssi-2023)" fr "https://github.com/c3d/presentations (branche sophiaconf-2022)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
-
-blank_slide "SophiaConf 2022",
-// ----------------------------------------------------------------------------
-//   Parking slide withi SophiaConf 2022 logo
-// ----------------------------------------------------------------------------
-    contents 120,
-        color "white"
-        image 0, 0, 120%, 120%, "SophiaConfLogo.png"
 
 
 // ----------------------------------------------------------------------------
@@ -32,17 +24,6 @@ main_title_slide "Main title",
 
     title_slide_logo
 
-    contents 10,
-        color "white", 85%
-        rounded_rectangle 600, -450, 500, 150, 20
-        color "white"
-        image 600, -450, 25%, 25%, "Logo SophiaConf 100% OpenSource.png"
-
-disabled
-    contents 120,
-        show fade_between(page_time mod 10, 2, 6)
-        color "white"
-        image 0, 0, 120%, 120%, "SophiaConfLogo.png"
 
 
 
