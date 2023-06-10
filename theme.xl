@@ -254,7 +254,7 @@ theme_background "RedHat", "section" ->
 
     contents -50,
         color "#FFF"
-        image 600, 410, 20%, 20%, "KVM_Forum.png"
+        image 600, 410, 40%, 40%, "devconf_logo.png"
 
 
 
@@ -304,8 +304,8 @@ theme_background "RedHat", Master ->
         color "white"
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
     contents -50,
-        color "#444"
-        image 550, -510, 5%, 5%, "KVM_Forum.png"
+        color "#FFF"
+        image 550, -510, 20%, 20%, "devconf_logo.png"
     contents -50,
         box -790, -510, 120, 50,
             vertical_align 0.5

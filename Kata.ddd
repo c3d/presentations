@@ -1,7 +1,7 @@
-presentation_title "Confidential Containers - Distrusting your VM host" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
+presentation_title "Confidential Containers Primer - DevConf.cz 2023" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch kvm-forum-2022)" fr "https://github.com/c3d/presentations (branche kvm-forum-2022)"
+presentation_tao "https://github.com/c3d/presentations (branch devconfcz-2023-workshop)" fr "https://github.com/c3d/presentations (branche devconfcz-2023-workshop)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
@@ -12,9 +12,9 @@ presentation_author_mail "dinechin@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Confidential Containers" fr "Les conteneurs sécurisés"
+        $ "Confidential Containers Primer" fr "Introduction aux conteneurs sécurisés"
     subtitle
-        $ "Red Hat Engineering Days 2023" fr "Journées Engineering Red Hat 2023"
+        $ "DevConf.cz 2023" fr "DevConf.cz 2023"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -25,7 +25,8 @@ main_title_slide "Main title",
     title_slide_logo
 
 
-my_picture_page with files "Trucs/*"
+disabled
+    my_picture_page with files "Trucs/*"
 
 my_picture_page Name ->
     base_slide Name,
@@ -36,7 +37,6 @@ my_picture_page Name ->
                     movie_drop Name
             else
                 texture Name
-            writeln "Picture for ", Name, "width=", texture_width, " height=", texture_height
             if texture_width > 0 and texture_height > 0 then
                 scale min(real slide_width/texture_width, real slide_height/texture_height)
             else
@@ -53,22 +53,16 @@ base_slide "Agenda",
     stepping
     story
         * "Quick primer on confidential containers"
-        * "Attestation: ensuring you know what's running"
-        * "Performance overhead: A hardware vendor's dream"
-        * "Image download: Lather, Rinse, Repeat!"
-        * "Access control: Rethinking Kubernetes credentials"
-        * "Debuggability: even printf-debugging is out"
+        ** "What is the Confidential Containers project"
+        ** "Vendor landscape"
+        ** "Ancestry: Kata Containers"
+        * "Development phases"
+        ** "Hardware enablement"
+        ** "Securing image pull"
+        ** "Attestation"
 
     right_picture
-        images "Nosy Neighbour.jpg", "Attestation.png", "Snail.jpg", "Deja Vu Glitch.jpg", "Tenants.jpg", "Debugging Nightmare.png"
-
-        // Nosy Neighbour.jpg: https://www.pexels.com/fr-fr/photo/photographie-de-personne-qui-regarde-906018/
-        // Canal+ Scrambled: image from https://www.youtube.com/watch?v=GhkmSoBmAWA
-        // Kata Confidential Containers.jpg: Built using https://i0.wp.com/www.thecoderworld.com/wp-content/uploads/2021/05/Confidential-Computing.jpg and the Kata Containers logo
-        // Matrix disintegration: Screen capture (fair use)
-        // Attestation.png: https://pngimg.com/image/46040 (Creative Commons)
-        // Tenants.jpg: http://www.readyelements.com/one-hand-giving-key-to-another-on-isolated-white-background-process-of-buying-renting-selling-5 (Creative Commons)
-        // Snail.jpg: https://www.pexels.com/fr-fr/photo/escargot-noir-et-brun-blanc-sur-feuille-verte-209074/
+        images "Nosy Neighbour.jpg", "ConfidentialContainersProject.png", "Zombie Apocalypse.jpg", "KataContainersLogo.png"
 
 
 // ============================================================================
@@ -375,6 +369,83 @@ base_slide "How does attestation work?" fr "Comment marche l'attestation",
             $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
 
 
+
+
+
+// ============================================================================
+//
+section_slide "Conclusion" fr "Conclusion",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Confidential Containers are an opportunity" fr "Les conteneurs sécurisés, une opportunité"
+        $ "Let's see how this works in practice" fr "Il est temps de mettre ça en pratique"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * "Relase 1 of confidential containers is around the corner"
+        * "Practical, portable, uniform attestation is a challenge"
+        * "Performance issues are mostly vastly enhanced resource usage"
+        * "Image download is a huge contributor to this"
+        * "Access control has to be re-thought (not in release 1)"
+        * "Debuggability or confidentiality, pick one"
+
+
+
+// ============================================================================
+//
+section_slide "Thank you" fr "Merci",
+//
+// ============================================================================
+    title page_label
+    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    translate_y -50
+    title_slide_logo
+
+
+// ============================================================================
+//
+section_slide "Overflow sides" fr "En savoir plus",
+//
+// ============================================================================
+    title page_label
+    subtitle presentation_url
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    translate_y -50
+    title_slide_logo
+
+
 // ----------------------------------------------------------------------------
 base_slide "So, what is the problem?" fr "Du coup, c'est quoi le problème?",
 // ----------------------------------------------------------------------------
@@ -669,83 +740,6 @@ base_slide "Tell us what you need to know",
             $
             color "darkgreen"
             $ "Any good ideas on how to address this in a sensible manner is welcome"
-
-
-
-
-
-// ============================================================================
-//
-section_slide "Conclusion" fr "Conclusion",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Confidential Containers are an opportunity" fr "Les conteneurs sécurisés, une opportunité"
-        $ "but a real challenge in terms of everything" fr "mais à peu près tout reste un vrai problème"
-
-
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways" fr "Ce qu'il faut retenir",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
-    slide_picture "Pile of Cash.png", 0%, 250
-    stepping
-    story
-        * "Relase 1 of confidential containers is around the corner"
-        * "Practical, portable, uniform attestation is a challenge"
-        * "Performance issues are mostly vastly enhanced resource usage"
-        * "Image download is a huge contributor to this"
-        * "Access control has to be re-thought (not in release 1)"
-        * "Debuggability or confidentiality, pick one"
-
-
-
-// ============================================================================
-//
-section_slide "Thank you" fr "Merci",
-//
-// ============================================================================
-    title page_label
-    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
-    stepping
-
-    contents 0,
-        text_box 200, -400, 600, 200,
-            style "story"
-            font_size 30
-            anchor
-                color "white"
-                image -80, -40, 10%, 10%, "Tao3D.png"
-            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
-            paragraph presentation_tao
-
-    translate_y -50
-    title_slide_logo
-
-
-// ============================================================================
-//
-section_slide "Overflow sides" fr "En savoir plus",
-//
-// ============================================================================
-    title page_label
-    subtitle presentation_url
-    stepping
-
-    contents 0,
-        text_box 200, -400, 600, 200,
-            style "story"
-            font_size 30
-            anchor
-                color "white"
-                image -80, -40, 10%, 10%, "Tao3D.png"
-            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
-            paragraph presentation_tao
-
-    translate_y -50
-    title_slide_logo
 
 
 // ----------------------------------------------------------------------------
