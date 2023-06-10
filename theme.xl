@@ -332,7 +332,7 @@ theme_boxstyle "RedHat","movie",Style:text->
 // ----------------------------------------------------------------------------
 //   Style for text boxes
 // ----------------------------------------------------------------------------
-    color "black", 60%
+    color "black", 30%
 
 
 theme_boxstyle "RedHat",Master:text,Style:text->
@@ -387,9 +387,9 @@ movie_slide Title:text, Name:text, Body ->
                     align 0%
                     vertical_align 0%
                     font "Arial", 20
-                    color "yellow"
+                    color "red"
                     text "Time=" & movie_time movie_name
-        on "key:t",
+        on "key:Control-T",
             movie_timing := 1 - movie_timing
 movie_slide Title:text, Name:text -> movie_slide Title, Name, false
 
@@ -446,8 +446,8 @@ theme_layout "RedHat", "movie" ->
 // ----------------------------------------------------------------------------
 //    Centered flows
 // ----------------------------------------------------------------------------
-    flow   0,  500, slide_width, 80, "title"
-    flow   0, -500, slide_width, 80, "subtitle"
+    flow   slide_width * 0.25, -slide_height * 0.1, slide_width * 0.5,  80, "title"
+    flow   slide_width * 0.25, -slide_height * 0.2, slide_width * 0.5, 80, "subtitle"
 
 
 theme_layout "RedHat", "blank" ->

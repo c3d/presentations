@@ -1,0 +1,1691 @@
+
+
+// ============================================================================
+//
+section_slide "Overflow sides" fr "En savoir plus",
+//
+// ============================================================================
+    title page_label
+    subtitle presentation_url
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    translate_y -50
+    title_slide_logo
+
+
+// ----------------------------------------------------------------------------
+base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Different vendors with different approaches?" fr "Chaque vendeur a son approche bien à lui"
+    slide_picture "Confidential Computing.jpg", 5%, 350
+    stepping
+    story
+        * "AMD: Secure Encrypted Virtualization (SEV)"
+        ** "SEV-ES adds Encrypted State (e.g. CPU register file)" fr "SEV-ES rajoute une protection de l'état CPU"
+        ** "SEV-SNP adds Secure Nested Pages (integrity protection)" fr "SEV-SNP ajoute une notion d'intégrité"
+        * "Intel: Trusted Domain Extensions (TDX)"
+        * "IBM S390: Secure Execution (SE)"
+        * "Power: Protected Execution Facility (PEF)"
+        * "Arm: Confidential Computing Architecture (CCA)"
+        * "All these technologies are based on virtualization" fr "Ces technologies sont toutes très virtuelles"
+        * "They all work differently" fr "Elles fonctionnent toutes de façon différente"
+
+    right_picture
+        images "AMD SEV.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
+
+    right_picture
+        entry_time -> 0.0
+        if smooth_step < 9 then
+            entry_time := page_time
+        only_at 9,
+            jump_factor -> fade_at(page_time - entry_time, 5)
+            show sin(2.5 * time)^2
+            translate 100 - 500 * jump_factor, 100 - 100 * fade_out(page_time, 10), 50 + 600 * jump_factor
+            scale 1 + 5 * jump_factor + 0.3 * jump_factor * sin(45.3 * time)
+            rotate_z 23 * sin((0.21 + 2.1 * jump_factor) * time) * (1.0 - 0.7 * jump_factor) + sin(30.2 * time) * jump_factor
+            style "boxtitle"
+            color_hsv 20 * time, 1, 1
+            line_color "green"
+            text_box 0, 0, 300, 200,
+                vertical_align 0.5
+                align 0.5
+                $ "There be zombies!" fr "Des zombies partout!"
+
+
+// Position of the "Talk box"
+TALK_X          -> anim   650.0
+TALK_Y          -> anim  -70.0, KC_CONFIDENTIAL=-180
+TALK_W          -> anim  500.0
+TALK_H          -> anim  600.0, KC_CONFIDENTIAL= 540
+TALK_O          -> anim   50.0
+
+talk_frame Body ->
+// ----------------------------------------------------------------------------
+//   Display the "talk" frame
+// ----------------------------------------------------------------------------
+    locally
+        line_color "black"
+        line_width 2
+        color "white", 0.8
+        rectangle TALK_X, TALK_Y, TALK_W + TALK_O, TALK_H + TALK_O
+    text_box TALK_X, TALK_Y, TALK_W, TALK_H,
+        style "story"
+        vertical_align 30%
+        font_size 32
+        Body
+
+
+// Adjustment to the main diagram
+DIAGRAM_Scale   -> anim  1.0, 0=1, KC_CTR_ECOSYS=  75%, KC_CONFIDENTIAL=100%, KC_LINUX_KERNEL= 80%, KC_RELYING=  75%, KC_MSMTS= 100%
+DIAGRAM_X       -> anim  0.0, 0=0, KC_CTR_ECOSYS=-300,  KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=  0,  KC_RELYING=-280,  KC_MSMTS= -800
+DIAGRAM_Y       -> anim  0.0, 0=0,                      KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=110,  KC_RELYING= 100,  KC_MSMTS=    0
+
+adjust_diagram ->
+// ----------------------------------------------------------------------------
+//   Adjust the position of the diagram
+// ----------------------------------------------------------------------------
+    // writeln "Step=", anim_step, " Scale=", DIAGRAM_Scale, " X=", DIAGRAM_X, " Y=", DIAGRAM_Y
+    translate DIAGRAM_X, DIAGRAM_Y, 0
+    scale DIAGRAM_Scale
+
+
+// ----------------------------------------------------------------------------
+base_slide "Kata Containers Overview" fr "La base: Kata Containers",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Run containers in virtual machines" fr "Des conteneurs dans des machines virtuelles"
+    slide_picture "KataContainersLogo.png", 5%, 350
+    stepping
+
+    kata_containers integer(smooth_step + 0.5)
+    contents 0,
+        at_step KC_CTR_ECOSYS
+        talk_frame
+            font_size 42
+            color "#14E"
+            $ "Containers ecosystem" fr "L'écosystème des conteneurs"
+            at_step KC_VM_ISOL
+            color "#184"
+            $ "Virtual machine isolation" fr "L'isolation des machines virtuelles"
+
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Containers in Kata" fr "Conteneurs sécurisés avec Kata",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Taking advantage of confidential computing" fr "Application de l'informatique sécurisée"
+    slide_picture "Confidential - Top Secret.png", 5%, 300
+    stepping
+
+    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
+    contents 0,
+        at_step CC_PLATFORM
+        talk_frame
+            color "#C22"
+            rectangle 0, 7, 50, 20
+            bold " Trusted platform: " fr " Plateforme sécurisée: "
+            color "black"
+            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
+            at_step CC_HOST
+            color "#24C"
+            rectangle 0, 7, 50, 20
+            bold " Host: " fr " Hébergeur: "
+            color "black"
+            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
+            at_step CC_TENANT
+            color "#2A2"
+            rectangle 0, 7, 50, 20
+            bold " Tenant: " fr " Locataire: "
+            color "black"
+            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Phase 1: Hardware enablement" fr "Phase 1: Activation matérielle",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Just activating the confidential computing technologies" fr "Mise en place des technologies sécurisées"
+    slide_picture "Confidential - Top Secret.png", 3%, 300
+    stepping
+
+    kata_containers integer(KC_ENABLEMENT + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            font_size 32 - 6 * fade_at(smooth_step, HE_RUNTIME_CC)
+            at_step HE_HARDWARE
+            bold "Hardware: " fr "Matériel: "
+            $ "Encryption support in memory controller" fr "Support du chiffrage dans le contrôleur de mémoire"
+            at_step HE_FIRMWARE_CC
+            bold "Firmware: " fr "Microgiciel: "
+            $ "Special services like physical page validation" fr "Services spéciaux comme la validation de pages"
+            at_step HE_KERNEL
+            bold "Kernel: " fr "Noyau: "
+            $ "Low-level hardware support, e.g. SEV, TDX" fr "Support bas niveau, p.ex. SEV, TDX"
+            at_step HE_RUNTIME_CC
+            bold "Runtime: " fr "Runtime: "
+            $ "Pass the right options to hypervisor" fr "Passe des options à l'hyperviseur"
+            at_step HE_HYPER_CC
+            bold "Hypervisor: " fr "Hyperviseur: "
+            $ "Setup virtual machines with encryption, etc" fr "Machines virtuelles avec chiffrage mémoire"
+            at_step HE_AGENTCC
+            bold "Agent: " fr "Agent: "
+            $ "Image download, confidential services" fr "Téléchargement d'images, services confidentiels"
+
+
+        at_step HE_COMPLETE
+        stamp "green", "Complete!" fr "Terminé!"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le téléchargement",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Download images from within the guest" fr "Télécharger les images depuis la machine virtuelle"
+    slide_picture "Secure Cloud.png", 3%, 300
+    stepping
+
+    kata_containers integer(KC_PULLIMAGE + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step PI_INSIDE_GUEST
+            bold "Pull Image " fr "Téléchargement d'images "
+            $ "from inside the guest instead of from the host" fr "depuis la machine virtuelle et non depuis la machine physique hôte"
+            at_step PI_ENCRYPTED
+            bold "Store Images " fr "Stockage les images "
+            $ "on an encrypted volume, with guest-only decryption keys" fr "sur un disque chiffré, où seul la machine virtuelle a les clefs"
+            at_step PI_API_CHANGE
+            bold "Architectural changes " fr "Changement d'architecture "
+            $ { text "to delegate PullImage to the runtime, implemented in "  fr "pour déléguer PullImage au runtime, codé pour "; code "containerd"; text ", but patches rejected" fr "mais le code a été rejetée" }
+
+        at_step PI_COMPLETE
+        translate 150, -350, 0
+        stamp "orange", "Rework!" fr "À revoir"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation" fr "Attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Measuring what we run using cryptography" fr "Mesurer pour contrôler ce qui tourne"
+    slide_picture "Measuring.png", 3%, 300
+    stepping
+
+    kata_containers integer(KC_ATTEST + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step AT_PREATTEST
+            color "#C22"
+            bold "Preattestation: " fr "Pré-attestation: "
+            color "black"
+            $ "Measure the payload before allowing it to start (original SEV)" fr "Mesure le contenu avant d'autoriser l'exécution (SEV)"
+
+            at_step AT_POSTATTEST
+            color "#C62"
+            bold "Postattestation: " fr "Post-attestation: "
+            color "black"
+            $ "Code in the payload can confirm its identity using the measurement in order to get secrets" fr "Le code peut s'identifier à l'aide d'une mesure pour obtenir des secrets"
+
+            at_step AT_WORKLOAD
+            color "#2A2"
+            bold "Workload attestation" fr "Attestation de contenu"
+            color "black"
+            $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
+
+
+// ----------------------------------------------------------------------------
+base_slide "How does attestation work?" fr "Comment marche l'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
+    slide_picture "Customs.jpg", 3%, 300
+    stepping
+
+    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step MS_MEASURING
+            bold "Cryptographic measurement: " fr "Mesure cryptographique "
+            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
+            at_step MS_CHALLENGE
+            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
+            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
+
+            at_step MS_KEY_DELIVERY
+            bold "Secret delivery " fr "Révéler des secrets "
+            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
+
+            at_step MS_REMOTE
+            bold "Remote attestation: " fr "Attestation distante "
+            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
+
+
+
+// ----------------------------------------------------------------------------
+base_slide "So, what is the problem?" fr "Du coup, c'est quoi le problème?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "It looks like you got everything under control" fr "On dirait que tout est sous contrôle"
+    stepping
+    picture
+        image 0, 30, 140%, 140%, "So what is the problem.jpg"
+
+
+// ============================================================================
+//
+section_slide "Let's start with attestation" fr "Commençons par l'attestation",
+//
+// ============================================================================
+    title page_label
+    subtitle "The problem with standards..."
+    stepping
+    page_quote 1
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation is a very general thing" fr "L'attestation est un principe général",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "So there is More One Way To Do It™"
+    slide_picture "Attestation.png", 3%, 300
+
+    stepping
+    story
+        * "Remote Attestation Procedures (RATS)"
+        ** "A relatively complex topic in itself"
+        * "Secure Boot and Trusted Platform Module"
+        ** "How about manufacturing transient virtual TPMs?"
+        $
+        * "Confidential Containers have their own attestation"
+        ** "Which needs to plug into all existing technologies"
+        $
+        color "darkgreen"
+        * "Hide platform differences from user-space"
+
+    right_picture
+        images "RATS.jpg", "RATS roles.png", "TPM.png", "Magic Smoke.jpg", "CCont Attestation.png", "CCont Attestation platforms.jpg", "Hard Drive Abstraction.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation and Key Brokering",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Attestation is robust only if it hands you secrets"
+    slide_picture "Keys.png", 3%, 300
+
+    stepping
+    story
+        * "Attestation Service (AS, aka Verifier): Checks your ID"
+        * "Key Broker Service (KBS): Hands over secrets"
+        * { text "Your workload must "; italic "need"; text " that secret" }
+        $
+        * "KBS protocol defined by Confidential Containers"
+        ** "... first implemented by Sergio Lopez for libkrun"
+        $
+        * "Services will come from different players"
+        color "darkgreen"
+        ** "So we need to define protocols, not just code"
+
+
+    right_picture
+        images "Attestation Service.png", "Key Broker Service.png", "Gossip.jpg", "KBS Protocol.png", "Attestation Server.png", "Azure Attestation.png", "Protocols.png"
+
+
+// ============================================================================
+//
+section_slide "Then there is performance" fr "Ensuite, il y a la performance",
+//
+// ============================================================================
+    title page_label
+    subtitle "A hardware vendor's dream..."
+    stepping
+    page_quote 2
+
+
+// ----------------------------------------------------------------------------
+base_slide "The cost of confidentiality" fr "Combien ça coûte de sécuriser?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Confidentiality gets in the way of deduplication" fr "Le chiffrage empêche la déduplication"
+    slide_picture "Good Cheap Fast.png", 3%, 300
+    stepping
+
+    story
+        * "Downloaded images are now encrypted" fr "Les images de conteneur sont chiffrées"
+        ** "So they can't be shared between pods" fr "Donc elles ne peuvent pas être réutilisées"
+        ** "This increases disk and networking costs" fr "Cela augment les coûts de disque et de réseau"
+        * "Disks too must be encrypted" fr "Les disques sont aussi cryptés"
+        ** "Therefore, no deduplication" fr "Donc pas de déduplication"
+        * "Memory is encrypted too" fr "La mémoire aussi est chiffrée"
+        ** "No kernel same-page merging" fr "Pas de KSM (unification des pages identiques)"
+        $
+        color "darkgreen"
+        * "Who has a patch for Crypto KSM?"
+
+
+    right_picture
+        images "Canal+ Scrambled.jpg", "Disk image sharing.png", "Nydus Image download.png", "Disk Encryption.jpg", "Disk Deduplication.png", "Memory Encryption.jpg", "KSM Efficiency.png", "Crypto KSM.jpg"
+
+
+RUNTIME_SCALE -> 3 + 5 * fade_at(smooth_step, 1)
+
+// ----------------------------------------------------------------------------
+base_slide "Good news: manageable runtime cost",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "We encrypt memory on the fly, but it's ""cheap"""
+    slide_picture "Pile of Cash.png", 3%, 300
+    stepping
+
+    picture
+        text_box -300, 300, 900, 200,
+            style "story"
+            color "#444"
+            $ { rounded_rectangle 25, 8, 50, 20,  0; text "   Regular virtual machine" }
+            $ { rounded_rectangle 25, 8, 50, 20, 6;  text "   Confidential Workload (krun)" }
+
+    picture
+        line_color "lightblue", 80%
+        translate 0, 100, 0
+        style "story"
+        font_size 24
+        for Y in -20..20 loop locally
+            show fade_out_at(RUNTIME_SCALE * abs Y, 33) * fade_out_at((abs Y mod 2), 1 + smooth_step)
+            line -850, RUNTIME_SCALE * 10 * Y, 950, RUNTIME_SCALE * 10 * Y
+            text_box -980, RUNTIME_SCALE * 10 * Y, 300, 100,
+                align 100%
+                vertical_align 50%
+                color "darkblue"
+                text "" & (Y * 5) & "%"
+
+    picture
+        sev_step -> 0
+        sev_step := 0
+
+        load_csv "SEV Runs.csv", "sev_runs"
+        sev_runs Name:text,Container:real,Workload:real,VM:real,Name2:text,PctCC:real,PctVM:real ->
+            translate_x 70
+            sev_step := sev_step + 1
+            refresh 0.0
+            locally
+                show fade_at(page_time * 15, sev_step)
+                translate -850, -200, 0
+                rotate_z 65
+                text_box 0, 0, 120, 80,
+                    style "story"
+                    font_size 24
+                    align 100%
+                    text Name
+
+            locally
+                translate -850, 100, 0
+                show fade_at(page_time * 14, sev_step)
+                color_hsv 60 - 1.5 * PctVM, 70%, 60%
+                rounded_rectangle -12, PctVM * RUNTIME_SCALE, 20, PctVM * RUNTIME_SCALE * 2, 0
+                color_hsv 60 - 1.5 * PctCC, 70%, 60%
+                rounded_rectangle  12, PctCC * RUNTIME_SCALE, 20, PctCC * RUNTIME_SCALE * 2, 6
+        sev_runs X -> false
+        at_step 1
+
+
+
+// ============================================================================
+//
+section_slide "Image (re)download",
+//
+// ============================================================================
+    title page_label
+    subtitle "The ""Lather, Rinse, Repeat"" school of programming"
+    stepping
+    page_quote 3
+
+
+// ----------------------------------------------------------------------------
+base_slide "Cache + Dedup + Crypto?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Can we get something like Nydus on encrypted blocks?"
+    slide_picture "Crazy Frog.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 60, 85%, 85%, "Nydus image download.png"
+        at_step 1
+        image 3000, 60, 95%, 95%, "Nydus design.png"
+        image 6000, 60, 125%, 125%, "Device Mapper.jpg"
+        image 9000, 60, 85%, 85%, "Attest and Decrypt Whole Layer.jpg"
+        image 12000, 20, 65%, 65%, "Building Signed Images.jpg"
+        image 15000, 20, 50%, 50%, "Block-based Image Download.jpg"
+
+        at_step 5
+
+
+// ============================================================================
+//
+section_slide "Access Control",
+//
+// ============================================================================
+    title page_label
+    subtitle "We just need to rewrite the Kubernetes access-control model from scratch"
+    stepping
+    page_quote 4
+
+
+// ----------------------------------------------------------------------------
+base_slide "Going from two to three",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "It's the beginning of counting, folks"
+    slide_picture "Counting.jpg", 3%, 300
+    stepping
+
+    on "pageentry",
+        skip_to CC_PLATFORM
+
+    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
+    contents 0,
+        at_step CC_PLATFORM
+        talk_frame
+            color "#C22"
+            rectangle 0, 7, 50, 20
+            bold " Trusted platform: " fr " Plateforme sécurisée: "
+            color "black"
+            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
+            at_step CC_HOST
+            color "#24C"
+            rectangle 0, 7, 50, 20
+            bold " Host: " fr " Hébergeur: "
+            color "black"
+            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
+            at_step CC_TENANT
+            color "#2A2"
+            rectangle 0, 7, 50, 20
+            bold " Tenant: " fr " Locataire: "
+            color "black"
+            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
+
+// ----------------------------------------------------------------------------
+base_slide "The host/tenant split API",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Let's just decide which credentials we use on the fly"
+    slide_picture "Crazy Frog.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 30, 55%, 55%, "Host-tenant Split API.jpg"
+        at_step 1
+
+
+// ============================================================================
+//
+section_slide "Debuggability",
+//
+// ============================================================================
+    title page_label
+    subtitle "The FBI school of debugging"
+    stepping
+    page_quote 5
+
+
+// ----------------------------------------------------------------------------
+base_slide "Tell us what you need to know",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "and we'll teach you why you don't need it"
+    slide_picture "Don't Panic.jpg", 3%, 300
+    stepping
+
+    picture
+        scale fade_in(page_time, 2)
+        translate_x -3000 * smooth_step
+        image 0, 30, 135%, 135%, "Debugging Nightmare.png"
+        at_step 1
+        image 2500, 30, 75%, 75%, "Don't Panic Is A Command.png"
+        text_box 3400, 0, 800, 600,
+            style "story"
+            $ "It's not a suggestion, it's a rule"
+            $ "Really, we mean it"
+            $
+            $ { text "if you " ; code "panic()" ; text ", we offer a cryptographic, hardware-enforced guarantee that you that you won't see the logs" }
+            $
+            color "darkgreen"
+            $ "Any good ideas on how to address this in a sensible manner is welcome"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation process" fr "Le processus d'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Exchanging keys with the relying party" fr "Comment échanger ses clefs en toute sécurité"
+    slide_picture "Key Exchange.jpg", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 75%, 75%, "Kata Attestation.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Immutable Pods",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "You cannot change what you certified"
+    slide_picture "Certified.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Immutable Pods.png"
+
+// ----------------------------------------------------------------------------
+base_slide "Two Control Planes",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Host and Tenant security realms"
+    slide_picture "Two Steering Wheels.jpg", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Dual Control Plane.png"
+
+
+// ============================================================================
+//
+section_slide "Performance considerations",
+//
+// ============================================================================
+    title page_label
+    subtitle "Impact of running virtualized"
+
+
+// ============================================================================
+//
+section_slide "Memory density",
+//
+// ============================================================================
+    title page_label
+    subtitle "How many containers can you fit?"
+
+
+memory_axis ->
+    if stacked_item_sum > 5120 then
+        reference_scale 6144, "6G"
+        reference_tick  5120, "5G"
+        reference_tick  4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 4096 then
+        reference_scale 5120, "5G"
+        reference_tick  4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 3072 then
+        reference_scale 4096, "4G"
+        reference_tick  3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 2048 then
+        reference_scale 3072, "3G"
+        reference_tick  2048, "2G"
+        reference_tick  1024, "1G"
+    else if stacked_item_sum > 1024 then
+        reference_scale 2048, "2G"
+        reference_tick  1024, "1G"
+    else
+        reference_scale 1024, "1G"
+        reference_tick   512, "512M"
+
+
+MEM_START       -> 0
+MEM_HOST        -> 1
+MEM_CONMON      -> 2
+MEM_BASH        -> 3
+MEM_NGINX       -> 4
+MEM_KUBELET     -> 5
+MEM_CRIO        -> 6
+MEM_x100        -> 7
+MEM_x1          -> 8
+MEM_RUNTIME     -> 9
+MEM_SHIM        -> 10
+MEM_QEMU        -> 11
+MEM_VIRTIOFSD   -> 12
+MEM_GUEST       -> 13
+MEM_AGENT       -> 14
+MEM_RUNTIME_OUT -> 15
+MEM_DNF_INSTALL -> 16
+MEM_SCALEx100   -> 17
+MEM_LOADx100    -> 18
+MEM_CONMONx100  -> 19
+MEM_SHIMx100    -> 20
+MEM_SHIMv2      -> 21
+MEM_LAST        -> 22
+
+mem_host        -> anim 0.0, MEM_START=0, MEM_HOST=950
+mem_kubelet     -> anim 0.0, MEM_START=0, MEM_KUBELET=110
+mem_crio        -> anim 0.0, MEM_START=0, MEM_CRIO=28
+mem_conmon      -> anim 0.0, MEM_START=0, MEM_CONMON=2.5, MEM_x100=250, MEM_x1=2.5, MEM_CONMONx100=250, MEM_SHIMv2=0.0
+mem_shim        -> anim 0.0, MEM_START=0, MEM_SHIM=16.8, MEM_SHIMx100=1680, MEM_SHIMv2=19.2
+mem_workload    -> anim 0.0, MEM_START=0, MEM_BASH=4.7, MEM_NGINX=8.4, MEM_x100=840, MEM_x1=8.4, MEM_LOADx100=840
+mem_runtime     -> anim 0.0, MEM_START=0, MEM_RUNTIME=25, MEM_RUNTIME_OUT=0
+mem_qemu        -> anim 0.0, MEM_START=0, MEM_QEMU=30
+mem_virtiofsd   -> anim 0.0, MEM_START=0, MEM_VIRTIOFSD=10, MEM_DNF_INSTALL=350
+mem_guest       -> anim 0.0, MEM_START=0, MEM_GUEST=300, MEM_DNF_INSTALL=880
+mem_agent       -> anim 0.0, MEM_START=0, MEM_AGENT=60
+mem_scale       -> anim 0.1, MEM_START=0.7, MEM_KUBELET=0.35, MEM_x100=0.3, MEM_SCALEx100=0.15
+
+name_workload   -> anim_text "Bash", MEM_NGINX="nginx", MEM_x100="nginx x 100", MEM_x1="nginx", MEM_LOADx100="nginx x 100"
+name_conmon     -> anim_text "Conmon", MEM_x100="Conmon x 100", MEM_x1="Conmon", MEM_CONMONx100="Conmon x 100"
+name_shim       -> anim_text "Kata Shim", MEM_SHIMx100="Kata Shim x100", MEM_SHIMv2="shim-v2"
+
+mem_subtitle    -> anim_text "Death by a thousand cuts", MEM_BASH="Running bash", MEM_NGINX="Running a web server", MEM_KUBELET="Kubernetes overhead", MEM_x100="Running 100 containers", MEM_x1="Overhead varies with number of containers", MEM_RUNTIME="Kata adds even more overhead", MEM_RUNTIME_OUT="Kata Runtime is transient", MEM_DNF_INSTALL="I/Os consume memory (buffers, etc)", MEM_SCALEx100="Running 100 containers", MEM_SHIMv2="Kata Containers 2.0: Containerd Shim v2"
+
+mem_cmdline     -> anim_text "", MEM_CONMON="podman run -it --rm fedora bash", MEM_NGINX="podman run -dt --pod new:nginx -p8080:80 nginx", MEM_KUBELET="kubectl apply -f nginx.yaml", MEM_x100="(yaml file with 100x nginx)", MEM_x1="kubectl apply -f nginx.yaml", MEM_RUNTIME="podman run -it --rm --runtime kata fedora bash", MEM_DNF_INSTALL="fedc07a13# dnf install -y procps-ng", MEM_SCALEx100="(runtimeClass kata, 100x nginx)", MEM_SHIMv2="containerd-shim-kata-v2"
+
+// ---------------------------------------------------------------------------
+base_slide "Memory usage",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle mem_subtitle
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        stacked_items "MB", mem_scale,
+            stacked mem_host, "Host", "Host kernel and user-space programs"
+            stacked mem_kubelet, "Kubelet", "Top-level control process"
+            stacked mem_crio, "CRI-O", "Container runtime interface"
+            stacked mem_runtime, "Kata Runtime", "Kata runtime (transient)"
+            stacked mem_conmon, name_conmon, "Process monitoring your container"
+            stacked mem_virtiofsd, "virtiofsd", "Host file access from guest"
+            stacked mem_shim, name_shim, "I/O interface for container"
+            stacked mem_qemu, "QEMU", "Virtual machine monitor"
+            stacked mem_guest, "Guest", "Guest OS kernel, data, user-space"
+            stacked mem_agent, "Agent", "Kata agent in the guest"
+            stacked mem_workload, name_workload, "Actual workload you are running"
+        translate 0, -300, 0
+        memory_axis
+        at_step MEM_LAST
+
+    picture
+        text_box 0, 380, 1200, 100,
+            style "story"
+            align 0.5
+            code mem_cmdline
+
+    picture
+        only_at MEM_DNF_INSTALL..MEM_LOADx100,
+            text_box 750, 0, 400, 500,
+                style "story"
+                color tao "red"
+                text "Possible double accounting of the same physical memory between guest and virtiofsd"
+
+
+memory_crio      -> 53         // 28 + 2.5x10
+memory_k8s       -> 163        // memory_crio + 110
+memory_1pod_k1   -> 561        // memory_crio + 16.8x10 + (30 + 10 + 300)
+memory_1pod_k1L  -> 911        // memory_1pod_k1L + 350
+memory_10pods_k1 -> 921        // 1pod + 9*(30 + 10)
+memory_10pods_k1L-> 3961       // 10pods + 9*350
+memory_1pod_k2   -> 112        // memory_crio + 19.2 + 30 + 10
+memory_10pods_k2 -> 645        // memory_crio + 10 * (19.2 + 30 + 10)
+
+// ---------------------------------------------------------------------------
+base_slide "Memory - Comparing runtimes",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Cost of the runtime to run 10 instances of nginx"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+       stacked_item_scale := 0.5 - 0.35 * fade_at(smooth_step, 7)
+       stacked_item_sum := 0.0
+
+       translate 0, -200, 0
+
+       bar_graph_unit "M"
+
+       bar_graph 0, memory_crio,        "CRI-O"
+       bar_graph 1, memory_k8s,         "Kubernetes"
+       bar_graph 2, memory_1pod_k1,     "One pod, Kata 1.12"
+       bar_graph 3, memory_10pods_k1,   "Ten pods, Kata 1.12"
+       bar_graph 4, memory_1pod_k2,     "One pod, Kata 2.0"
+       bar_graph 5, memory_10pods_k2,   "Ten pods, Kata 2.0"
+
+       last_graph 6,
+           * "Kata requires a lot of memory for qemu, guest kernel and virtiofs."
+           * "Reusing pods can help, but is not common practice."
+
+       memory_axis
+
+
+// ---------------------------------------------------------------------------
+base_slide "Memory - disk caches",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Perform a dnf install inside the running pods"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    picture
+       stacked_item_scale := 0.5 - 0.35 * fade_at(smooth_step, 3)
+       stacked_item_sum := 0.0
+
+       translate 0, -200, 0
+
+       bar_graph_unit "M"
+
+       bar_graph 0, memory_1pod_k1,     "One pod, Kata 1.12"
+       bar_graph 1, memory_10pods_k1,   "Ten pods, Kata 1.12"
+       bar_graph 2, memory_1pod_k1L,    "One pod, after I/Os"
+       bar_graph 3, memory_10pods_k1L,  "Ten pods, after I/Os"
+
+       last_graph 4,
+           * "I/O buffers consume a lot of memory."
+           * "DAX allows host and guests to share that memory"
+
+       memory_axis
+
+
+// ---------------------------------------------------------------------------
+base_slide "Memory overhead - It's bad",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Huge effort needed to make things better"
+    slide_picture "Memory.jpg", 10%, 250
+    stepping
+    story
+        * "Too many processes"
+        ** "Partially addressed by 2.0"
+        ** "... but single point of failure"
+        * "A lot of memory in buffer caches"
+        ** "DAX allows host buffer caches to be used"
+
+    code_move 300, 0, 1200, 700
+    code_box_at_step 1, "Processes", { text load_text "conmon-dump.log" }
+    code_box_at_step 2..3, "Kata Shim v2", { text load_text "conmon-dump-v2.log" }
+
+
+// ============================================================================
+//
+section_slide "Boot time",
+//
+// ============================================================================
+    title page_label
+    subtitle "How fast does a container start?"
+
+
+boot_axis ->
+    if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else if stacked_item_sum > 15 then
+        reference_scale 20, "20s"
+        reference_tick  15, "15s"
+        reference_tick  10, "10s"
+        reference_tick  5, "5s"
+    else if stacked_item_sum > 10 then
+        reference_scale 15, "15s"
+        reference_tick  10, "10s"
+        reference_tick  5, "5s"
+    else if stacked_item_sum > 5 then
+        reference_scale 10, "10s"
+        reference_tick  8, "8s"
+        reference_tick  6, "6s"
+        reference_tick  4, "4s"
+        reference_tick  2, "2s"
+    else if stacked_item_sum > 2 then
+        reference_scale 5, "5s"
+        reference_tick  4, "4s"
+        reference_tick  3, "3s"
+        reference_tick  2, "2s"
+        reference_tick  1, "1s"
+    else if stacked_item_sum > 1 then
+        reference_scale 2, "2s"
+        reference_tick  1, "1s"
+    else
+        reference_scale 1,   "1s"
+        reference_tick  0.5, "0.5"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Boot time overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Time to boot containers"
+    slide_picture "Boot.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        boot_scale -> anim 0.0, 0=600.0, 1=50.0, 3=30
+        stacked_item_scale := boot_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0, boot_1busybox_runc,         "1x busybox on runc"
+        bar_graph 1, boot_1busybox_kata,         "1x busybox on Kata"
+        bar_graph 2, boot_20busybox_runc,        "20x busybox on runc"
+        bar_graph 3, boot_20busybox_kata,        "20x busybox on Kata"
+
+        last_graph 4,
+            * "Pod boot time is relatively constant (about 7s here)"
+            * "But can you run multiple containers in a single pod?"
+
+        boot_axis
+
+// ---------------------------------------------------------------------------
+base_slide "Run time overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Shutting down also takes time"
+    slide_picture "Boot.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        run_scale -> anim 0.0, 0=50.0, 1=30, 2=15
+        stacked_item_scale := run_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0, boot_20busybox_runc,        "20x busybox on runc"
+        bar_graph 1, boot_20busybox_kata,        "20x busybox on Kata"
+        bar_graph 2, run_20busybox_kata,         "Run 20x busybox"
+        bar_graph 3, run_20alpine_kata,          "Run 20x alpine"
+        bar_graph 4, run_20fedora_kata,          "Run 20x fedora"
+
+        last_graph 5,
+            * "Shutting down a Kata pod also takes time"
+            * "With Kata, the container base you use is not as relevant"
+
+        boot_axis
+
+
+//    "http://events17.linuxfoundation.org/sites/events/files/slides/Light%20weight%20virtualization%20with%20QEMU%26KVM_0.pdf"
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm alpine sh -c ; done; )  21.91s user 18.48s system 9% cpu 7:13.45 total
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm --pull=never busybox sh -)  20.31s user 16.98s system 11% cpu 5:19.91 total
+
+// ( for ((I=0; I < 100; I++)) do; podman run -it --rm --pull=never --runtime   )  32.70s user 22.99s system 10% cpu 8:51.73 total
+
+
+// 20 runc alpine containers on turbo
+// real	0m28.406s
+// user	0m3.917s
+// sys	0m3.346s
+run_20alpine_kata -> 28.406
+
+// 20 runc busybox
+// real	0m27.390s
+// user	0m3.881s
+// sys	0m3.262s
+run_20busybox_kata -> 27.390
+
+// real	0m29.531s
+// user	0m3.910s
+// sys	0m3.331s
+run_20fedora_kata -> 29.531
+
+// Start 1 container
+// real	0m0.361s
+// user	0m0.011s
+// sys	0m0.028s
+boot_1busybox_runc -> 0.361
+
+// real	0m7.175s
+// user	0m0.018s
+// sys	0m0.045s
+boot_1busybox_kata -> 7.175
+
+// Start 20 containers
+// real	0m7.921s
+// user	0m0.265s
+//sys	0m0.525s
+boot_20busybox_runc -> 7.921
+
+// real	0m14.349s
+// user	0m0.275s
+// sys	0m0.539s
+boot_20busybox_kata -> 14.349
+
+
+
+// ============================================================================
+//
+section_slide "Disk I/O",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Disk performance with virtiofs:"
+        $ "improved, but still not good"
+
+
+disk_axis ->
+    if stacked_item_sum > 120 then
+        reference_scale 180, "3m"
+        reference_tick  120, "2m"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+        reference_tick   10, "10s"
+    else if stacked_item_sum > 60 then
+        reference_scale 120, "2m"
+        reference_tick   90, "1m30"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+    else if stacked_item_sum > 30 then
+        reference_scale 60, "1m"
+        reference_tick  30, "30s"
+    else if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else
+        reference_scale 20, "20s"
+        reference_tick  10, "10s"
+
+
+
+
+// ---------------------------------------------------------------------------
+base_slide "Disk read overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Copy files from the local file system"
+    slide_picture "Disk.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        disk_tar_scale -> anim 0.0, 0=10.0, 2=5.0, 3=3.0
+        stacked_item_scale := disk_tar_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0,   disk_tar_runc_sys, disk_tar_runc, "runc"
+        bar_graph 1,   disk_tar_runc_blk_sys, disk_tar_runc_blk, "runc+blk"
+        bar_graph 2,   disk_tar_kata_sys, disk_tar_kata, "Kata+virtiofs"
+        bar_graph 3,   disk_tar_kata9p_sys, disk_tar_kata9p, "Kata+9pfs"
+        bar_graph 4,   disk_tar_kata_blk_sys, disk_tar_kata_blk, "Kata+blk"
+
+        last_graph 5,
+            * "File reads are markedly slower with Kata"
+            * "virtiofs improves a lot over 9pfs"
+            * "Kata benefits less from blk than runc"
+
+        disk_axis
+
+        // tar read: time (for ((I=0; I < 20; I++)); do echo $I; tar cf /tmp/usr.tar usr; done)
+        // runc
+        // real	0m34.775s user	0m0.750s sys	0m5.048s
+        disk_tar_runc         -> 34.775
+        disk_tar_runc_sys     -> 5.048
+
+        // real	1m15.780s user	0m1.136s sys	0m9.727s
+        disk_tar_kata         -> 75.780
+        disk_tar_kata_sys     -> 9.727
+
+        // real	2m52.740s user	0m1.310s sys	0m10.733s (many errors)
+        disk_tar_kata9p       -> 172.740
+        disk_tar_kata9p_sys   -> 10.733
+
+        // real	0m20.348s user	0m0.916s sys	0m4.946s
+        disk_tar_runc_blk     -> 20.348
+        disk_tar_runc_blk_sys -> 4.946
+
+        // real	1m8.298s user	0m1.123s sys	0m9.978s
+        disk_tar_kata_blk     -> 68.298
+        disk_tar_kata_blk_sys -> 9.978
+
+
+// ---------------------------------------------------------------------------
+base_slide "Disk write overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Write a 1.0G file from /dev/random"
+    slide_picture "Disk.jpg", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        disk_dd_scale -> anim 0.0, 0=30.0
+        stacked_item_scale := disk_dd_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0,   disk_dd_runc_sys, disk_dd_runc, "runc"
+        bar_graph 1,   disk_dd_kata_sys, disk_dd_kata, "Kata+virtiofs"
+        bar_graph 2,   disk_dd_kata9p_sys, disk_dd_kata9p, "Kata+9pfs"
+        bar_graph 3,   disk_dd_runc_blk_sys, disk_dd_runc_blk, "runc+blk"
+        bar_graph 4,   disk_dd_runc_blk2_sys, disk_dd_runc_blk2, "rewrite runc+blk"
+        bar_graph 5,   disk_dd_kata_blk_sys, disk_dd_kata_blk, "Kata+blk"
+        bar_graph 6,   disk_dd_kata_blk2_sys, disk_dd_kata_blk2, "rewrite Kata+blk"
+
+        last_graph 7,
+            * "Kata with virtiofs outperforms runc here"
+            * "Overwriting a file is more expensive"
+            * "The effect is less marked with Kata"
+
+        disk_axis
+
+        // dd write: dd if=/dev/random of=/usr/glob bs=16384 count=65536
+        // runc
+        // real	0m15.167s user	0m0.043s sys	0m5.152s
+        disk_dd_runc            -> 15.167
+        disk_dd_runc_sys        -> 5.152
+
+        // real	0m10.297s user	0m0.077s sys	0m5.902s
+        disk_dd_kata            -> 10.297
+        disk_dd_kata_sys        -> 5.902
+
+        // real	real	0m18.321s user	0m0.044s sys	0m5.279s
+        disk_dd_kata9p          -> 18.321
+        disk_dd_kata9p_sys      -> 5.279
+
+        // real	0m5.277s user	0m0.036s sys	0m4.698s
+        disk_dd_runc_blk        -> 5.277
+        disk_dd_runc_blk_sys    -> 4.698
+
+        // First run: real	0m8.923s user	0m0.051s sys	0m5.073s
+        disk_dd_kata_blk        -> 8.923
+        disk_dd_kata_blk_sys    -> 5.073
+
+        // Second run (file exists): real	0m15.663s user	0m0.040s sys	0m4.714s
+        disk_dd_runc_blk2        -> 15.663
+        disk_dd_runc_blk2_sys    -> 4.714
+
+        // Second run real	real	0m9.174s user	0m0.074s sys	0m5.146s
+        disk_dd_kata_blk2        -> 9.174
+        disk_dd_kata_blk2_sys    -> 5.146
+
+
+
+// ============================================================================
+//
+section_slide "Networking I/O",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Multiple networking configurations"
+        $ "At least some of them should perform well"
+
+
+net_axis ->
+    if stacked_item_sum > 240 then
+        reference_scale 360, "6m"
+        reference_tick  180, "3m"
+        reference_tick   60, "1m"
+    else if stacked_item_sum > 120 then
+        reference_scale 180, "3m"
+        reference_tick  120, "2m"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+        reference_tick   10, "10s"
+    else if stacked_item_sum > 60 then
+        reference_scale 120, "2m"
+        reference_tick   90, "1m30"
+        reference_tick   60, "1m"
+        reference_tick   30, "30s"
+    else if stacked_item_sum > 30 then
+        reference_scale 60, "1m"
+        reference_tick  30, "30s"
+    else if stacked_item_sum > 20 then
+        reference_scale 30, "30s"
+        reference_tick  20, "20s"
+        reference_tick  10, "10s"
+    else
+        reference_scale 20, "20s"
+        reference_tick  10, "10s"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Network overhead",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Read or write a 1G file from local server"
+    slide_picture "Network card.png", 10%, 250
+
+    stepping
+    picture
+        anim_step integer(smooth_step + 0.5)
+        net_read_scale -> anim 0.0, 0=10.0, 6=1.5
+        stacked_item_scale := net_read_scale
+        stacked_item_sum := 0.0
+
+        translate 0, -200, 0
+
+        bar_graph_unit "s"
+
+        bar_graph 0,   net_read_runc_sys, net_read_runc, "runc read"
+        bar_graph 1,   net_read_kata_sys, net_read_kata, "kata read"
+        bar_graph 2,   net_write_runc_sys, net_write_runc, "runc write"
+        bar_graph 3,   net_write_kata_sys, net_write_kata, "kata write"
+        bar_graph 4,   net_local_read_runc_sys, net_local_read_runc, "runc read host"
+        bar_graph 5,   net_local_read_kata_sys, net_local_read_kata, "kata read host"
+        bar_graph 6,   net_local_write_runc_sys, net_local_write_runc, "runc write host"
+        bar_graph 7,   net_local_write_kata_sys, net_local_write_kata, "kata write host"
+
+        last_graph 8,
+            * "Kata overhead is modest"
+            ** "Lower system usage in guest (moved to host)"
+            * "Host networking is rather bad for Kata"
+            ** "Writing is really bad"
+
+        net_axis
+
+
+        // runc read real	0m42.238s user	0m2.833s sys	0m8.870s
+        net_read_runc            -> 42.328
+        net_read_runc_sys        -> 8.870
+
+        // kata read real	0m43.324s user	0m2.590s sys	0m6.145s
+        net_read_kata            -> 43.324
+        net_read_kata_sys        -> 6.145
+
+        // runc write: real	0m41.703s user	0m2.455s sys	0m2.952s
+        net_write_runc           -> 41.703
+        net_write_runc_sys       -> 2.952
+
+        // kata write: real	0m43.462s user	0m2.931s sys	0m3.712s
+        net_write_kata           -> 43.462
+        net_write_kata_sys       -> 3.712
+
+        // Runs from local diskL writes are really bad
+
+        // scp from 10G disk: real	0m38.310s user	0m11.616s sys	0m27.543s
+        net_local_read_runc            -> 38.310
+        net_local_read_runc_sys        -> 27.543
+
+        // scp from 10G disk: real	0m56.346s user	0m13.306s sys	0m29.037s
+        net_local_read_kata            -> 56.346
+        net_local_read_kata_sys        -> 29.037
+
+        // scp to 10G disk: real	4m53.355s user	0m8.569s sys	0m19.197s
+        net_local_write_runc           -> 293.355
+        net_local_write_runc_sys       -> 19.197
+
+        // scp to 10G disk: real	5m30.406s user	0m25.134s sys	0m48.085s
+        net_local_write_kata           -> 338.406
+        net_local_write_kata_sys       -> 48.085
+
+
+// ----------------------------------------------------------------------------
+base_slide "Network bandwidth",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Path length increase make it harder to saturate link"
+    slide_picture "Network card.png", 3%, 300
+    stepping
+
+    one_picture
+        image 0, 0, 70%, 70%, "Kata Network Bandwidth.png"
+
+        translate 0, -400, 0
+        last_graph 2,
+            * "Hot-plugged vCPUs don't help much"
+            * "Increased path length, notably on the host"
+
+// ----------------------------------------------------------------------------
+base_slide "Network latency",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Strong dependency on cgroup limits"
+    slide_picture "Network card.png", 3%, 300
+    stepping
+
+    one_picture
+        image -250 * fade_at(smooth_step, 2), 50, 60%, 60%, "Kata Network Latency.png"
+
+        translate 0, -400, 0
+        last_graph 2,
+            * "Need > 2 VCPUs"
+            * "CPU constraints hurt"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Sandboxing workloads" fr "Toujours plus d'isolation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "From your software to containers in VMs..." fr "Du logiciel au tombe-du-ciel"
+    slide_picture_at OWS_SW..OWS_OS,      "Emoji=Happy.png", 5%, 300
+    slide_picture_at OWS_CHROOT..OWS_KVM, "Emoji=Thinking.png", 5%, 300
+    slide_picture_at OWS_CNTN..OWS_CRI,   "Emoji=Questioning.png", 4%, 350
+    slide_picture_at OWS_KVIRT..OWS_KATA, "Emoji=Crazy.png", 3%, 300
+    stepping
+    picture
+        caption_at OWS_SW, "Software is what matters" fr "Le logiciel, c'est ça qui compte vraiment"
+        caption_at OWS_HW, "Direct hardware access (Original Mac, Unikernel)" fr "Accès direct au matériel (MS-DOS, Unikernel)"
+        caption_at OWS_CLASH, "Sharing resources is both hard and risky" fr "Partager les resources est difficile et risqué"
+        caption_at OWS_OS, "Operating system deal with this problem" fr "C'est le rôle du système d'exploitation"
+        caption_at OWS_CHROOT, "chroot gives you a filesystem sandbox" fr "On peut isoler une partie des fichierts"
+        caption_at OWS_VIRT, "Virtualization gives you a full machine sandbox" fr "On peut isoler en créant une machine virtuelle"
+        caption_at OWS_QEMU, "QEMU: User-space interface for virtualization" fr "QEMU: première solution de virtualisation complète en logiciel libre"
+        caption_at OWS_KVM, "KVM: Kernel component supporting virtualization" fr "KVM: support de la virtualisation directement dans le noyau Linux"
+        caption_at OWS_CNTN, "Containers are complete OS-built sandboxes" fr "Les conteneurs sont une isolation par le système"
+        caption_at OWS_MANY, "Containers scale well" fr "Ce qui est bien, c'est qu'on peut empiler vraiment beaucoup de conteneurs"
+        caption_at OWS_DOCKER, "Containers provides rich software components composition and setup" fr "Les composants logiciels: distribution et assemblage"
+        caption_at OWS_K8S, "OpenShift features large-scale orchestration" fr "Faire marcher tout ça demande une orchestration"
+        caption_at OWS_CRI, "A modular interface connects orchestration to system and workloads" fr "Une architecture applicative repensée pour gérer tout ça"
+        caption_at OWS_KVIRT, "You can orchestrate legacy workloads using KubeVirt virtual machines" fr "Pour les vieilles applis, retour à la virtualisation"
+        caption_at OWS_KATA, "Kata Containers run sandboxed containers in isolated virtual machines" fr "Isoler les conteneurs par la virtualisation (Kata)"
+        overview integer(smooth_step + 0.5)
+
+
+// ============================================================================
+//
+//    Kata Containers animation
+//
+// ============================================================================
+
+KC_OPENSHIFT    ->  1
+KC_KUBELET      ->  2
+KC_CRI          ->  3
+KC_RUNC         ->  4
+KC_CONTAINER    ->  5
+KC_CNI_AND_CSI  ->  6
+KC_STORAGE      ->  7
+KC_KATA_SHIM    ->  8
+KC_HYPERVISOR   ->  9
+KC_VM           -> 10
+KC_KATA_AGENT   -> 11
+KC_KATA_CTR     -> 12
+KC_CTR_ECOSYS   -> 13
+KC_VM_ISOL      -> 14
+
+KC_CONFIDENTIAL -> KC_VM_ISOL + 1
+KC_LINUX_KERNEL -> KC_CONFIDENTIAL + CC_LINUX_KERNEL
+KC_FIRMWARE     -> KC_CONFIDENTIAL + CC_FIRMWARE
+KC_SHIM_V2      -> KC_CONFIDENTIAL + CC_SHIM_V2
+KC_CC_HYPERVISOR-> KC_CONFIDENTIAL + CC_HYPERVISOR
+KC_ENCRYPTING   -> KC_CONFIDENTIAL + CC_ENCRYPTING
+KC_RELYING      -> KC_CONFIDENTIAL + CC_RELYING
+KC_PLATFORM     -> KC_CONFIDENTIAL + CC_PLATFORM
+KC_HOST         -> KC_CONFIDENTIAL + CC_HOST
+KC_TENANT       -> KC_CONFIDENTIAL + CC_TENANT
+
+CC_LINUX_KERNEL ->  1
+CC_FIRMWARE     ->  2
+CC_SHIM_V2      ->  3
+CC_HYPERVISOR   ->  4
+CC_ENCRYPTING   ->  5
+CC_RELYING      ->  6
+CC_PLATFORM     ->  7
+CC_HOST         ->  8
+CC_TENANT       ->  9
+
+KC_ENABLEMENT   -> KC_TENANT + 1
+KC_HARDWARE     -> KC_ENABLEMENT + HE_HARDWARE
+KC_FIRMWARE_CC  -> KC_ENABLEMENT + HE_FIRMWARE_CC
+KC_RUNTIME_CC   -> KC_ENABLEMENT + HE_RUNTIME_CC
+KC_HYPER_CC     -> KC_ENABLEMENT + HE_HYPER_CC
+KC_KERNEL       -> KC_ENABLEMENT + HE_KERNEL
+KC_AGENTCC      -> KC_ENABLEMENT + HE_AGENTCC
+KC_ENABLEMENT_C -> KC_ENABLEMENT + HE_COMPLETE
+HE_HARDWARE     -> 1
+HE_FIRMWARE_CC  -> 2
+HE_KERNEL       -> 3
+HE_RUNTIME_CC   -> 4
+HE_HYPER_CC     -> 5
+HE_AGENTCC      -> 6
+HE_COMPLETE     -> 7
+
+KC_PULLIMAGE    -> KC_ENABLEMENT_C + 1
+KC_INSIDE_GUEST -> KC_PULLIMAGE + PI_INSIDE_GUEST
+KC_ENCRYPTED    -> KC_PULLIMAGE + PI_ENCRYPTED
+KC_API_CHANGE   -> KC_PULLIMAGE + PI_API_CHANGE
+KC_PULLIMAGE_C  -> KC_PULLIMAGE + PI_COMPLETE
+PI_INSIDE_GUEST -> 1
+PI_ENCRYPTED    -> 2
+PI_API_CHANGE   -> 3
+PI_COMPLETE     -> 4
+
+KC_ATTEST       -> KC_PULLIMAGE_C + 1
+KC_PREATTEST    -> KC_ATTEST + AT_PREATTEST
+KC_POSTATTEST   -> KC_ATTEST + AT_POSTATTEST
+KC_WORKLOAD     -> KC_ATTEST + AT_WORKLOAD
+AT_PREATTEST    -> 1
+AT_POSTATTEST   -> 2
+AT_WORKLOAD     -> 3
+
+KC_MSMTS        -> KC_WORKLOAD + 1
+KC_MEASURING    -> KC_MSMTS + MS_MEASURING
+KC_CHALLENGE    -> KC_MSMTS + MS_CHALLENGE
+KC_KEY_DELIVERY -> KC_MSMTS + MS_KEY_DELIVERY
+KC_REMOTE       -> KC_MSMTS + MS_REMOTE
+MS_MEASURING    -> 1
+MS_CHALLENGE    -> 2
+MS_KEY_DELIVERY -> 3
+MS_REMOTE       -> 4
+
+
+transfer_gradient Scale:real, Speed: real ->
+// ----------------------------------------------------------------------------
+//   Animated gradient for "marching ants" lines
+// ----------------------------------------------------------------------------
+    linear_gradient 0, 0, 256, 0, 256, 256,
+        gradient_color 0%, "darkgray", 0.3
+        gradient_color 10%, "darkgray", 0.9
+        gradient_color 20%, "lightgray", 0.3
+        gradient_color 50%, "white", 0.9
+        gradient_color 80%, "darkgray", 0.9
+        gradient_color 90%, "lightgray", 0.3
+        gradient_color 100%, "darkgray", 0.0
+    transfer_gradient Scale, Speed, 0
+transfer_gradient Scale:real, Speed:real, Angle:real->
+    texture_wrap true, true
+    texture_transform
+        translate_x -Speed*time mod 1
+        rotate_z Angle
+        scale_x Scale
+
+
+marching_ants Step:integer, X:real, Y:real, W:real, H:real ->
+// ----------------------------------------------------------------------------
+//   Draw marching-ants style box
+// ----------------------------------------------------------------------------
+    at_anim Step
+    if anim_step = Step then
+        line_width 16
+        linear_gradient 0, 0, 256, 0, 256, 256,
+            gradient_color 0%, "darkgray", 0.3
+            gradient_color 10%, "gray", 0.9
+            gradient_color 20%, "lightgray", 0.3
+            gradient_color 50%, "white", 0.9
+            gradient_color 80%, "gray", 0.9
+            gradient_color 90%, "lightgray", 0.3
+            gradient_color 100%, "darkgray", 0.0
+        locally
+            transfer_gradient W / 100, 2.5,  0
+            line X-8-W/2, Y+0+H/2, X+8+W/2, Y+0+H/2
+        locally
+            transfer_gradient H / 100, 2.5, 90
+            line X+0+W/2, Y-8+H/2, X+0+W/2, Y+8-H/2
+        locally
+            transfer_gradient W / 100, 2.5, 180
+            line X+8+W/2, Y-0-H/2, X-8-W/2, Y-0-H/2
+        locally
+            transfer_gradient H / 100, 2.5, 270
+            line X-0-W/2, Y+8-H/2, X-0-W/2, Y-8+H/2
+    else
+        line_width 8
+        rectangle X, Y, W, H
+
+
+security_frame Color, DarkColor, X, Y, W, H, Icon, IconScale ->
+// ----------------------------------------------------------------------------
+//   Draw a little yellow/black box with a padlock
+// ----------------------------------------------------------------------------
+    background 0,
+        line_width 4
+        line_color Color
+        color "transparent"
+        translate_z 2
+        rectangle X, Y, W, H
+        line_color DarkColor
+        rectangle X, Y, W+10, H+10
+        rectangle X, Y, W-10, H-10
+        color "white"
+        line_color "transparent"
+        translate_z 5
+        image X + W/2, Y + H/2, IconScale, IconScale, Icon
+
+SECURITY_TOP    -> anim 60.0, KC_PREATTEST=60, KC_POSTATTEST=150, KC_WORKLOAD=360
+SECURITY_Y      -> (SECURITY_TOP - 40) / 2
+SECURITY_H      -> (SECURITY_TOP + 40)
+ATTESTATION_TARGET_Y -> anim 0.0, 0=-130, KC_POSTATTEST=10, KC_WORKLOAD=200
+RELYING_X       -> anim 1100.0, 0=1100, KC_ATTEST=800
+
+
+kata_containers Step:integer ->
+// ----------------------------------------------------------------------------
+//   Representation of kata containers
+// ----------------------------------------------------------------------------
+    picture
+        anim_step Step
+        adjust_diagram
+
+        if Step < KC_MSMTS then
+            at_anim KC_OPENSHIFT
+            image -700, 370, 12%, 12%, "Logo-Red_Hat-Marketplace-Operated_By_IBM-B-Standard-RGB.png"
+            at_anim KC_KUBELET
+            framed_box "#38E", -700, 300, 300, 80, "Kubelet"
+            at_anim KC_CRI
+            framed_box "#38E", -250, -300, 1200, 80, "CRI (cri-o or containerd)" fr "CRI (cri-o ou containerd)"
+            locally
+                line_color "#38E"
+                line_width 15
+                line_arrow -700, 280, none, -700, -280, arrowhead
+
+            at_anim KC_RUNC
+            framed_box "#14A",  -300, -200, 400, 80, "Runtime (runc)"
+            at_anim KC_CONTAINER
+            framed_box "#026",  -300, -50, 400, 200, ""
+            framed_box "#026",  -300, -50, 380, 180, "Container" fr "Conteneur"
+
+            at_anim KC_CNI_AND_CSI
+            framed_box "#38E",  490, -300, 220, 80, "CNI"
+            framed_box "#38E",  740, -300, 220, 80, "CSI"
+            image 490, -220, 40%, 40%, "Network card.png"
+            image 740, -220, 50%, 50%, "Hard Disk.png"
+
+        if Step < KC_ATTEST then
+            at_anim KC_STORAGE
+            locally
+                line_color anim_text("#38E", KC_ENCRYPTING = "#3A5")
+                color anim_text("#38E", KC_ENCRYPTING = "#3A5"), 80%
+                line_width 5
+                rounded_rectangle 740, 120, 160, 140, 20
+
+            locally
+                color "#CDF"
+                image 760, 140, 40%, 40%, "Hard Disk.png"
+                image 740, 120, 40%, 40%, "Hard Disk.png"
+                image 720, 100, 40%, 40%, "Hard Disk.png"
+
+            locally
+                line_color "#38E"
+                line_width 15
+                line_arrow 740, 60, arrowhead, 740, -180, arrowhead
+
+            text_box 500, 120, 250, 160,
+                color "#02B"
+                font "Overpass", "Arial", 30
+                align 100%
+                vertical_align 50%
+                if anim_step >= KC_ENCRYPTING then
+                    color "#082"
+                    $ "Encrypted" fr "Chiffrage des"
+                $ "Images &"
+                $ "Volumes"
+
+        if Step <= KC_PULLIMAGE_C then
+            locally
+                at_anim KC_API_CHANGE
+                line_color "#A22", 90%
+                line_width 15
+                line_arrow 320, -280, none, 320, 50, arrowhead
+
+        at_anim KC_KATA_SHIM
+        framed_box anim_text("#1A4", KC_SHIM_V2 = "#A21"),   150, -200, 400, 80, "Runtime (shim-v2)"
+        at_anim KC_HYPERVISOR
+        framed_box anim_text("#061", KC_CC_HYPERVISOR = "#610"),   150, -100, 400, 80, "Hypervisor (qemu)"
+        at_anim KC_VM
+        locally
+            framed_box "#3C6",   150, 160, 420, 400, { vertical_align 100%; $ "VM (Linux)" }
+            at_anim KC_KATA_AGENT
+            framed_box "#062",   150, 100, 400,  80, "Kata Agent"
+            at_anim KC_KATA_CTR
+            framed_box "#062",   150, 250, 400, 200, ""
+            framed_box "#062",   150, 250, 380, 180, "Container" fr "Conteneur"
+            if Step = KC_PREATTEST then
+                locally
+                    color "white", 0.8 + 0.1 * sin(5 * time)
+                    line_color "transparent"
+                    texture ""
+                    rectangle 150, 160, 430, 430
+                    color "white"
+                    rectangle 150, 250, 430, 350
+
+
+        if Step < KC_MSMTS then
+            at_anim KC_LINUX_KERNEL
+            framed_box "#E22",     0, -400, 1700, 80, "Linux kernel" fr "Noyau Linux"
+            at_anim KC_FIRMWARE
+            framed_box "#811",     0, -500, 1700, 80, "Firmware / Hardware" fr "Microgiciel / Matériel"
+
+        only_at_anim KC_PREATTEST..KC_WORKLOAD,
+            security_frame "yellow", "black", 150, SECURITY_Y, 415, SECURITY_H, "Padlock-16.png", 30%
+        only_at_anim KC_MEASURING..KC_KEY_DELIVERY,
+            security_frame "yellow", "black", 150, SECURITY_Y, 415, SECURITY_H, "Padlock-16.png", 30%
+        only_at_anim KC_PREATTEST..KC_WORKLOAD,
+            line_color "#E22"
+            color "transparent"
+            line_width 20
+            line_arrow 320, ATTESTATION_TARGET_Y, arrowhead, 320, -470, arrowhead
+            marching_ants KC_PREATTEST, 150, -100, 400, 80
+
+        at_anim KC_RELYING
+        locally
+            line_color "#0A4"
+            color "#0A4", 20%
+            translate RELYING_X, 250, 0
+            path
+                move_to 0, 100
+                for I in 1..16 loop
+                   quad_to (230 + 5 * sin I) * sin((I - 0.5) * pi / 8), (120 + 7 * sin I) * cos((I - 0.5) * pi / 8), 200 * sin(I * pi / 8), 100 * cos(I * pi / 8)
+        if Step <= KC_PULLIMAGE then
+            locally
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 250, arrowhead, 920, 250, arrowhead
+
+        text_box RELYING_X - 20, 250, 300, 80,
+            style "story"
+            font_size 30
+            color "#081"
+            align 0.0
+            vertical_align 0.5
+            $ "Relying party" fr "Contrôleur"
+        show 0.99
+        framed_box "#0A4",   150 + RELYING_X, 300, 280, 80, {font_size 26; text "Key broker" fr "Accès aux clefs" }
+        framed_box "#0A4",   150 + RELYING_X, 200, 280, 80, {font_size 26; text "Attestation service" fr "Serveur d'attestation" }
+
+        if Step <= KC_ENABLEMENT_C then
+            background -50,
+                line_color "#E22"
+                color "transparent"
+                marching_ants KC_HARDWARE,      0, -500, 1700, 80
+                marching_ants KC_FIRMWARE_CC,   0, -500, 1700, 80
+                marching_ants KC_KERNEL,        0, -400, 1700, 80
+                marching_ants KC_RUNTIME_CC,  150, -200, 400, 80
+                marching_ants KC_HYPER_CC,    150, -100, 400, 80
+                line_color "#082"
+                marching_ants KC_AGENTCC,     150, 100, 400,  80
+
+        if Step <= KC_PULLIMAGE_C then
+            at_anim KC_INSIDE_GUEST
+            locally
+                transfer_gradient (920-350)*0.01, -2.5
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 250, arrowhead, 920, 250, arrowhead
+            locally
+                translate 920 - 300 * page_time mod 570, 250, 10
+                image 0, 0, 20%, 20%, "Container Package.png"
+
+            at_anim KC_ENCRYPTED
+            locally
+                transfer_gradient (520-350)*0.01, 2.5/ 3
+                line_color "#0A4"
+                line_width 8
+                line_arrow 350, 100, arrowhead, 520, 100, arrowhead
+            locally
+                translate 350 + 100 * page_time mod 170, 100, 10
+                image 0, 0, 10%, 10%, "Container Package.png"
+
+            at_anim KC_API_CHANGE
+            locally
+                translate -720, 0, 0
+                rotate_z 90
+                text_box 0, 10, 300, 80,
+                    style "story"
+                    align 0.5
+                    vertical_align 0.5
+                    font_size 35
+                    code "PullImage"
+
+        only_at_anim KC_CHALLENGE,
+            image 440 + time * 0.5 mod 1 * (RELYING_X - 290), -20, 0.8,0.8, "ID Card.jpg"
+            line_width 15
+            line_color "#0A4"
+            color "transparent"
+            path
+                endpoints_style none, arrowhead
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 180
+            line_color "#082"
+            marching_ants KC_CHALLENGE, 150 + RELYING_X, 200, 280, 80
+
+        only_at_anim KC_KEY_DELIVERY,
+            line_width 15
+            line_color "#0A4"
+            color "transparent"
+            path
+                endpoints_style arrowhead, none
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 280
+            line_color "#082"
+            marching_ants KC_KEY_DELIVERY, 150 + RELYING_X, 300, 280, 80
+            line_width 0
+            color "white"
+            image 440 + time * -0.5 mod 1 * (RELYING_X - 290), 20, 0.4,0.4, "Keys.png"
+
+        only_at_anim KC_REMOTE,
+            line_width 15
+            line_color "#F33"
+            color "transparent"
+            path
+                endpoints_style arrowhead, none
+                move_to 350,             100
+                line_to 150 + RELYING_X, 100
+                line_to 150 + RELYING_X, 160
+            line_color "#F33"
+            marching_ants KC_REMOTE, 150 + RELYING_X, 200, 280, 80
+            line_width 0
+            color "white"
+            image 440 + time * -0.5 mod 1 * (RELYING_X - 290), 20, 0.4,0.4, "T1000 Just Says No.jpg"
