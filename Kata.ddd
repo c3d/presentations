@@ -1,7 +1,7 @@
-presentation_title "Confidential Computing from Host to Workload - DevConf.cz 2023"
+presentation_title "Chains of trust in confidential computing - DevConf.cz 2023"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch devconfcz-2023-sev)"
+presentation_tao "https://github.com/c3d/presentations (branch devconfcz-2023-chains-of-trust)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "dinechin@redhat.com"
@@ -12,9 +12,10 @@ presentation_author_mail "dinechin@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
+        $ "Chains of trust in"
         $ "Confidential Computing"
     subtitle
-        $ "From Host to Workload"
+        $ "Knowing and verifying what you run"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -34,21 +35,23 @@ base_slide "Agenda",
     stepping
     story
         * "Overview of Confidential Computing"
-        * "Accessing a guest's memory to steal secrets"
-        * "Setting up a confidential host"
-        * "Setting up a confidential VM"
-        * "The limits of memory protection"
-        * "Confidential VMs on Azure"
-        * "Confidential Clusters with Edgeless Constellation"
-        * "Confidential Containers"
+        * "What is Attestation?"
+        * "Use cases for Confidential Computing"
+        * "From root of trust to actual trust"
+        * "Platform-specific details"
+        * "Supporting technologies"
+        $
+        * "See blog for more details"
+
 
     right_picture
-        images "Zombie Apocalypse.jpg", "Nosy Neighbour.jpg", "Complex Installation.jpg", "Confidential - Top Secret.png", "Memory Encryption.jpg", "Azure Confidential Computing.png", "Edgeless Constellation.gif", "ConfidentialContainersLogo.png"
+        images "Complex Mechanism.jpg", "handing-over-keys.jpg", "Hackers.jpg", "Root of Trust.jpg", "Universal Power Adapter.jpg", "Eiffel Tower Foundations.jpg", "QRCode-CoCo-Primer.png"
+
 
 
 // ============================================================================
 //
-section_slide "Problem statement",
+section_slide "Confidential Computing",
 //
 // ============================================================================
     title page_label
@@ -60,7 +63,7 @@ section_slide "Problem statement",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Confidential Computing" fr "L'informatique sécurisée",
+base_slide "Problem Statement",
 // ----------------------------------------------------------------------------
     title page_label
     subtitle "Why should infrastructure see your data?" fr "Votre hébergeur peut-il voir vos données?"
@@ -82,151 +85,164 @@ base_slide "Confidential Computing" fr "L'informatique sécurisée",
         confidential integer(smooth_step + 0.5)
 
 
-// ============================================================================
-//
-section_slide "Platform description",
-//
-// ============================================================================
+
+// ----------------------------------------------------------------------------
+base_slide "Root of Trust",
+// ----------------------------------------------------------------------------
     title page_label
-    subtitle
-        $ "AMD SEV-SNP host"
-
-
-movie_slide "System overview", "movies/1-System description.mov"
-movie_slide "BIOS settings", "movies/0-BIOS settings.mov"
-movie_slide "Checking SEV availability", "movies/2-Check SEV is available.mov"
-movie_slide "Required software", "movies/3-Install software.mov",
-    movie_highlight 15..20, -100, 90, 800, 50, "Also need libvirt-client-qemu"
-movie_slide "Checking SEV", "movies/4-Check SEV.mov"
-movie_slide "kcli basics", "movies/5-Setup kcli.mov"
-
-
-// ============================================================================
-//
-section_slide "Stealing in-use data",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Secrets can be accessed from the host"
-        $ "just by dumping guest memory"
-
-
-movie_slide "Running a non-confidential VM", "movies/6-Running non-confidential VM.mov"
-
-
-base_slide "Success!",
-    title page_label
-    subtitle "Everything is under control"
+    subtitle "First there was the hardware"
+    slide_picture "TPM_Asus.jpg", 5%, 350
     stepping
+
     picture
-        image 0, 30, 140%, 140%, "So what is the problem.jpg"
+        tpm_step        1, "#F00", -300, "Root of Trust (TPM)"
+        tpm_step        2, "#F40", -200, "ROM-based boot"
+        tpm_step        3, "#444", -100, "BIOS Phase 1"
+        tpm_step        4, "#448",    0, "BIOS Phase 2"
+        tpm_step        5, "#24C",  100, "Boot Manager"
+        tpm_step        6, "#00F",  200, "Linux Kernel"
+        tpm_step_final  7, "#080",  300, "Workload"
+
+        tpm_step Step, Color, Y, Label ->
+            locally
+                at_step 3*Step - 1
+                locally
+                    translate_y Y
+                    color "transparent"
+                    line_color Color
+                    line_width 8
+                    path
+                        move_to 300, 20
+                        line_to 350, 20
+                        line_to 350, 80
+                        line_to 300, 80
+                        endpoints_style "none", "arrowhead"
+                text_box 570, Y + 50, 400, 90,
+                    align 0%
+                    vertical_align 50%
+                    style "story"
+                    color Color
+                    font_size 30
+                    text "Measures and launches"
+            locally
+                at_step 3*Step + 1
+                locally
+                    translate_y Y
+                    color "transparent"
+                    line_color Color
+                    line_width 8
+                    path
+                        move_to -300, 100
+                        line_to -350 - 30 * Step, 100
+                        line_to -350 - 30 * Step, -300 - Y - Y / 10
+                        line_to -300, -300 - Y - Y / 10
+                        endpoints_style "none", "arrowhead"
+                text_box -470, Y + 50, 400, 90,
+                    align 100%
+                    vertical_align 50%
+                    style "story"
+                    color Color
+                    font_size 30
+                    text "Records"
+            tpm_step_final Step, Color, Y, Label
+        tpm_step_final Step, Color, Y, Label ->
+            at_step 3 * Step - 3
+            framed_box Color, 0, Y, 600, 90, { render Label }
 
 
-
-// ============================================================================
-//
-section_slide "Making it compatible",
-//
-// ============================================================================
+// ----------------------------------------------------------------------------
+base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
+// ----------------------------------------------------------------------------
     title page_label
-    subtitle
-        $ "Let's reconfigure our VM the hard way"
-        $ "just to see how it works underneath"
-
-
-movie_slide "Changing the VM hardware", "movies/7-Edit VM.mov"
-movie_slide "More VM edits", "movies/8-More edits.mov"
-movie_slide "Checking it boots with EFI", "movies/8b-Verifying VM state.mov"
-
-
-// ============================================================================
-//
-section_slide "Host setup",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Activating SEV on the host"
-        $ "and endorsing it"
-
-base_slide "A little bit of terminology",
-    title page_label
-    subtitle "Please try hard not to remember this"
+    subtitle "Different vendors with different approaches?" fr "Chaque vendeur a son approche bien à lui"
+    slide_picture "Confidential Computing.jpg", 5%, 350
     stepping
     story
-        * "ARK: AMD Root Key"
-        * "ASK: AMD SEV Key"
-        * "CEK: Chip endorsement key"
-        * "OCA: Owner's Certificate Authority"
-        * "PEK: Platform Endorsement Key"
-        * "PDH: Platform Diffie-Hellman Key"
-        $
-        * "TIK: Transport Integrity Key"
-        * "TEK: Transport Encryption Key"
+        * "AMD: Secure Encrypted Virtualization (SEV)"
+        ** "SEV-ES adds Encrypted State (e.g. CPU register file)" fr "SEV-ES rajoute une protection de l'état CPU"
+        ** "SEV-SNP adds Secure Nested Pages (integrity protection)" fr "SEV-SNP ajoute une notion d'intégrité"
+        * "Intel: Trusted Domain Extensions (TDX)"
+        * "IBM S390: Secure Execution (SE)"
+        * "Power: Protected Execution Facility (PEF)"
+        * "Arm: Confidential Computing Architecture (CCA)"
+        * "All these technologies are based on virtualization" fr "Ces technologies sont toutes très virtuelles"
+        * "They all work differently" fr "Elles fonctionnent toutes de façon différente"
 
+    right_picture
+        images "AMD SEV.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
 
-movie_slide "SEV host setup", "movies/9-SEV host setup.mov"
+    right_picture
+        entry_time -> 0.0
+        if smooth_step < 9 then
+            entry_time := page_time
+        only_at 9,
+            jump_factor -> fade_at(page_time - entry_time, 5)
+            show sin(2.5 * time)^2
+            translate 100 - 500 * jump_factor, 100 - 100 * fade_out(page_time, 10), 50 + 600 * jump_factor
+            scale 1 + 5 * jump_factor + 0.3 * jump_factor * sin(45.3 * time)
+            rotate_z 23 * sin((0.21 + 2.1 * jump_factor) * time) * (1.0 - 0.7 * jump_factor) + sin(30.2 * time) * jump_factor
+            style "boxtitle"
+            color_hsv 20 * time, 1, 1
+            line_color "green"
+            text_box 0, 0, 300, 200,
+                vertical_align 0.5
+                align 0.5
+                $ "There be zombies!" fr "Des zombies partout!"
+
 
 
 
 // ============================================================================
 //
-section_slide "Guest setup",
+section_slide "Attestation",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ { text "Adding "; code "launchSecurity"; text " elements" }
-        $ "to certify a virtual machine as confidential"
+        $ "Proving that you run what you want to run"
 
-movie_slide "Adding launch security section", "movies/9-Add launchSecurity element.mov"
-movie_slide "Edit the security session", "movies/10-Edit security session.mov"
 
 
 // ============================================================================
 //
-section_slide "Brave new Secure World",
+section_slide "Use Cases",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "We are entirely protected now!"
-        $ "Nobody can harm us!"
-        $ { align 80% ; italic "Famous last words" }
+        $ "Various ways to deploy"
+        $ "confidential computing"
 
 
-movie_slide "Launch the secure VM", "movies/11-Secure VM encrypted.mov"
-
-base_slide "Wat?!?",
+// ============================================================================
+//
+section_slide "Building actual trust",
+//
+// ============================================================================
     title page_label
-    subtitle "Houston, we have a problem"
-    stepping
-    picture
-        image 0, 30, 150%, 150%, "Road Rage.jpg"
+    subtitle
+        $ "Keeping the trust alive along the way"
 
-movie_slide "Only memory is encrypted", "movies/12-Memory is protected, not disk.mov"
 
-blank_slide "Encrypt your disks!",
+// ============================================================================
+//
+section_slide "Platform-specific details",
+//
+// ============================================================================
     title page_label
-    subtitle "or suffer the consequences, fool!"
-    stepping
-    contents -10000,
-        color "white"
-        image 0, 30, 260%, 260%, "Encrypt Your Disk.jpg"
-    contents 0,
-        light 0
-        light_position 1000, 1000, 1000
-        translate_z 5000 * sin (1.0 * time)^12 - 4000
-        rotate_y 20 * sin(0.41 * time)
-        rotate_z 4 * sin(0.217 * time)
-        font "Impact", 200
-        color_hsv 10 * time, 70%, 100%
-        extrude_depth 80
-        text_box 0, 0, 1000, 1000,
-            align_center
-            vertical_align_center
-            text "Encrypt your disks!"
+    subtitle
+        $ "Beyond that point, there be zombies"
+
+
+// ============================================================================
+//
+section_slide "Supporting technologies",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "The flavor is in the details"
+
 
 
 
@@ -676,9 +692,6 @@ confidential Step:integer ->
 
 
 
-
-
-
 // ============================================================================
 //
 //   Utlities
@@ -726,6 +739,7 @@ interpolate 10%, show_quotes, show_quotes_v
 if show_quotes_v > 0.0 then
     show show_quotes_v
     quotes
+        quote "Kevin Mitnick", "I compromised the confidentiality of their proprietary software to advance my agenda of becoming the best at breaking through the lock."
         quote "Billy Graham", "Confidentiality is the essence of being trusted"
         quote "Gretchen Rubin", "I love cunning containers as much as anyone, but I've found that if I get rid of everything I don't need, I often don't need a container at all."
         quote "Andrew Tannenbaum", "The good thing about standards is", " that there are so many to choose from."
