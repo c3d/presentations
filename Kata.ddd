@@ -151,46 +151,6 @@ base_slide "Root of Trust",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Different vendors with different approaches?" fr "Chaque vendeur a son approche bien à lui"
-    slide_picture "Confidential Computing.jpg", 5%, 350
-    stepping
-    story
-        * "AMD: Secure Encrypted Virtualization (SEV)"
-        ** "SEV-ES adds Encrypted State (e.g. CPU register file)" fr "SEV-ES rajoute une protection de l'état CPU"
-        ** "SEV-SNP adds Secure Nested Pages (integrity protection)" fr "SEV-SNP ajoute une notion d'intégrité"
-        * "Intel: Trusted Domain Extensions (TDX)"
-        * "IBM S390: Secure Execution (SE)"
-        * "Power: Protected Execution Facility (PEF)"
-        * "Arm: Confidential Computing Architecture (CCA)"
-        * "All these technologies are based on virtualization" fr "Ces technologies sont toutes très virtuelles"
-        * "They all work differently" fr "Elles fonctionnent toutes de façon différente"
-
-    right_picture
-        images "AMD SEV.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
-
-    right_picture
-        entry_time -> 0.0
-        if smooth_step < 9 then
-            entry_time := page_time
-        only_at 9,
-            jump_factor -> fade_at(page_time - entry_time, 5)
-            show sin(2.5 * time)^2
-            translate 100 - 500 * jump_factor, 100 - 100 * fade_out(page_time, 10), 50 + 600 * jump_factor
-            scale 1 + 5 * jump_factor + 0.3 * jump_factor * sin(45.3 * time)
-            rotate_z 23 * sin((0.21 + 2.1 * jump_factor) * time) * (1.0 - 0.7 * jump_factor) + sin(30.2 * time) * jump_factor
-            style "boxtitle"
-            color_hsv 20 * time, 1, 1
-            line_color "green"
-            text_box 0, 0, 300, 200,
-                vertical_align 0.5
-                align 0.5
-                $ "There be zombies!" fr "Des zombies partout!"
-
-
-// ----------------------------------------------------------------------------
 base_slide "Trust domains",
 // ----------------------------------------------------------------------------
     title page_label
@@ -635,7 +595,7 @@ base_slide "Confidential Clusters",
         * "Works at the cloud provider level"
         * "Generates SEV-SNP nodes"
         * "Attested TLS (ATLS)"
-        * "JoinService: Atterst nodes"
+        * "JoinService: Attest nodes"
         * "VerificationService: User-facing"
 
 
@@ -736,6 +696,46 @@ section_slide "Platform-specific details",
     title page_label
     subtitle
         $ "Beyond that point, there be zombies"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Vendor landscape" fr "Les vendeurs et leur offre",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Different vendors with different approaches?" fr "Chaque vendeur a son approche bien à lui"
+    slide_picture "Confidential Computing.jpg", 5%, 350
+    stepping
+    story
+        * "AMD: Secure Encrypted Virtualization (SEV)"
+        ** "SEV-ES adds Encrypted State (e.g. CPU register file)" fr "SEV-ES rajoute une protection de l'état CPU"
+        ** "SEV-SNP adds Secure Nested Pages (integrity protection)" fr "SEV-SNP ajoute une notion d'intégrité"
+        * "Intel: Trusted Domain Extensions (TDX)"
+        * "IBM S390: Secure Execution (SE)"
+        * "Power: Protected Execution Facility (PEF)"
+        * "Arm: Confidential Computing Architecture (CCA)"
+        * "All these technologies are based on virtualization" fr "Ces technologies sont toutes très virtuelles"
+        * "They all work differently" fr "Elles fonctionnent toutes de façon différente"
+
+    right_picture
+        images "AMD SEV.png", "SEV-ES.png", "SEV-SNP.jpg", "Intel TDX.png", "S390 SE.jpg", "Power PEF.png", "Arm CCA.png", "Confidential VMs.jpg", "Zombie Apocalypse.jpg"
+
+    right_picture
+        entry_time -> 0.0
+        if smooth_step < 9 then
+            entry_time := page_time
+        only_at 9,
+            jump_factor -> fade_at(page_time - entry_time, 5)
+            show sin(2.5 * time)^2
+            translate 100 - 500 * jump_factor, 100 - 100 * fade_out(page_time, 10), 50 + 600 * jump_factor
+            scale 1 + 5 * jump_factor + 0.3 * jump_factor * sin(45.3 * time)
+            rotate_z 23 * sin((0.21 + 2.1 * jump_factor) * time) * (1.0 - 0.7 * jump_factor) + sin(30.2 * time) * jump_factor
+            style "boxtitle"
+            color_hsv 20 * time, 1, 1
+            line_color "green"
+            text_box 0, 0, 300, 200,
+                vertical_align 0.5
+                align 0.5
+                $ "There be zombies!" fr "Des zombies partout!"
 
 
 // ----------------------------------------------------------------------------
