@@ -593,7 +593,7 @@ base_slide "Confidential Clusters",
     story
         * "Make the whole cluster confidential"
         * "Works at the cloud provider level"
-        * "Generates SEV-SNP nodes"
+        * "Generates confidential nodes"
         * "Attested TLS (ATLS)"
         * "JoinService: Attest nodes"
         * "VerificationService: User-facing"
