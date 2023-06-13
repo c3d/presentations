@@ -25,42 +25,6 @@ section_slide "Overflow sides" fr "En savoir plus",
 
 
 
-// Position of the "Talk box"
-TALK_X          -> anim   650.0
-TALK_Y          -> anim  -70.0, KC_CONFIDENTIAL=-180
-TALK_W          -> anim  500.0
-TALK_H          -> anim  600.0, KC_CONFIDENTIAL= 540
-TALK_O          -> anim   50.0
-
-talk_frame Body ->
-// ----------------------------------------------------------------------------
-//   Display the "talk" frame
-// ----------------------------------------------------------------------------
-    locally
-        line_color "black"
-        line_width 2
-        color "white", 0.8
-        rectangle TALK_X, TALK_Y, TALK_W + TALK_O, TALK_H + TALK_O
-    text_box TALK_X, TALK_Y, TALK_W, TALK_H,
-        style "story"
-        vertical_align 30%
-        font_size 32
-        Body
-
-
-// Adjustment to the main diagram
-DIAGRAM_Scale   -> anim  1.0, 0=1, KC_CTR_ECOSYS=  75%, KC_CONFIDENTIAL=100%, KC_LINUX_KERNEL= 80%, KC_RELYING=  75%, KC_MSMTS= 100%
-DIAGRAM_X       -> anim  0.0, 0=0, KC_CTR_ECOSYS=-300,  KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=  0,  KC_RELYING=-280,  KC_MSMTS= -800
-DIAGRAM_Y       -> anim  0.0, 0=0,                      KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=110,  KC_RELYING= 100,  KC_MSMTS=    0
-
-adjust_diagram ->
-// ----------------------------------------------------------------------------
-//   Adjust the position of the diagram
-// ----------------------------------------------------------------------------
-    // writeln "Step=", anim_step, " Scale=", DIAGRAM_Scale, " X=", DIAGRAM_X, " Y=", DIAGRAM_Y
-    translate DIAGRAM_X, DIAGRAM_Y, 0
-    scale DIAGRAM_Scale
-
 
 // ----------------------------------------------------------------------------
 base_slide "Kata Containers Overview" fr "La base: Kata Containers",
@@ -176,66 +140,6 @@ base_slide "Phase 2: Securing image pull" fr "Phase 2: sécuriser le télécharg
         at_step PI_COMPLETE
         translate 150, -350, 0
         stamp "orange", "Rework!" fr "À revoir"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Attestation" fr "Attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Measuring what we run using cryptography" fr "Mesurer pour contrôler ce qui tourne"
-    slide_picture "Measuring.png", 3%, 300
-    stepping
-
-    kata_containers integer(KC_ATTEST + smooth_step + 0.5)
-    contents 0,
-        at_step 1
-        talk_frame
-            at_step AT_PREATTEST
-            color "#C22"
-            bold "Preattestation: " fr "Pré-attestation: "
-            color "black"
-            $ "Measure the payload before allowing it to start (original SEV)" fr "Mesure le contenu avant d'autoriser l'exécution (SEV)"
-
-            at_step AT_POSTATTEST
-            color "#C62"
-            bold "Postattestation: " fr "Post-attestation: "
-            color "black"
-            $ "Code in the payload can confirm its identity using the measurement in order to get secrets" fr "Le code peut s'identifier à l'aide d'une mesure pour obtenir des secrets"
-
-            at_step AT_WORKLOAD
-            color "#2A2"
-            bold "Workload attestation" fr "Attestation de contenu"
-            color "black"
-            $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
-
-
-// ----------------------------------------------------------------------------
-base_slide "How does attestation work?" fr "Comment marche l'attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
-    slide_picture "Customs.jpg", 3%, 300
-    stepping
-
-    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
-    contents 0,
-        at_step 1
-        talk_frame
-            at_step MS_MEASURING
-            bold "Cryptographic measurement: " fr "Mesure cryptographique "
-            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
-            at_step MS_CHALLENGE
-            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
-            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
-
-            at_step MS_KEY_DELIVERY
-            bold "Secret delivery " fr "Révéler des secrets "
-            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
-
-            at_step MS_REMOTE
-            bold "Remote attestation: " fr "Attestation distante "
-            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
-
 
 
 // ----------------------------------------------------------------------------
@@ -1266,6 +1170,8 @@ base_slide "Sandboxing workloads" fr "Toujours plus d'isolation",
         overview integer(smooth_step + 0.5)
 
 
+
+
 // ============================================================================
 //
 //    Kata Containers animation
@@ -1651,3 +1557,40 @@ kata_containers Step:integer ->
             line_width 0
             color "white"
             image 440 + time * -0.5 mod 1 * (RELYING_X - 290), 20, 0.4,0.4, "T1000 Just Says No.jpg"
+
+
+// Position of the "Talk box"
+TALK_X          -> anim   650.0
+TALK_Y          -> anim  -70.0, KC_CONFIDENTIAL=-180
+TALK_W          -> anim  500.0
+TALK_H          -> anim  600.0, KC_CONFIDENTIAL= 540
+TALK_O          -> anim   50.0
+
+talk_frame Body ->
+// ----------------------------------------------------------------------------
+//   Display the "talk" frame
+// ----------------------------------------------------------------------------
+    locally
+        line_color "black"
+        line_width 2
+        color "white", 0.8
+        rectangle TALK_X, TALK_Y, TALK_W + TALK_O, TALK_H + TALK_O
+    text_box TALK_X, TALK_Y, TALK_W, TALK_H,
+        style "story"
+        vertical_align 30%
+        font_size 32
+        Body
+
+
+// Adjustment to the main diagram
+DIAGRAM_Scale   -> anim  1.0, 0=1, KC_CTR_ECOSYS=  75%, KC_CONFIDENTIAL=100%, KC_LINUX_KERNEL= 80%, KC_RELYING=  75%, KC_MSMTS= 100%
+DIAGRAM_X       -> anim  0.0, 0=0, KC_CTR_ECOSYS=-300,  KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=  0,  KC_RELYING=-280,  KC_MSMTS= -800
+DIAGRAM_Y       -> anim  0.0, 0=0,                      KC_CONFIDENTIAL=0,    KC_LINUX_KERNEL=110,  KC_RELYING= 100,  KC_MSMTS=    0
+
+adjust_diagram ->
+// ----------------------------------------------------------------------------
+//   Adjust the position of the diagram
+// ----------------------------------------------------------------------------
+    // writeln "Step=", anim_step, " Scale=", DIAGRAM_Scale, " X=", DIAGRAM_X, " Y=", DIAGRAM_Y
+    translate DIAGRAM_X, DIAGRAM_Y, 0
+    scale DIAGRAM_Scale
