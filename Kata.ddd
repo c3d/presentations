@@ -443,33 +443,6 @@ base_slide "Attestation",
             $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
 
 
-// ----------------------------------------------------------------------------
-base_slide "How does attestation work?" fr "Comment marche l'attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
-    slide_picture "Customs.jpg", 3%, 300
-    stepping
-
-    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
-    contents 0,
-        at_step 1
-        talk_frame
-            at_step MS_MEASURING
-            bold "Cryptographic measurement: " fr "Mesure cryptographique "
-            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
-            at_step MS_CHALLENGE
-            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
-            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
-
-            at_step MS_KEY_DELIVERY
-            bold "Secret delivery " fr "Révéler des secrets "
-            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
-
-            at_step MS_REMOTE
-            bold "Remote attestation: " fr "Attestation distante "
-            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
-
 
 // ============================================================================
 //
@@ -617,6 +590,34 @@ section_slide "Building actual trust",
     title page_label
     subtitle
         $ "Keeping the trust alive along the way"
+
+
+// ----------------------------------------------------------------------------
+base_slide "How does attestation work?" fr "Comment marche l'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
+    slide_picture "Customs.jpg", 3%, 300
+    stepping
+
+    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step MS_MEASURING
+            bold "Cryptographic measurement: " fr "Mesure cryptographique "
+            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
+            at_step MS_CHALLENGE
+            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
+            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
+
+            at_step MS_KEY_DELIVERY
+            bold "Secret delivery " fr "Révéler des secrets "
+            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
+
+            at_step MS_REMOTE
+            bold "Remote attestation: " fr "Attestation distante "
+            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
 
 
 // ----------------------------------------------------------------------------
