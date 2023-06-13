@@ -237,7 +237,7 @@ base_slide "Guarantees",
         * "Protect data in use from leaks or tampering"
         $
         * "Does not protect against crashes"
-        * "Does not protect disk, network data or kids"
+        * "Does not protect disk, network data, ..."
         * "Does not offer any guarantee of service"
         * "Hardware-based, real-time cryptography"
         * "Is highly implementation-dependent"
@@ -245,7 +245,7 @@ base_slide "Guarantees",
         * "TL;DR: There is no automatic security"
 
     right_picture
-        images "Nosy Neighbour.jpg", "No SELinux.jpg", "MacOS Bomb.jpg", "Messy Kid.jpg", "Customs.jpg", "Canal+ Scrambled.jpg", "SEV-SNP.jpg", "Road Rage.jpg"
+        images "Nosy Neighbour.jpg", "No SELinux.jpg", "MacOS Bomb.jpg", "Hard Disk Fail.jpg", "Customs.jpg", "Canal+ Scrambled.jpg", "SEV-SNP.jpg", "Road Rage.jpg"
 
 
 // ============================================================================
@@ -548,15 +548,26 @@ base_slide "Confidential Virtual Machines",
     stepping
 
     story
-        * "New hardware / firmware ABI"
-        * "Host kernel no longer trusted"
-        * "Hypervisor no longer trusted"
-        * "VM is a confidential enclave"
-        * "Guest firmware is measured"
+        * "New hardware / firmware ABI with new features"
+        * "Host kernel no longer trusted, exposes new devices"
+        * "Hypervisor no longer trusted, exposes new features"
+        * "VM becomes a confidential enclave"
+        * "Guest firmware and boot sequence is measured"
         * "Guest kernel can be measured"
 
-    confidential_vm integer(smooth_step + 0.5)
-    at_step 6
+    right_picture
+        at_step 1
+        framed_box "#610",     0, -300, 400, 80, "Firmware / Hardware"
+        at_step 2
+        framed_box "#921",     0, -200, 400, 80, "Host Linux kernel"
+        at_step 3
+        framed_box "#E21",     0, -100, 400, 80, "Hypervisor (qemu)"
+        at_step 4
+        framed_box "#3C6",     0,  160, 400, 400, "VM (Linux)"
+        at_step 5
+        framed_box "#386",     0,   20, 380, 80, "Guest firmware"
+        at_step 6
+        framed_box "#386",     0,  120, 380, 80, "Guest kernel"
 
 
 // ----------------------------------------------------------------------------
@@ -568,7 +579,7 @@ base_slide "Confidential Workloads",
     stepping
 
     story
-        * "KVM as a library (libkrun)"
+        * "VM as a library (libkrun)"
         * "Direct integration with Podman"
         * "Got very early support for SEV"
         * "First working attestation"
@@ -648,6 +659,75 @@ section_slide "Building actual trust",
         $ "Keeping the trust alive along the way"
 
 
+// ----------------------------------------------------------------------------
+base_slide "Attestation flow",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Unlock workloads by giving secrets"
+    slide_picture "Water Flow.jpg", 5%, 300
+    stepping
+
+    story
+        * "Attester sends request"
+        * "Response is a cryptographic challenge"
+        * "Attester presents crypted evidence"
+        * "Evidence relayed to verifier"
+        * "Attestation result returned"
+        * "Secrets retrieved"
+        * "Response sent to attester"
+
+    right_picture
+        translate_y 100
+        scale 80%
+        framed_box "#C00", -150,   0,  290, 130, "Attester"
+        framed_box "#00C",  300,   0,  290, 130, "Relying party"
+        framed_box "#F80",  300, 200,   290, 130, "Verifier"
+        framed_box "#04C",  300, -200,  290, 130, "Secrets Broker"
+
+        only_at 1,
+            harrow_with_text    -30,    0,  180, "Request"
+        only_at 2,
+            harrow_with_text    180,    0,  -30, "Challenge"
+        only_at 3,
+            harrow_with_text    -30,    0,  180, "Evidence"
+        only_at 4,
+            varrow_with_text    230,   50,  150, "Evidence"
+        only_at 5,
+            varrow_with_text    370,  150,   50, "Attestation result"
+        only_at 6,
+            varrow_with_text    370,  -50,  -150, "Get secrets"
+        only_at 7,
+            harrow_with_text    180,    0,  -30, "Give secrets"
+
+    picture
+        translate_y -250
+        scale 80%
+        at_step 8
+        root_of_trust   "Manufacturer root Key"
+        endorsement     "Per-Chip endorsement"
+        measurement     "Boot-time Memory"
+        identity        "What is running"
+        trust           "Relying party Policies"
+        secrets         "Key to decrypt"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Who proves what to whom?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Different kinds of proof for different consumers"
+    slide_picture "Proofs.jpg", 5%, 300
+    stepping
+
+    story
+        * "System-facing: System software building a trusted execution environment"
+        * "User-facing: User checking if a system is trusted"
+        * "Workload-facing: Workload checking if runtime environment is trusted"
+        * "Peer-facing: Workloads checking of other workload is trusted"
+        * "Cluster-facing: nodes in a cluster check each other"
+
+
+
 // ============================================================================
 //
 section_slide "Platform-specific details",
@@ -656,6 +736,72 @@ section_slide "Platform-specific details",
     title page_label
     subtitle
         $ "Beyond that point, there be zombies"
+
+
+// ----------------------------------------------------------------------------
+base_slide "AMD SEV",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Secure Encrypted Virtualization"
+    slide_picture "Messy Kid.jpg", 5%, 300
+    stepping
+
+    story
+        * "First generation technology, somewhat flawed"
+        * "Provides memory encryption through hardware"
+        * "Built on top of virtualization (unlike SME)"
+        * "Relies on a separate security processor"
+        * "Only features pre-attestation"
+        * "Several vulnerabilities gave it a bad reputation"
+
+    right_picture
+        at_step 1
+        image 0, 0, 50%, 50%, "AMD SEV.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "AMD SEV-ES and SEV-SNP",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Encrypted State, Secure Nested Pages"
+    slide_picture "Cleanup.jpg", 5%, 300
+    stepping
+
+    story
+        * "ES protects CPU state from tampering"
+        * "No major impact on the (pre-) attestation model"
+        $
+        * "SNP protects against malicious page mapping "
+        * "Can get attestation quote from within the guest"
+        * "VMPL gives additional protection levels for VMs"
+        * "VMPLs enable protected services, e.g. vTPM"
+
+    right_picture
+        at_step 4
+        image 0, 0, 60%, 60%, "SEV-SNP Attestation.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Intel TDX (and SGX)",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Trust Domain Extensions (Software Guard Extensions)"
+    slide_picture "Revolving Jail.jpg", 5%, 300
+    stepping
+
+    story
+        * "SGX is designed to create ""Secure Enclaves"""
+        * "TDX is virtualization-based (like AMD-SEV)"
+        $
+        * "No separate security processor"
+        * "New CPU mode, Secure Arbitration Mode (SEAM)"
+        * "Various binary modules expose required services"
+        * "Attestation performed by a Quoting Enclave"
+
+    right_picture
+        images "", "", "", "", "TDX SEAM Modules.png", "TDX Quoting Enclave.png"
+
+
 
 
 // ============================================================================
@@ -668,6 +814,24 @@ section_slide "Supporting technologies",
         $ "The flavor is in the details"
 
 
+// ----------------------------------------------------------------------------
+base_slide "How do we get this to work?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Host, Guest, Firmware and Hypervisor support"
+    slide_picture "Bits and Pieces.png", 5%, 300
+    stepping
+
+    story
+        * "Host and guest Linux kernel support"
+        * "Hypervisor support"
+        * "Guest firmware support"
+        * "Host provisioning and support tools, e.g. sevctl"
+        * "Generic key brokering and attestation"
+        * "Compatibility layers, virtual TPM, SVSM"
+        $
+        * "Referring you to the blog for pointers"
+
 
 
 // ============================================================================
@@ -677,22 +841,27 @@ section_slide "Conclusion" fr "Conclusion",
 // ============================================================================
     title page_label
     subtitle
-        $ "Confidential computing is complicated."
-        $ "We are building the tools to make it simpler."
+        $ "Attestation means many different things."
 
 
 // ---------------------------------------------------------------------------
 base_slide "Key takeaways" fr "Ce qu'il faut retenir",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "High cost of confidentiality and sandboxing" fr "Un coût élevé pour la sécurité et l'isolation"
+    subtitle "Attestation? We only scratched the surface!"
     slide_picture "Pile of Cash.png", 0%, 250
     stepping
     story
-        * "Confidential computing impacts many aspects of a VM"
-        * "The integration is there, but it is not easy yet"
-        * "We are building the tools to make it easier"
-        * "Historical tools can bite you in unexpected ways"
+        * "Confidential Computing is a large collection of technologies"
+        * "Attestation can mean very different things even in a same context"
+        * "Preserving chains of trust requires careful thinking"
+        * "Technologies are not consistent"
+        $
+        * "Please see blog for more details and links"
+
+    right_picture
+        at_step 5
+        image 150, 0, 300%, 300%, "QRCode-CoCo-Primer.png"
 
 
 // ============================================================================
@@ -717,7 +886,7 @@ section_slide "Thank you" fr "Merci",
     translate_y -50
     picture
         color "white"
-        image 600, -80, 200%, 200%, "QRCode.jpg"
+        image 700, -80, 230%, 230%, "QRCode-CoCo-Primer.png"
 
 
 show_overflow -> 0
@@ -1607,24 +1776,6 @@ adjust_diagram ->
     translate DIAGRAM_X, DIAGRAM_Y, 0
     scale DIAGRAM_Scale
 
-
-confidential_vm Step:integer ->
-// ----------------------------------------------------------------------------
-//   Representation of kata containers
-// ----------------------------------------------------------------------------
-    right_picture
-        at_step 1
-        framed_box "#811",     0, -300, 400, 80, "Firmware / Hardware"
-        at_step 2
-        framed_box "#E22",     0, -200, 400, 80, "Host Linux kernel"
-        at_step 3
-        framed_box "#610",     0, -100, 400, 80, "Hypervisor (qemu)"
-        at_step 4
-        framed_box "#3C6",     0,  160, 400, 400, "VM (Linux)"
-        at_step 5
-        framed_box "#386",     0,   20, 380, 80, "Guest OVMF"
-        at_step 6
-        framed_box "#386",     0,  120, 380, 80, "Guest kernel"
 
 
 // ============================================================================
