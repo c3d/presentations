@@ -4,7 +4,7 @@ presentation_url "https://github.com/c3d/presentations"
 presentation_tao "https://github.com/c3d/presentations (branch kvm-2023-chains-of-trust)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
-presentation_author_mail "dinechin@redhat.com"
+presentation_author_mail "cddd@redhat.com"
 
 
 
@@ -832,6 +832,20 @@ base_slide "How do we get this to work?",
         * "Compatibility layers, virtual TPM, SVSM"
         $
         * "Referring you to the blog for pointers"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Upcoming attractions",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Watch out of these upcoming KVM Forum talks"
+    slide_picture "Upcoming attractions.jpg", 5%, 300
+    stepping
+
+    story
+        * "2:00 Trusted I/O (Jeremy Powell)"
+        * "2:30 Secure VM Service Module (Jörg Rödel)"
+        * "3:00 Zero-trust virtual TPM (Claudio Carvalho)"
 
 
 
