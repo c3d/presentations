@@ -1,4 +1,4 @@
-presentation_title "Confidential Containers Primer - DevConf.cz 2023" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
+presentation_title "Confidential Containers Workshop - DevConf.cz 2023" fr "Les conteneurs sécurisés - Ne faites confiance à personne!"
 presentation_logo "ConfidentialContainersLogo.png"
 presentation_url "https://github.com/c3d/presentations"
 presentation_tao "https://github.com/c3d/presentations (branch devconfcz-2023-workshop)" fr "https://github.com/c3d/presentations (branche devconfcz-2023-workshop)"
@@ -406,7 +406,7 @@ section_slide "Thank you" fr "Merci",
 //
 // ============================================================================
     title page_label
-    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
+    subtitle "Let's get started with the workshop"
     stepping
 
     contents 0,
@@ -418,6 +418,9 @@ section_slide "Thank you" fr "Merci",
                 image -80, -40, 10%, 10%, "Tao3D.png"
             paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
             paragraph presentation_tao
+
+        color "white"
+        image 700, -230, 120%, 120%, "QR Cocde Coco Workshop.png"
 
     translate_y -50
     title_slide_logo
