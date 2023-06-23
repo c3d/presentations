@@ -1,5 +1,5 @@
-HiPEAC 2021 Presentation: Confidential Containers - Distrusting you VM Host
-============================================================================
+DevConf.cz Confidential Containers workshop
+===========================================
 
 This is a Tao3D presentation given during a workshop about confidential
 containers at [DevConf.cz 2023][devconf].
