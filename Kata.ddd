@@ -1,7 +1,7 @@
-presentation_title "Chains of trust in confidential computing - KVM Forum 2023"
-presentation_logo "KVM_Forum.png"
+presentation_title "L'attestation, clef de voûte du ""Confidential Computing"" - AzurTech 2023"
+presentation_logo "AzurTech Winter.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branch kvm-2023-chains-of-trust)"
+presentation_tao "https://github.com/c3d/presentations (branche azurtech2023-attestation)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "cddd@redhat.com"
@@ -12,10 +12,10 @@ presentation_author_mail "cddd@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Chains of trust in"
+        $ "Chains of trust in" fr "L'attestation, clef de voûte du"
         $ "Confidential Computing"
     subtitle
-        $ "Knowing and verifying what you run"
+        $ "Knowing and verifying what you run" fr "Savoir exactement quel programme vous exécutez"
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -27,21 +27,21 @@ main_title_slide "Main title",
 
 
 // ---------------------------------------------------------------------------
-base_slide "Agenda",
+base_slide "Agenda" fr "Programme",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Key topics we are going to cover today"
+    subtitle "Key topics we are going to cover today" fr "Ce dont nous allons parler aujourd'hui"
     slide_picture "Agenda.jpg", 0%, 320 // https://www.pexels.com/fr-fr/photo/programme-startup-a-faire-concept-7376/
     stepping
     story
-        * "Overview of Confidential Computing"
-        * "What is Attestation?"
-        * "Use cases for Confidential Computing"
-        * "From root of trust to actual trust"
-        * "Platform-specific details"
-        * "Supporting technologies"
+        * "Overview of Confidential Computing" fr "Introduction au ""confidential computing"""
+        * "What is Attestation?" fr "Qu'est ce que l'attestation?"
+        * "Use cases for Confidential Computing" fr "À quoi sert la confidentialité?"
+        * "From root of trust to actual trust" fr "Construire une chaîne de confiance"
         $
-        * "See blog for more details"
+        * "Platform-specific details" fr "Différences entre technologies"
+        * "Supporting technologies" fr "Technologies d'appui"
+        * "See blog for more details" fr "Une série d'articles qui donnent plus de détails"
 
 
     right_picture
@@ -51,19 +51,19 @@ base_slide "Agenda",
 
 // ============================================================================
 //
-section_slide "Confidential Computing",
+section_slide "Confidential Computing" fr "L'informatique confidentielle",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Protecting data in-use"
+        $ "Protecting data in-use" fr "Protéger les données en opération"
     stepping
     page_quote 0
 
 
 
 // ----------------------------------------------------------------------------
-base_slide "Problem Statement",
+base_slide "Problem Statement" fr "Posons le problème",
 // ----------------------------------------------------------------------------
     title page_label
     subtitle "Why should infrastructure see your data?" fr "Votre hébergeur peut-il voir vos données?"
@@ -87,21 +87,21 @@ base_slide "Problem Statement",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Root of Trust",
+base_slide "Root of Trust" fr "Les bases de la confiance",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "First there was the hardware"
+    subtitle "First there was the hardware" fr "Ça commence par le matériel"
     slide_picture "TPM_Asus.jpg", 5%, 350
     stepping
 
     picture
-        tpm_step        1, "#F00", -300, "Root of Trust (TPM)"
-        tpm_step        2, "#F40", -200, "ROM-based boot"
-        tpm_step        3, "#444", -100, "BIOS Phase 1"
-        tpm_step        4, "#448",    0, "BIOS Phase 2"
-        tpm_step        5, "#24C",  100, "Boot Manager"
-        tpm_step        6, "#00F",  200, "Linux Kernel"
-        tpm_step_final  7, "#080",  300, "Workload"
+        tpm_step        1, "#F00", -300, "Root of Trust (TPM)"  fr "Racine de confiance (TPM)"
+        tpm_step        2, "#F40", -200, "ROM-based boot"       fr "Démarrage (Mémoire morte)"
+        tpm_step        3, "#444", -100, "BIOS Phase 1"         fr "Étape 1 du BIOS"
+        tpm_step        4, "#448",    0, "BIOS Phase 2"         fr "Étape 2 du BIOS"
+        tpm_step        5, "#24C",  100, "Boot Manager"         fr "Gestionnaire de démarrage"
+        tpm_step        6, "#00F",  200, "Linux Kernel"         fr "Noyau Linux"
+        tpm_step_final  7, "#080",  300, "Workload"             fr "Couches applicatives"
 
         tpm_step Step, Color, Y, Label ->
             locally
@@ -123,7 +123,7 @@ base_slide "Root of Trust",
                     style "story"
                     color Color
                     font_size 30
-                    text "Measures and launches"
+                    text "Measures and launches"        fr "Mesure, puis démarre"
             locally
                 at_step 3*Step + 1
                 locally
@@ -143,7 +143,7 @@ base_slide "Root of Trust",
                     style "story"
                     color Color
                     font_size 30
-                    text "Records"
+                    text "Records"      fr "Enregistre"
             tpm_step_final Step, Color, Y, Label
         tpm_step_final Step, Color, Y, Label ->
             at_step 3 * Step - 3
@@ -151,10 +151,10 @@ base_slide "Root of Trust",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Trust domains",
+base_slide "Trust domains" fr "Les domaines de confiance",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Example: confidential containers"
+    subtitle "Example: confidential containers" fr "Exemple: les conteneurs confidentiels"
     slide_picture "Confidential - Top Secret.png", 5%, 300
     stepping
 
@@ -185,24 +185,24 @@ base_slide "Trust domains",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Guarantees",
+base_slide "Guarantees" fr "Garanties",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "What does confidential computing really provide?"
+    subtitle "What does confidential computing really provide?" fr "Quelles garanties nous donnent ces technologies?"
     slide_picture "Magic Smoke.jpg", 5%, 300
     stepping
 
     story
-        * "Confidential computing is about... confidentiality"
-        * "Protect data in use from leaks or tampering"
+        * "Confidential computing is about... confidentiality"  fr "On s'intéresse à la... confidentialité!"
+        * "Protect data in use from leaks or tampering"         fr "Éviter les fuites ou la corruption des données"
         $
-        * "Does not protect against crashes"
-        * "Does not protect disk, network data, ..."
-        * "Does not offer any guarantee of service"
-        * "Hardware-based, real-time cryptography"
-        * "Is highly implementation-dependent"
+        * "Does not protect against crashes"                    fr "On a le droit de planter"
+        * "Does not protect disk, network data, ..."            fr "Disques et réseaux sont considérés ""déjà fait""."
+        * "Does not offer any guarantee of service"             fr "Pas de garantie de service"
+        * "Hardware-based, real-time cryptography"              fr "Chiffrage matériel et en temps réel"
+        * "Is highly implementation-dependent"                  fr "Varie d'une plateforme à l'autre"
         $
-        * "TL;DR: There is no automatic security"
+        * "TL;DR: There is no automatic security"               fr "Bref: rien d'automatique ou de gratuit"
 
     right_picture
         images "Nosy Neighbour.jpg", "No SELinux.jpg", "MacOS Bomb.jpg", "Hard Disk Fail.jpg", "Customs.jpg", "Canal+ Scrambled.jpg", "SEV-SNP.jpg", "Road Rage.jpg"
@@ -210,21 +210,21 @@ base_slide "Guarantees",
 
 // ============================================================================
 //
-section_slide "What is Attestation?",
+section_slide "What is Attestation?" fr "Qu'est ce que l'attestation?",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Proving that you run"
-        $ "what you want to run"
-        $ "where you want to run it"
+        $ "Proving that you run"        fr "Prouver que ce votre programme"
+        $ "what you want to run"        fr "exécute le code souhaité"
+        $ "where you want to run it"    fr "dans l'environnement souhaité"
 
 
 // ----------------------------------------------------------------------------
-base_slide "A little bit of terminology",
+base_slide "A little bit of terminology" fr "Un peu de terminologie",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "The RATS model (from IETF)"
+    subtitle "The RATS model (from IETF)" fr "Le modèle RATS de l'IETF"
     slide_picture "Measuring.png", 3%, 300
     stepping
 
@@ -233,36 +233,36 @@ base_slide "A little bit of terminology",
         translate_y -120
 
         at_step 1
-        framed_box "#F80",    0,    0,  890, 130, "Verifier"
+        framed_box "#F80",    0,    0,  890, 130, "Verifier"    fr "Vérification"
 
         at_step 2
-        framed_box "#0C0", -300,  300,  290, 130, "Endorser"
+        framed_box "#0C0", -300,  300,  290, 130, "Endorser"    fr "Signataire"
         at_step 3
-        varrow_with_text   -300,  250,  50, "Endorsements"
+        varrow_with_text   -300,  250,  50, "Endorsements"      fr "Endosse"
 
         at_step 4
-        framed_box "#0C0",    0,  300,  290, 130, "Reference Value Provider"
+        framed_box "#0C0",    0,  300,  290, 130, "Reference Value Provider" fr "Base de référence"
         at_step 5
-        varrow_with_text      0,  250,  50, "Reference values"
+        varrow_with_text      0,  250,  50, "Reference values"  fr "Valeurs de référence"
 
         at_step 6
-        framed_box "#0C0",  300,  300,  290, 130, "Verifier owner"
+        framed_box "#0C0",  300,  300,  290, 130, "Verifier owner" fr "Responsable de vérification"
         at_step 7
-        varrow_with_text    300,  250,  50, "Appraisal policy (evidence)"
+        varrow_with_text    300,  250,  50, "Appraisal policy (evidence)" fr "Politique d'évaluation des preuves"
 
         at_step 8
-        framed_box "#C00", -750,    0,  290, 130, "Attester"
+        framed_box "#C00", -750,    0,  290, 130, "Attester"    fr "Candidat"
         at_step 9
-        harrow_with_text   -620,    0, -420,  "Evidence"
+        harrow_with_text   -620,    0, -420,  "Evidence"        fr "Éléments de preuve"
 
         at_step 10
-        framed_box "#00C",  750,    0,  290, 130, "Relying party"
+        framed_box "#00C",  750,    0,  290, 130, "Relying party"       fr "Tiers de confiance"
         at_step 11
-        harrow_with_text    420,    0,  620,  "Attestation results"
+        harrow_with_text    420,    0,  620,  "Attestation results"     fr "Résultat d'attestation"
         at_step 12
-        framed_box "#00C",  750,  300,  290, 130, "Relying party owner"
+        framed_box "#00C",  750,  300,  290, 130, "Relying party owner" fr "Responsable"
         at_step 13
-        varrow_with_text    750,  250,   50, "Appraisal policy (attestation results)"
+        varrow_with_text    750,  250,   50, "Appraisal policy (attestation results)" fr "Politique d'évaluation des résultats"
 
 varrow_with_text X, Y1, Y2, Label ->
     locally
@@ -295,79 +295,79 @@ harrow_with_text X1, Y, X2, Label ->
 
 
  // ----------------------------------------------------------------------------
-base_slide "Attestation: Basic concepts",
+base_slide "Attestation: Basic concepts" fr "Concepts essentiels",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Offering proofs about the configuration of a system"
+    subtitle "Offering proofs about the configuration of a system" fr "Prouver une propriété de la configuration d'un système"
     slide_picture "Attestation.jpg", 5%, 300
     stepping
 
     story
-        * "In general, attestation proves a property of a system"
-        * "Remote attestation decouples evidence from verification"
+        * "In general, attestation proves a property of a system"       fr "L'attestation prouve une propriété d'un système"
+        * "Remote attestation decouples evidence from verification"     fr "L'attestation à distance découple vérification et mesure"
         $
-        * "Passport check model: present evidence"
-        * "Background check mode: validate evidence"
+        * "Passport check model: present evidence"                      fr "Passeport: On présente les éléments de preuve"
+        * "Background check mode: validate evidence"                    fr "Antécédents: On valide les éléments de preuve"
 
     right_picture
         images "Attestation de déplacement.jpg", "Lock and Key.png"
         only_at 3,
             image -700, -200, 30%, 30%, "Passport model.jpg"
 
-            framed_box "#C00", -150, -200,  290, 130, "Attester"
-            varrow_with_text   -200, -150,  150, "Evidence"
-            varrow_with_text   -100,  150, -150, "ID"
-            framed_box "#00C",  300, -200,  290, 130, "Relying party"
-            framed_box "#F80", -150,  200,  290, 130, "Verifier"
-            harrow_with_text    -30, -200,  180, "ID"
+            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
+            varrow_with_text   -200, -150,  150, "Evidence"             fr "Éléments"
+            varrow_with_text   -100,  150, -150, "ID"                   fr "Qui?"
+            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
+            framed_box "#F80", -150,  200,  290, 130, "Verifier"        fr "Vérification"
+            harrow_with_text    -30, -200,  180, "ID"                   fr "Qui?"
 
 
         only_at 4,
             image -700, -200, 20%, 20%, "Background check.jpg"
 
-            framed_box "#C00", -150, -200,  290, 130, "Attester"
-            varrow_with_text    230, -150,  150, "Evidence"
-            varrow_with_text    370,  150, -150, "OK?"
-            framed_box "#00C",  300, -200,  290, 130, "Relying party"
-            framed_box "#F80",  300, 200,   290, 130, "Verifier"
-            harrow_with_text    -30, -200,  180, "Evidence"
+            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
+            varrow_with_text    230, -150,  150, "Evidence"             fr "Éléments"
+            varrow_with_text    370,  150, -150, "OK?"                  fr "OK?"
+            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
+            framed_box "#F80",  300, 200,   290, 130, "Verifier"        fr "Vérification"
+            harrow_with_text    -30, -200,  180, "Evidence"             fr "Éléments"
 
 
 // ----------------------------------------------------------------------------
-base_slide "REMITS pipeline",
+base_slide "REMITS pipeline" fr "La chaîne REMITS",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "A simplified (simplistic?) model of trust chains"
+    subtitle "A simplified (simplistic?) model of trust chains" fr "Un modèle simplifié des chaînes de confiance"
     slide_picture "Oversimplified.png", 3%, 300
     stepping
 
     picture
         at_step 1
         trust_letter 0, 0, "R"
-        root_of_trust   { bold "Root of trust"  ; small "Certificates" }
+        root_of_trust   { bold "Root of trust"  fr "Racine"; small "Certificates" fr "Certificats" }
         at_step 2
         trust_letter 1, 35, "E"
-        endorsement     { bold "Endorsement"    ; small "Signing keys" }
+        endorsement     { bold "Endorsement" fr "Endossement"   ; small "Signing keys" fr "Signature" }
         at_step 3
         trust_letter 2, 120, "M"
-        measurement     { bold "Measurement"    ; small "Hashes" }
+        measurement     { bold "Measurement" fr "Mesure"        ; small "Hashes" fr "Hachage" }
         at_step 4
         trust_letter 3, 180, "I"
-        identity        { bold "Identity"       ; small "Reference values" }
+        identity        { bold "Identity" fr "Identité"         ; small "Reference values" fr "Références" }
         at_step 5
         trust_letter 4, 210, "T"
-        trust           { bold "Trust"          ; small "Policies" }
+        trust           { bold "Trust" fr "Tenons"              ; small "Policies" fr "Politiques"}
         at_step 6
         trust_letter 5, 280, "S"
-        secrets         { bold "Secrets"        ; small "Encryption keys" }
+        secrets         { bold "Secrets" fr "Secrets"           ; small "Encryption keys" fr "Clefs de chiffrage" }
 
 
 
 // ----------------------------------------------------------------------------
-base_slide "REMITS pipeline examples",
+base_slide "REMITS pipeline examples" fr "Examples de chaînes REMITS",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Some simple applications of the REMITS pipeline"
+    subtitle "Some simple applications of the REMITS pipeline" fr "Quelques applications courantes"
     slide_picture "Complex Installation.jpg", 3%, 300
     stepping
 
@@ -378,31 +378,31 @@ base_slide "REMITS pipeline examples",
         at_step 1
         category_label  "Secure Boot"
         root_of_trust   "TPM"
-        endorsement     "Manufacturer"
-        measurement     "Firmware, bootloader"
-        identity        "Signed attestation report"
-        trust           "Attestation policies"
-        secrets         "Cloud API secret"
+        endorsement     "Manufacturer"                  fr "Fabricant"
+        measurement     "Firmware, bootloader"          fr "Démarrage"
+        identity        "Signed attestation report"     fr "Rapport signé"
+        trust           "Attestation policies"          fr "Règles d'attestation"
+        secrets         "Cloud API secret"              fr "Clefs d'accès"
 
         at_step 2
         translate_y -250
-        category_label  "Selling a property"
-        root_of_trust   "Notary"
-        endorsement     "Signed records"
-        measurement     "Deed or affidavit"
-        identity        "Property description"
-        trust           "I got your money"
-        secrets         "Handing the keys"
+        category_label  "Selling a property"            fr "Vendre un bien"
+        root_of_trust   "Notary"                        fr "Notaire"
+        endorsement     "Signed records"                fr "Mandat de vente"
+        measurement     "Deed or affidavit"             fr "Description du bien"
+        identity        "Property description"          fr "Cadastre"
+        trust           "I got your money"              fr "Chèque de banque"
+        secrets         "Handing the keys"              fr "Clefs"
 
         at_step 3
         translate_y -250
-        category_label  "Historical money"
-        root_of_trust   "Gold or silver"
-        endorsement     "Government"
-        measurement     "Market value"
-        identity        "Number of dollars"
-        trust           "Handing over cash"
-        secrets         "Getting food or goods"
+        category_label  "Historical money"              fr "Monnaie"
+        root_of_trust   "Gold or silver"                fr "Métal précieux"
+        endorsement     "Government"                    fr "Gouvernement"
+        measurement     "Market value"                  fr "Valeur au marché"
+        identity        "Number of dollars"             fr "Valeur faciale"
+        trust           "Handing over cash"             fr "Donner un billet"
+        secrets         "Getting food or goods"         fr "Récupérer l'achat"
 
     category_label Label ->
         text_box -1100, 0, 300, 200,
@@ -446,76 +446,76 @@ base_slide "Attestation",
 
 // ============================================================================
 //
-section_slide "Use Cases",
+section_slide "Use Cases" fr "Applications",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Various ways to deploy"
-        $ "confidential computing"
+        $ "Various ways to deploy"      fr "Différentes façon de déployer"
+        $ "confidential computing"      fr "l'informatique confidentielle"
 
 // ----------------------------------------------------------------------------
 base_slide "Confidential Computing Use Cases",
 // ----------------------------------------------------------------------------
-    title "Use Cases"
-    subtitle "From virtual machine to whole clusters"
+    title "Use Cases" fr "Applications"
+    subtitle "From virtual machine to whole clusters" fr "Des machines virtuelles aux grappes"
     slide_picture "container-vantaggi.png", 5%, 300
     stepping
 
     story
-        * "Base: Confidential Virtual Machines"
-        * "Functions: Confidential Workloads (krunvm)"
-        * "Orchestrated: Confidential Containers"
-        * "Enchilada: Confidential Clusters"
+        * "Base: Confidential Virtual Machines"         fr "Machines virtuelles confidentielles"
+        * "Functions: Confidential Workloads (krunvm)"  fr "Fonctions: ""Workloads"""
+        * "Orchestrated: Confidential Containers"       fr "Orchestration: Confidential Containers"
+        * "Enchilada: Confidential Clusters"            fr "La totale: Grappes confidentielles"
 
     right_picture
         images (if seconds / 2 mod 2 = 0 then "Confidential VM.png" else "Confidential VM.jpg"),"Confidential Workload.png","Confidential Containers.png","Confidential Cluster.png"
 
 
 // ----------------------------------------------------------------------------
-base_slide "Confidential Virtual Machines",
+base_slide "Confidential Virtual Machines"      fr "Machines virtuelles",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "The basic technology behind it all"
+    subtitle "The basic technology behind it all"       fr "La technologie de base"
     slide_picture "Confidential VM.png", 5%, 300
     stepping
 
     story
-        * "New hardware / firmware ABI with new features"
-        * "Host kernel no longer trusted, exposes new devices"
-        * "Hypervisor no longer trusted, exposes new features"
-        * "VM becomes a confidential enclave"
-        * "Guest firmware and boot sequence is measured"
-        * "Guest kernel can be measured"
+        * "New hardware / firmware ABI with new features"       fr "Nouveau matériel avec de nouvelles fonctions"
+        * "Host kernel no longer trusted, exposes new devices"  fr "Le noyau hôte n'est plus fiable, mais expose le nouveau matériel"
+        * "Hypervisor no longer trusted, exposes new features"  fr "L'hyperviseur n'est plus fiable, mais expose des fonctions"
+        * "VM becomes a confidential enclave"                   fr "La machine virtuelle devient une enclave confidentielle"
+        * "Guest firmware and boot sequence is measured"        fr "La séquence de démarrage est mesurée"
+        * "Guest kernel can be measured"                        fr "Le noyau hébergé peut être mesuré"
 
     right_picture
         at_step 1
-        framed_box "#610",     0, -300, 400, 80, "Firmware / Hardware"
+        framed_box "#610",     0, -300, 400, 80, "Firmware / Hardware"  fr "Matériel / Microgiciel"
         at_step 2
-        framed_box "#921",     0, -200, 400, 80, "Host Linux kernel"
+        framed_box "#921",     0, -200, 400, 80, "Host Linux kernel"    fr "Noyau hôte"
         at_step 3
-        framed_box "#E21",     0, -100, 400, 80, "Hypervisor (qemu)"
+        framed_box "#E21",     0, -100, 400, 80, "Hypervisor (qemu)"    fr "Hyperviseur (qemu)"
         at_step 4
-        framed_box "#3C6",     0,  160, 400, 400, "VM (Linux)"
+        framed_box "#3C6",     0,  160, 400, 400, "VM (Linux)"          fr "Enclave Linux"
         at_step 5
-        framed_box "#386",     0,   20, 380, 80, "Guest firmware"
+        framed_box "#386",     0,   20, 380, 80, "Guest firmware"       fr "Microgiciel hébergé"
         at_step 6
-        framed_box "#386",     0,  120, 380, 80, "Guest kernel"
+        framed_box "#386",     0,  120, 380, 80, "Guest kernel"         fr "Noyau hébergé"
 
 
 // ----------------------------------------------------------------------------
 base_slide "Confidential Workloads",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Lightweight, quick, container-like"
+    subtitle "Lightweight, quick, container-like" fr "Petit, rapide, léger, quasi-conteneurrs"
     slide_picture "Heavy Workload.jpg", 5%, 300
     stepping
 
     story
-        * "VM as a library (libkrun)"
-        * "Direct integration with Podman"
-        * "Got very early support for SEV"
-        * "First working attestation"
+        * "VM as a library (libkrun)"           fr "La virtualisation en librairie"
+        * "Direct integration with Podman"      fr "Intégré à podman"
+        * "Got very early support for SEV"      fr "Support précoce de AMD SEV"
+        * "First working attestation"           fr "Première attestation fonctionnelle"
 
     right_picture
         on "pageexit",
@@ -525,10 +525,10 @@ base_slide "Confidential Workloads",
 KRUNVM_MOVIE -> "movies/krunvm.mov##input-repeat=-1"
 
 // ----------------------------------------------------------------------------
-base_slide "Confidential Containers with Kata",
+base_slide "Confidential Containers with Kata" fr "La confidentialité avec Kata",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Using confidential VMs as a Kubernetes runtime"
+    subtitle "Using confidential VMs as a Kubernetes runtime" fr "Créer un runtime Kubernetes avec des VMs"
     slide_picture "Confidential - Top Secret.png", 5%, 300
     stepping
 
@@ -556,20 +556,20 @@ base_slide "Confidential Containers with Kata",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Confidential Clusters",
+base_slide "Confidential Clusters" fr "Les grappes confidentielles",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Running an entire cluster inside confidential enclaves"
+    subtitle "Running an entire cluster inside confidential enclaves" fr "Démarer une grappe complète dans des CVMs"
     slide_picture "Confidential VM.png", 5%, 300
     stepping
 
     story
-        * "Make the whole cluster confidential"
-        * "Works at the cloud provider level"
-        * "Generates confidential nodes"
-        * "Attested TLS (ATLS)"
-        * "JoinService: Attest nodes"
-        * "VerificationService: User-facing"
+        * "Make the whole cluster confidential" fr "Rend toute la grappe confidentielle"
+        * "Works at the cloud provider level"   fr "Opère au niveau du fournisseur"
+        * "Generates confidential nodes"        fr "Crée des noeuds confidentiels"
+        * "Attested TLS (ATLS)"                 fr "TLS attesté (ATLS)"
+        * "JoinService: Attest nodes"           fr "Service d'attestation des noeuds"
+        * "VerificationService: User-facing"    fr "Vérifiable par l'utilisateur"
 
 
     right_picture
@@ -584,12 +584,12 @@ CONSTELLATION_MOVIE -> "movies/Constellation.mp4##input-repeat=-1"
 
 // ============================================================================
 //
-section_slide "Building actual trust",
+section_slide "Building actual trust" fr "Construire la confiance",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Keeping the trust alive along the way"
+        $ "Keeping the trust alive along the way" fr "Comment garder la confiance intacte tout au long de la chaîne"
 
 
 // ----------------------------------------------------------------------------
@@ -621,82 +621,139 @@ base_slide "How does attestation work?" fr "Comment marche l'attestation",
 
 
 // ----------------------------------------------------------------------------
-base_slide "Attestation flow",
+base_slide "Attestation flow" fr "Flux pendant l'attestation",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Unlock workloads by giving secrets"
+    subtitle "Unlock workloads by giving secrets" fr "Déverrouiller en révélant des secrets"
     slide_picture "Water Flow.jpg", 5%, 300
     stepping
 
     story
-        * "Attester sends request"
-        * "Response is a cryptographic challenge"
-        * "Attester presents crypted evidence"
-        * "Evidence relayed to verifier"
-        * "Attestation result returned"
-        * "Secrets retrieved"
-        * "Response sent to attester"
+        * "Attester sends request"                      fr "Le candidat envoie sa demande"
+        * "Response is a cryptographic challenge"       fr "Interrogation cryptographique en retour"
+        * "Attester presents crypted evidence"          fr "Présentation des éléments de preuve"
+        * "Evidence relayed to verifier"                fr "Transmis pour vérification"
+        * "Attestation result returned"                 fr "Le résultat est rendu"
+        * "Secrets retrieved"                           fr "Pour révéler les secrets"
+        * "Response sent to attester"                   fr "Réponse au candidat"
 
     right_picture
         translate_y 100
         scale 80%
-        framed_box "#C00", -150,   0,  290, 130, "Attester"
-        framed_box "#00C",  300,   0,  290, 130, "Relying party"
-        framed_box "#F80",  300, 200,   290, 130, "Verifier"
-        framed_box "#04C",  300, -200,  290, 130, "Secrets Broker"
+        framed_box "#C00", -150,   0,  290, 130, "Attester"             fr "Candidat"
+        framed_box "#00C",  300,   0,  290, 130, "Relying party"        fr "Tiers de confiance"
+        framed_box "#F80",  300, 200,   290, 130, "Verifier"            fr "Vérification"
+        framed_box "#04C",  300, -200,  290, 130, "Secrets Broker"      fr "Gardien des clefs"
 
         only_at 1,
-            harrow_with_text    -30,    0,  180, "Request"
+            harrow_with_text    -30,    0,  180, "Request"              fr "Requête"
         only_at 2,
-            harrow_with_text    180,    0,  -30, "Challenge"
+            harrow_with_text    180,    0,  -30, "Challenge"            fr "Question"
         only_at 3,
-            harrow_with_text    -30,    0,  180, "Evidence"
+            harrow_with_text    -30,    0,  180, "Evidence"             fr "Éléments"
         only_at 4,
-            varrow_with_text    230,   50,  150, "Evidence"
+            varrow_with_text    230,   50,  150, "Evidence"             fr "Éléments"
         only_at 5,
-            varrow_with_text    370,  150,   50, "Attestation result"
+            varrow_with_text    370,  150,   50, "Attestation result"   fr "Résultats"
         only_at 6,
-            varrow_with_text    370,  -50,  -150, "Get secrets"
+            varrow_with_text    370,  -50,  -150, "Get secrets"         fr "Secrets"
         only_at 7,
-            harrow_with_text    180,    0,  -30, "Give secrets"
+            harrow_with_text    180,    0,  -30, "Give secrets"         fr "Divulgation"
 
     picture
         translate_y -250
         scale 80%
         at_step 8
-        root_of_trust   "Manufacturer root Key"
-        endorsement     "Per-Chip endorsement"
-        measurement     "Boot-time Memory"
-        identity        "What is running"
-        trust           "Relying party Policies"
-        secrets         "Key to decrypt"
+        root_of_trust   "Manufacturer root key"         fr "Clef crypto du fabricant"
+        endorsement     "Per-Chip endorsement"          fr "Endossement de la puce"
+        measurement     "Boot-time Memory"              fr "Mémoire au démarrage"
+        identity        "What is running"               fr "Qu'est-ce qui tourne?"
+        trust           "Relying party policies"        fr "Règles du tiers"
+        secrets         "Key to decrypt"                fr "Clef de déchiffrage"
 
 
 // ----------------------------------------------------------------------------
-base_slide "Who proves what to whom?",
+base_slide "Who proves what to whom?" fr "Qui prouve quoi à qui?",
 // ----------------------------------------------------------------------------
     title page_label
-    subtitle "Different kinds of proof for different consumers"
+    subtitle "Different kinds of proof for different consumers" fr "Des preuves différentes pour des clients différents"
     slide_picture "Proofs.jpg", 5%, 300
     stepping
 
     story
-        * "System-facing: System software building a trusted execution environment"
-        * "User-facing: User checking if a system is trusted"
-        * "Workload-facing: Workload checking if runtime environment is trusted"
-        * "Peer-facing: Workloads checking of other workload is trusted"
-        * "Cluster-facing: nodes in a cluster check each other"
+        * "System-facing: System software building a trusted execution environment"     fr "Système: Construction d'un environnement fiable"
+        * "User-facing: User checking if a system is trusted"                           fr "Utilisateur: Vérifier qu'un système est fiable"
+        * "Workload-facing: Workload checking if runtime environment is trusted"        fr "Application: Vérifier si l'environnement d'exécution est fiable"
+        * "Peer-facing: Workloads checking of other workload is trusted"                fr "Pair à pair: Vérifier si mon voisin est fiable"
+        * "Cluster-facing: nodes in a cluster check each other"                         fr "Grappe: Vérifier si les noeuds d'une grappe sont fiables"
 
 
 
 // ============================================================================
 //
-section_slide "Platform-specific details",
+section_slide "Conclusion" fr "Conclusion",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Beyond that point, there be zombies"
+        $ "Attestation means many different things." fr "Le terme ""attestation"" est"
+        $ "" fr "à la fois ambigü et surchargé"
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Attestation? We only scratched the surface!" fr "Nous n'avons fait que survoler"
+    slide_picture "Pile of Cash.png", 0%, 250
+    stepping
+    story
+        * "Confidential Computing is a large collection of technologies"                fr "L'informatique confidentielle, c'est beaucoup de technos"
+        * "Attestation can mean very different things even in a same context"           fr "Le sens du mot ""attestation"" dépend du contexte"
+        * "Preserving chains of trust requires careful thinking"                        fr "Préserver la chaîne de confience ne tolère pas l'approximation"
+        * "Technologies are not consistent"                                             fr "Les technologies ne sont pas toutes égales entre elles"
+        $
+        * "Please see blog for more details and links"                                  fr "Une série d'articles qui donne plus de détails"
+
+    right_picture
+        at_step 5
+        image 150, 0, 300%, 300%, "QRCode-CoCo-Primer.png"
+
+
+// ============================================================================
+//
+section_slide "Thank you" fr "Merci",
+//
+// ============================================================================
+    title page_label
+    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    translate_y -50
+    picture
+        color "white"
+        image 700, -80, 230%, 230%, "QRCode-CoCo-Primer.png"
+
+
+
+// ============================================================================
+//
+section_slide "Platform-specific details" fr "Détails pratiques",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Beyond that point, there be zombies" fr "Au delà de cette ligne on trouve des dragons"
 
 
 // ----------------------------------------------------------------------------
@@ -833,75 +890,6 @@ base_slide "How do we get this to work?",
         $
         * "Referring you to the blog for pointers"
 
-
-// ----------------------------------------------------------------------------
-base_slide "Upcoming attractions",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Watch out of these upcoming KVM Forum talks"
-    slide_picture "Upcoming attractions.jpg", 5%, 300
-    stepping
-
-    story
-        * "2:00 Trusted I/O (Jeremy Powell)"
-        * "2:30 Secure VM Service Module (Jörg Rödel)"
-        * "3:00 Zero-trust virtual TPM (Claudio Carvalho)"
-
-
-
-// ============================================================================
-//
-section_slide "Conclusion" fr "Conclusion",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Attestation means many different things."
-
-
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways" fr "Ce qu'il faut retenir",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Attestation? We only scratched the surface!"
-    slide_picture "Pile of Cash.png", 0%, 250
-    stepping
-    story
-        * "Confidential Computing is a large collection of technologies"
-        * "Attestation can mean very different things even in a same context"
-        * "Preserving chains of trust requires careful thinking"
-        * "Technologies are not consistent"
-        $
-        * "Please see blog for more details and links"
-
-    right_picture
-        at_step 5
-        image 150, 0, 300%, 300%, "QRCode-CoCo-Primer.png"
-
-
-// ============================================================================
-//
-section_slide "Thank you" fr "Merci",
-//
-// ============================================================================
-    title page_label
-    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
-    stepping
-
-    contents 0,
-        text_box 200, -400, 600, 200,
-            style "story"
-            font_size 30
-            anchor
-                color "white"
-                image -80, -40, 10%, 10%, "Tao3D.png"
-            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
-            paragraph presentation_tao
-
-    translate_y -50
-    picture
-        color "white"
-        image 700, -80, 230%, 230%, "QRCode-CoCo-Primer.png"
 
 
 show_overflow -> 0
@@ -1347,7 +1335,7 @@ interpolate 10%, show_quotes, show_quotes_v
 if show_quotes_v > 0.0 then
     show show_quotes_v
     quotes
-        quote "Kevin Mitnick", "I compromised the confidentiality of their proprietary software to advance my agenda of becoming the best at breaking through the lock."
+        quote "Kevin Mitnick", "I compromised the confidentiality of their proprietary software to advance my agenda of becoming the best at breaking through the lock." fr "J'ai attaqué la confidentialité de leur logiciel propriétaire dans mon propre intérêt, à savoir devenir le meilleur démolisseur de cadenas."
         quote "Billy Graham", "Confidentiality is the essence of being trusted"
         quote "Gretchen Rubin", "I love cunning containers as much as anyone, but I've found that if I get rid of everything I don't need, I often don't need a container at all."
         quote "Andrew Tannenbaum", "The good thing about standards is", " that there are so many to choose from."
