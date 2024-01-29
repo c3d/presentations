@@ -254,7 +254,18 @@ theme_background "RedHat", "section" ->
 
     contents -50,
         color "#FFF"
-        image 600, 380, 100%, 100%, "AzurTech Winter.png"
+        image 600, 380, 50%, 50%, "FOSDEM_logo_text_only.png"
+        locally
+            translate 420, 380, 20
+            light 0
+            light_position 100, 200, -400
+            light_diffuse "gray"
+            light_specular "white"
+            rotate_y 25 * sin time
+            color "purple"
+            scale 35%
+            extrude_depth 55
+            fosdem_logo
 
 
 
@@ -305,7 +316,12 @@ theme_background "RedHat", Master ->
         image 800, -510, 15%, 15%, "RedHat-BlackText.png"
     contents -50,
         color "#FFF"
-        image 550, -510, 55%, 55%, "AzurTech Winter small.png"
+        image 550, -510, 20%, 20%, "FOSDEM_logo_text_only.png"
+        locally
+            translate 470, -510, 20
+            color "purple"
+            scale 15%
+            fosdem_logo
     contents -50,
         box -790, -510, 120, 50,
             vertical_align 0.5
@@ -542,7 +558,7 @@ title_slide_logo ->
     picture
         translate 600, 450, 20
         texture presentation_logo
-        color "white"
+        color "white", 99%
         title_slide_logo_internal texture_width, texture_height
         title_slide_logo_internal 0, H -> false
         title_slide_logo_internal W, 0 -> false
@@ -550,9 +566,38 @@ title_slide_logo ->
             scale min(400.0 / W, 300.0 / H)
             locally
                 texture ""
-                color "white", 0%
+                color "white", 80%
                 rounded_rectangle 0, 0, W*120%, H*120%, 60
             rounded_rectangle 0, 0, W, H, 0
+
+    picture
+        translate 450, 450, 30
+        color "purple"
+        scale 28%
+        fosdem_logo
+
+fosdem_logo ->
+// ----------------------------------------------------------------------------
+//   Draw an animated version of the FOSDEM logo
+// ----------------------------------------------------------------------------
+    path
+        circle -35, 0, 20
+        circle  35, 0, 20
+
+        circle  0, 0, 92
+
+        sx N:real -> sin((N + 0.2 * time) * 2*pi / 13)
+        cx N:real -> cos((N + 0.2 * time) * 2*pi / 13)
+        quad N:real, R1:real, R2: real ->
+            quad_to R1 * sx(N), R1 * cx(N), R2 * sx(N+0.1), R2 * cx(N+0.1)
+
+        move_to 135 * sx(0.2), 135 * cx(0.2)
+        for i in 0..12 loop
+            quad i + 0.1, 137, 135
+            quad i + 0.3, 150, 165
+            quad i + 0.5, 168, 165
+            quad i + 0.7, 150, 135
+            quad i + 1.1, 137, 135
 
 
 
@@ -1143,7 +1188,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 1500 //25 minutes
+TOTAL_DURATION -> 3000 //25 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -1784,7 +1829,7 @@ bar_graph_draw Value:real ->
 //
 // ============================================================================
 
-LANG -> "fr"
+LANG -> "en"
 English fr French -> if LANG="fr" then French else English
 english Body -> if LANG="en" then Body
 french  Body -> if LANG="fr" then Body

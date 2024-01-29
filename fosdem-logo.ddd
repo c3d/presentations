@@ -1,0 +1,37 @@
+color "black"
+
+color "white", 10%
+image 0, 0, 200%, 200%, "FOSDEM.png"
+
+light 0
+light_position 300,300, -1000
+light_diffuse "white"
+light_specular "white"
+
+light 1
+light_position -300,-200, 500
+light_diffuse "white"
+light_specular "white"
+
+extrude_depth 60
+rotate_y 0.1 * mouse_x
+
+color "purple"
+path
+    circle -35, 0, 20
+    circle  35, 0, 20
+
+    circle  0, 0, 92
+
+    sx N:real -> sin((N + 0.2 * time) * 2*pi / 13)
+    cx N:real -> cos((N + 0.2 * time) * 2*pi / 13)
+    quad N:real, R1:real, R2: real ->
+        quad_to R1 * sx(N), R1 * cx(N), R2 * sx(N+0.1), R2 * cx(N+0.1)
+
+    move_to 135 * sx(0.2), 135 * cx(0.2)
+    for i in 0..12 loop
+        quad i + 0.1, 137, 135
+        quad i + 0.3, 150, 165
+        quad i + 0.5, 168, 165
+        quad i + 0.7, 150, 135
+        quad i + 1.1, 137, 135

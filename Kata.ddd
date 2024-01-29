@@ -1,7 +1,7 @@
-presentation_title "L'attestation, clef de voûte du ""Confidential Computing"" - AzurTech 2023"
-presentation_logo "AzurTech Winter.png"
+presentation_title "Proving that Cloud Sysadmins Cannot Read your Data!"
+presentation_logo "FOSDEM_logo_text_only.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branche azurtech2023-attestation)"
+presentation_tao "https://github.com/c3d/presentations (branche fosdem2024)"
 presentation_author "Christophe de Dinechin"
 presentation_author_title "Senior Principal Software Engineer"
 presentation_author_mail "cddd@redhat.com"
@@ -12,10 +12,10 @@ presentation_author_mail "cddd@redhat.com"
 main_title_slide "Main title",
 // ----------------------------------------------------------------------------
     title
-        $ "Chains of trust in" fr "L'attestation, clef de voûte du"
-        $ "Confidential Computing"
+        $ "Proving that Cloud Sysadmins"
+        $ "Cannot Read your Data!"
     subtitle
-        $ "Knowing and verifying what you run" fr "Savoir exactement quel programme vous exécutez"
+        $ { text "Trust, but "; bold "verify"; text " what you run" }
 
     title_slide_author "Christophe.jpg",
         $ presentation_author
@@ -35,17 +35,18 @@ base_slide "Agenda" fr "Programme",
     stepping
     story
         * "Overview of Confidential Computing" fr "Introduction au ""confidential computing"""
-        * "What is Attestation?" fr "Qu'est ce que l'attestation?"
         * "Use cases for Confidential Computing" fr "À quoi sert la confidentialité?"
-        * "From root of trust to actual trust" fr "Construire une chaîne de confiance"
         $
-        * "Platform-specific details" fr "Différences entre technologies"
-        * "Supporting technologies" fr "Technologies d'appui"
-        * "See blog for more details" fr "Une série d'articles qui donnent plus de détails"
+        * "From root of trust to actual trust" fr "Construire une chaîne de confiance"
+        * "What is Attestation?"
+        * "Measuring to build confidence "
+        * "Handing over secrets"
+        $
+        * "More details in a blog" fr "Une série d'articles qui donnent plus de détails"
 
 
     right_picture
-        images "Complex Mechanism.jpg", "handing-over-keys.jpg", "Hackers.jpg", "Root of Trust.jpg", "Universal Power Adapter.jpg", "Eiffel Tower Foundations.jpg", "QRCode-CoCo-Primer.png"
+        images "Complex Mechanism.jpg", "Hackers.jpg", "Root of Trust.jpg", "Attestation.png", "Measuring to build confidence.jpg", "handing-over-keys.jpg", "QRCode-CoCo-Primer.png"
 
 
 
@@ -1105,8 +1106,8 @@ confidential Step:integer ->
         light 0
         light_position 50, 50, 120
 
-        rotate_x 10
-        rotate_y 10 * sin (0.3 * time)
+        rotate_x 10 + mouse_y * 0.01
+        rotate_y 10 * sin (0.3 * time) + mouse_x * 0.01
 
         locally
             color "lightgray"
