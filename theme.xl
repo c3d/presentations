@@ -43,6 +43,8 @@ theme_align "RedHat", "main", "title"           -> align_left
 theme_align "RedHat", "main", "subtitle"        -> align_left
 theme_align "RedHat", "section", "title"        -> align_left; vertical_align_bottom
 theme_align "RedHat", "section", "subtitle"     -> align_left
+theme_align "RedHat", "intro", "title"          -> align_left; vertical_align_bottom
+theme_align "RedHat", "intro", "subtitle"       -> align_left
 theme_color "RedHat", "main", Theme             -> color "white"
 theme_color "RedHat", "section", "title"        -> color redhat_red
 theme_color "RedHat", "section", Theme          -> color "black"
@@ -119,8 +121,8 @@ theme_box "RedHat",Master:text,"rightpic", X:real,Y:real,W:real,H:real -> false
 //
 // ============================================================================
 
-theme_slide_width  "RedHat" -> 1920
-theme_slide_height "RedHat" -> 1080
+theme_slide_width  "RedHat" -> 1930
+theme_slide_height "RedHat" -> 1090
 
 // Red Hat colors
 redhat_red      -> "#EE2000"
@@ -318,7 +320,7 @@ theme_background "RedHat", Master ->
         color "#FFF"
         image 550, -510, 20%, 20%, "FOSDEM_logo_text_only.png"
         locally
-            translate 470, -510, 20
+            translate 470, -505, 20
             color "purple"
             scale 15%
             fosdem_logo
@@ -473,6 +475,14 @@ theme_layout "RedHat", "blank" ->
     flow 0, 0, 1800, 750, "story"
 
 
+theme_layout "RedHat", "intro" ->
+// ----------------------------------------------------------------------------
+//    Centered flows for intro separators
+// ----------------------------------------------------------------------------
+    flow 0,  250, 1000, 450, "title"
+    flow 0, -150, 1000, 350, "subtitle"
+
+
 theme_layout "RedHat", Master:text ->
 // ----------------------------------------------------------------------------
 //    Centered flows
@@ -481,6 +491,13 @@ theme_layout "RedHat", Master:text ->
     flow    0,  -80, 1800, 700, "story"
     flow -475,  -80,  850, 700, "left"
     flow  475,  -80,  850, 700, "right"
+
+
+intro_slide Title:text, Body ->
+// ----------------------------------------------------------------------------
+//   Create a sldie for an intro
+// ----------------------------------------------------------------------------
+    slide_master theme, "intro", Title, Body
 
 
 slide_picture_at A..B, What ->
@@ -1188,7 +1205,7 @@ tao "grey"                              -> "#555"
 //
 // ============================================================================
 
-TOTAL_DURATION -> 3000 //25 minutes
+TOTAL_DURATION -> 3000 // 50 minutes
 START_TIME     -> 0.0
 
 key "Right" -> skip 1
@@ -1508,6 +1525,11 @@ quote_image Author:text ->
         translate -670, 280, 15
         color "white"
         texture Author & ".jpg"
+        ellipse 0, 0, 260, 320
+        texture ""
+        color "transparent"
+        line_color "darkred", (quote_cosR - 0.9) * 10
+        line_width 6
         ellipse 0, 0, 260, 320
 
 quote_image Other -> false

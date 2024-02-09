@@ -1,11 +1,10 @@
 presentation_title "Proving that Cloud Sysadmins Cannot Read your Data!"
 presentation_logo "FOSDEM_logo_text_only.png"
 presentation_url "https://github.com/c3d/presentations"
-presentation_tao "https://github.com/c3d/presentations (branche fosdem2024)"
+presentation_tao "https://github.com/c3d/presentations (branch fosdem2024)"
 presentation_author "Christophe de Dinechin"
-presentation_author_title "Senior Principal Software Engineer"
-presentation_author_mail "cddd@redhat.com"
-
+presentation_author_title "Senior Principal Software Engineer, Red Hat"
+presentation_author_mail "c3d.github.io"
 
 
 // ----------------------------------------------------------------------------
@@ -22,6 +21,8 @@ main_title_slide "Main title",
         $ { italic presentation_author_title }
         font "Overpass Mono"
         $ presentation_author_mail
+    picture
+        image 300, -220, 35%, 35%, "QR C3D Github.png"
 
     title_slide_logo
 
@@ -34,19 +35,20 @@ base_slide "Agenda" fr "Programme",
     slide_picture "Agenda.jpg", 0%, 320 // https://www.pexels.com/fr-fr/photo/programme-startup-a-faire-concept-7376/
     stepping
     story
-        * "Overview of Confidential Computing" fr "Introduction au ""confidential computing"""
-        * "Use cases for Confidential Computing" fr "À quoi sert la confidentialité?"
+        * "Confidential Computing Overview & Use Cases" fr "Introduction au ""confidential computing"""
         $
         * "From root of trust to actual trust" fr "Construire une chaîne de confiance"
-        * "What is Attestation?"
-        * "Measuring to build confidence "
-        * "Handing over secrets"
+        * "What is attestation and what does it prove?"
+        * "Why measurements matter to build confidence "
+        * "How to securely hand over secrets"
         $
-        * "More details in a blog" fr "Une série d'articles qui donnent plus de détails"
+        * "Are you leaving the door of the safe open?"
+        $
+        * "More details on RedHat's blog" fr "Une série d'articles qui donnent plus de détails"
 
 
     right_picture
-        images "Complex Mechanism.jpg", "Hackers.jpg", "Root of Trust.jpg", "Attestation.png", "Measuring to build confidence.jpg", "handing-over-keys.jpg", "QRCode-CoCo-Primer.png"
+        images "Hackers.jpg", "Root of Trust.jpg", "Attestation.png", "Measuring to build confidence.jpg", "handing-over-keys.jpg", "Complex Mechanism.jpg", "QRCode-CoCo-Primer.png"
 
 
 
@@ -59,7 +61,7 @@ section_slide "Confidential Computing" fr "L'informatique confidentielle",
     subtitle
         $ "Protecting data in-use" fr "Protéger les données en opération"
     stepping
-    page_quote 0
+    page_quote 1
 
 
 
@@ -68,7 +70,7 @@ base_slide "Problem Statement" fr "Posons le problème",
 // ----------------------------------------------------------------------------
     title page_label
     subtitle "Why should infrastructure see your data?" fr "Votre hébergeur peut-il voir vos données?"
-    slide_picture "Confidential Computing.jpg", 5%, 350
+    slide_picture "Doctor Evil.jpg", 5%, 350
     stepping
 
     picture
@@ -78,683 +80,58 @@ base_slide "Problem Statement" fr "Posons le problème",
         caption_at CNF_SANDBOX_OUT, "Classical sandboxing only protects the host from the containers running on it" fr "L'isolation classique est conçue pour protéger l'hébergeur des conteneurs"
         caption_at CNF_SANDBOX_IN, "The host can freely peek inside the container, for example read its memory" fr "À l'inverse, l'hébergeur peut tout à fait regarder dans un conteneur"
         caption_at CNF_TENANTS, "For that reason, multiple tenants do not want to share hardware when processing sensitive data" fr "Des concurrents ne voudront pas partager le même matériel pour des données sensibles"
-        caption_at CNF_SAFE_TODAY, "Data on disk or in network is already encrypted today, so the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà chiffrées aujourd'hui, donc OK"
+        caption_at CNF_SAFE_TODAY, "Data on disk or in network is already encrypted today: the VM host cannot read it nor tamper with it" fr "Les données sur disque ou réseau sont déjà chiffrées aujourd'hui, donc OK"
         caption_at CNF_MEMORY_VM, "In non-CC architectures, data in memory is not encrypted, so it can be accessed by the host" fr "Pour les données en mémoire vive, il faut le nouveau matériel"
+        confidential integer(smooth_step + 0.5)
+
+        if smooth_step > CNF_MEMORY_VM then
+            next_page
+
+
+// ============================================================================
+//
+intro_slide "Demo: Stealing in-use data",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Secrets can be accessed from the host"
+        $ "just by dumping guest memory"
+    slide_picture "Hackers.jpg", 5%, 350
+    stepping
+    at_step 1
+
+movie_slide "Running a non-confidential VM", "movies/6-Running non-confidential VM.mp4"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Proposed Solutions" fr "Solutions proposées",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Encrypt workload memory, preserve integrity" fr "Chiffrer la mémoire de vos applis"
+    slide_picture "Confidential Computing.jpg", 5%, 350
+    stepping
+
+    on "pageentry",
+        skip_directly_to CNF_MEMORY_VM
+
+    picture
         caption_at CNF_MEMORY_HOST, "Encrypted memory stores live data as cypher text, so that it becomes garbled when read by the host" fr "Les données ainsi protégées deviennent illisibles pour l'hébergeur"
         caption_at CNF_INTEGRITY, "Integrity ensures the host cannot corrupt nor poison CPU state or RAM contents" fr "Il faut aussi protéger l'intégrité de l'état du CPU ou de la mémoire"
         caption_at CNF_ATTESTATION, "Attestation proves where you are running and what you are running" fr "L'attestation permet de contrôler ce qui tourne, mais aussi où ça tourne"
         confidential integer(smooth_step + 0.5)
 
 
-
-// ----------------------------------------------------------------------------
-base_slide "Root of Trust" fr "Les bases de la confiance",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "First there was the hardware" fr "Ça commence par le matériel"
-    slide_picture "TPM_Asus.jpg", 5%, 350
-    stepping
-
-    picture
-        tpm_step        1, "#F00", -300, "Root of Trust (TPM)"  fr "Racine de confiance (TPM)"
-        tpm_step        2, "#F40", -200, "ROM-based boot"       fr "Démarrage (Mémoire morte)"
-        tpm_step        3, "#444", -100, "BIOS Phase 1"         fr "Étape 1 du BIOS"
-        tpm_step        4, "#448",    0, "BIOS Phase 2"         fr "Étape 2 du BIOS"
-        tpm_step        5, "#24C",  100, "Boot Manager"         fr "Gestionnaire de démarrage"
-        tpm_step        6, "#00F",  200, "Linux Kernel"         fr "Noyau Linux"
-        tpm_step_final  7, "#080",  300, "Workload"             fr "Couches applicatives"
-
-        tpm_step Step, Color, Y, Label ->
-            locally
-                at_step 3*Step - 1
-                locally
-                    translate_y Y
-                    color "transparent"
-                    line_color Color
-                    line_width 8
-                    path
-                        move_to 300, 20
-                        line_to 350, 20
-                        line_to 350, 80
-                        line_to 300, 80
-                        endpoints_style "none", "arrowhead"
-                text_box 570, Y + 50, 400, 90,
-                    align 0%
-                    vertical_align 50%
-                    style "story"
-                    color Color
-                    font_size 30
-                    text "Measures and launches"        fr "Mesure, puis démarre"
-            locally
-                at_step 3*Step + 1
-                locally
-                    translate_y Y
-                    color "transparent"
-                    line_color Color
-                    line_width 8
-                    path
-                        move_to -300, 100
-                        line_to -350 - 30 * Step, 100
-                        line_to -350 - 30 * Step, -300 - Y - Y / 10
-                        line_to -300, -300 - Y - Y / 10
-                        endpoints_style "none", "arrowhead"
-                text_box -470, Y + 50, 400, 90,
-                    align 100%
-                    vertical_align 50%
-                    style "story"
-                    color Color
-                    font_size 30
-                    text "Records"      fr "Enregistre"
-            tpm_step_final Step, Color, Y, Label
-        tpm_step_final Step, Color, Y, Label ->
-            at_step 3 * Step - 3
-            framed_box Color, 0, Y, 600, 90, { render Label }
-
-
-// ----------------------------------------------------------------------------
-base_slide "Trust domains" fr "Les domaines de confiance",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Example: confidential containers" fr "Exemple: les conteneurs confidentiels"
-    slide_picture "Confidential - Top Secret.png", 5%, 300
-    stepping
-
-    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
-    on "pageentry",
-        skip_to CC_PLATFORM
-
-    contents 0,
-        at_step CC_PLATFORM
-        talk_frame
-            color "#C22"
-            rectangle 0, 7, 50, 20
-            bold " Trusted platform: " fr " Plateforme sécurisée: "
-            color "black"
-            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
-            at_step CC_HOST
-            color "#24C"
-            rectangle 0, 7, 50, 20
-            bold " Host: " fr " Hébergeur: "
-            color "black"
-            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
-            at_step CC_TENANT
-            color "#2A2"
-            rectangle 0, 7, 50, 20
-            bold " Tenant: " fr " Locataire: "
-            color "black"
-            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Guarantees" fr "Garanties",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "What does confidential computing really provide?" fr "Quelles garanties nous donnent ces technologies?"
-    slide_picture "Magic Smoke.jpg", 5%, 300
-    stepping
-
-    story
-        * "Confidential computing is about... confidentiality"  fr "On s'intéresse à la... confidentialité!"
-        * "Protect data in use from leaks or tampering"         fr "Éviter les fuites ou la corruption des données"
-        $
-        * "Does not protect against crashes"                    fr "On a le droit de planter"
-        * "Does not protect disk, network data, ..."            fr "Disques et réseaux sont considérés ""déjà fait""."
-        * "Does not offer any guarantee of service"             fr "Pas de garantie de service"
-        * "Hardware-based, real-time cryptography"              fr "Chiffrage matériel et en temps réel"
-        * "Is highly implementation-dependent"                  fr "Varie d'une plateforme à l'autre"
-        $
-        * "TL;DR: There is no automatic security"               fr "Bref: rien d'automatique ou de gratuit"
-
-    right_picture
-        images "Nosy Neighbour.jpg", "No SELinux.jpg", "MacOS Bomb.jpg", "Hard Disk Fail.jpg", "Customs.jpg", "Canal+ Scrambled.jpg", "SEV-SNP.jpg", "Road Rage.jpg"
-
-
 // ============================================================================
 //
-section_slide "What is Attestation?" fr "Qu'est ce que l'attestation?",
+section_slide "Technologies",
 //
 // ============================================================================
     title page_label
     subtitle
-        $ "Proving that you run"        fr "Prouver que ce votre programme"
-        $ "what you want to run"        fr "exécute le code souhaité"
-        $ "where you want to run it"    fr "dans l'environnement souhaité"
-
-
-// ----------------------------------------------------------------------------
-base_slide "A little bit of terminology" fr "Un peu de terminologie",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "The RATS model (from IETF)" fr "Le modèle RATS de l'IETF"
-    slide_picture "Measuring.png", 3%, 300
+        $ "A long evolution for a complicated problem"
     stepping
-
-    picture
-        // image 0, 0, 100%, 100%, "RATS Model.png"
-        translate_y -120
-
-        at_step 1
-        framed_box "#F80",    0,    0,  890, 130, "Verifier"    fr "Vérification"
-
-        at_step 2
-        framed_box "#0C0", -300,  300,  290, 130, "Endorser"    fr "Signataire"
-        at_step 3
-        varrow_with_text   -300,  250,  50, "Endorsements"      fr "Endosse"
-
-        at_step 4
-        framed_box "#0C0",    0,  300,  290, 130, "Reference Value Provider" fr "Base de référence"
-        at_step 5
-        varrow_with_text      0,  250,  50, "Reference values"  fr "Valeurs de référence"
-
-        at_step 6
-        framed_box "#0C0",  300,  300,  290, 130, "Verifier owner" fr "Responsable de vérification"
-        at_step 7
-        varrow_with_text    300,  250,  50, "Appraisal policy (evidence)" fr "Politique d'évaluation des preuves"
-
-        at_step 8
-        framed_box "#C00", -750,    0,  290, 130, "Attester"    fr "Candidat"
-        at_step 9
-        harrow_with_text   -620,    0, -420,  "Evidence"        fr "Éléments de preuve"
-
-        at_step 10
-        framed_box "#00C",  750,    0,  290, 130, "Relying party"       fr "Tiers de confiance"
-        at_step 11
-        harrow_with_text    420,    0,  620,  "Attestation results"     fr "Résultat d'attestation"
-        at_step 12
-        framed_box "#00C",  750,  300,  290, 130, "Relying party owner" fr "Responsable"
-        at_step 13
-        varrow_with_text    750,  250,   50, "Appraisal policy (attestation results)" fr "Politique d'évaluation des résultats"
-
-varrow_with_text X, Y1, Y2, Label ->
-    locally
-        line_width 6
-        line_color "black"
-        color "transparent"
-        line_arrow X, Y1, none, X, Y2, arrowhead
-
-    text_box X - 160, (Y1+Y2)/2, 300, 90,
-        style "story"
-        font_size 30
-        align 100%
-        vertical_align 30%
-        render Label
-
-harrow_with_text X1, Y, X2, Label ->
-    locally
-        line_width 6
-        line_color "black"
-        color "transparent"
-        line_arrow X1, Y, none, X2, Y, arrowhead
-
-    text_box (X1+X2)/2, Y-50, 300, 90,
-        style "story"
-        font_size 30
-        align 50%
-        vertical_align 30%
-        render Label
-
-
-
- // ----------------------------------------------------------------------------
-base_slide "Attestation: Basic concepts" fr "Concepts essentiels",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Offering proofs about the configuration of a system" fr "Prouver une propriété de la configuration d'un système"
-    slide_picture "Attestation.jpg", 5%, 300
-    stepping
-
-    story
-        * "In general, attestation proves a property of a system"       fr "L'attestation prouve une propriété d'un système"
-        * "Remote attestation decouples evidence from verification"     fr "L'attestation à distance découple vérification et mesure"
-        $
-        * "Passport check model: present evidence"                      fr "Passeport: On présente les éléments de preuve"
-        * "Background check mode: validate evidence"                    fr "Antécédents: On valide les éléments de preuve"
-
-    right_picture
-        images "Attestation de déplacement.jpg", "Lock and Key.png"
-        only_at 3,
-            image -700, -200, 30%, 30%, "Passport model.jpg"
-
-            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
-            varrow_with_text   -200, -150,  150, "Evidence"             fr "Éléments"
-            varrow_with_text   -100,  150, -150, "ID"                   fr "Qui?"
-            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
-            framed_box "#F80", -150,  200,  290, 130, "Verifier"        fr "Vérification"
-            harrow_with_text    -30, -200,  180, "ID"                   fr "Qui?"
-
-
-        only_at 4,
-            image -700, -200, 20%, 20%, "Background check.jpg"
-
-            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
-            varrow_with_text    230, -150,  150, "Evidence"             fr "Éléments"
-            varrow_with_text    370,  150, -150, "OK?"                  fr "OK?"
-            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
-            framed_box "#F80",  300, 200,   290, 130, "Verifier"        fr "Vérification"
-            harrow_with_text    -30, -200,  180, "Evidence"             fr "Éléments"
-
-
-// ----------------------------------------------------------------------------
-base_slide "REMITS pipeline" fr "La chaîne REMITS",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "A simplified (simplistic?) model of trust chains" fr "Un modèle simplifié des chaînes de confiance"
-    slide_picture "Oversimplified.png", 3%, 300
-    stepping
-
-    picture
-        at_step 1
-        trust_letter 0, 0, "R"
-        root_of_trust   { bold "Root of trust"  fr "Racine"; small "Certificates" fr "Certificats" }
-        at_step 2
-        trust_letter 1, 35, "E"
-        endorsement     { bold "Endorsement" fr "Endossement"   ; small "Signing keys" fr "Signature" }
-        at_step 3
-        trust_letter 2, 120, "M"
-        measurement     { bold "Measurement" fr "Mesure"        ; small "Hashes" fr "Hachage" }
-        at_step 4
-        trust_letter 3, 180, "I"
-        identity        { bold "Identity" fr "Identité"         ; small "Reference values" fr "Références" }
-        at_step 5
-        trust_letter 4, 210, "T"
-        trust           { bold "Trust" fr "Tenons"              ; small "Policies" fr "Politiques"}
-        at_step 6
-        trust_letter 5, 280, "S"
-        secrets         { bold "Secrets" fr "Secrets"           ; small "Encryption keys" fr "Clefs de chiffrage" }
-
-
-
-// ----------------------------------------------------------------------------
-base_slide "REMITS pipeline examples" fr "Examples de chaînes REMITS",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Some simple applications of the REMITS pipeline" fr "Quelques applications courantes"
-    slide_picture "Complex Installation.jpg", 3%, 300
-    stepping
-
-    picture
-        translate 120, 200, 0
-        scale 80%
-
-        at_step 1
-        category_label  "Secure Boot"
-        root_of_trust   "TPM"
-        endorsement     "Manufacturer"                  fr "Fabricant"
-        measurement     "Firmware, bootloader"          fr "Démarrage"
-        identity        "Signed attestation report"     fr "Rapport signé"
-        trust           "Attestation policies"          fr "Règles d'attestation"
-        secrets         "Cloud API secret"              fr "Clefs d'accès"
-
-        at_step 2
-        translate_y -250
-        category_label  "Selling a property"            fr "Vendre un bien"
-        root_of_trust   "Notary"                        fr "Notaire"
-        endorsement     "Signed records"                fr "Mandat de vente"
-        measurement     "Deed or affidavit"             fr "Description du bien"
-        identity        "Property description"          fr "Cadastre"
-        trust           "I got your money"              fr "Chèque de banque"
-        secrets         "Handing the keys"              fr "Clefs"
-
-        at_step 3
-        translate_y -250
-        category_label  "Historical money"              fr "Monnaie"
-        root_of_trust   "Gold or silver"                fr "Métal précieux"
-        endorsement     "Government"                    fr "Gouvernement"
-        measurement     "Market value"                  fr "Valeur au marché"
-        identity        "Number of dollars"             fr "Valeur faciale"
-        trust           "Handing over cash"             fr "Donner un billet"
-        secrets         "Getting food or goods"         fr "Récupérer l'achat"
-
-    category_label Label ->
-        text_box -1100, 0, 300, 200,
-           style "boxtitle"
-           align 100%
-           vertical_align 50%
-           render Label
-
-
-// ----------------------------------------------------------------------------
-base_slide "Attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Measuring what we run using cryptography" fr "Mesurer pour contrôler ce qui tourne"
-    slide_picture "Measuring.png", 3%, 300
-    stepping
-
-    kata_containers integer(KC_ATTEST + smooth_step + 0.5)
-    contents 0,
-        at_step 1
-        talk_frame
-            at_step AT_PREATTEST
-            color "#C22"
-            bold "Preattestation: " fr "Pré-attestation: "
-            color "black"
-            $ "Measure the payload before allowing it to start (original SEV)" fr "Mesure le contenu avant d'autoriser l'exécution (SEV)"
-
-            at_step AT_POSTATTEST
-            color "#C62"
-            bold "Postattestation: " fr "Post-attestation: "
-            color "black"
-            $ "Code in the payload can confirm its identity using the measurement in order to get secrets" fr "Le code peut s'identifier à l'aide d'une mesure pour obtenir des secrets"
-
-            at_step AT_WORKLOAD
-            color "#2A2"
-            bold "Workload attestation" fr "Attestation de contenu"
-            color "black"
-            $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
-
-
-
-// ============================================================================
-//
-section_slide "Use Cases" fr "Applications",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Various ways to deploy"      fr "Différentes façon de déployer"
-        $ "confidential computing"      fr "l'informatique confidentielle"
-
-// ----------------------------------------------------------------------------
-base_slide "Confidential Computing Use Cases",
-// ----------------------------------------------------------------------------
-    title "Use Cases" fr "Applications"
-    subtitle "From virtual machine to whole clusters" fr "Des machines virtuelles aux grappes"
-    slide_picture "container-vantaggi.png", 5%, 300
-    stepping
-
-    story
-        * "Base: Confidential Virtual Machines"         fr "Machines virtuelles confidentielles"
-        * "Functions: Confidential Workloads (krunvm)"  fr "Fonctions: ""Workloads"""
-        * "Orchestrated: Confidential Containers"       fr "Orchestration: Confidential Containers"
-        * "Enchilada: Confidential Clusters"            fr "La totale: Grappes confidentielles"
-
-    right_picture
-        images (if seconds / 2 mod 2 = 0 then "Confidential VM.png" else "Confidential VM.jpg"),"Confidential Workload.png","Confidential Containers.png","Confidential Cluster.png"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Confidential Virtual Machines"      fr "Machines virtuelles",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "The basic technology behind it all"       fr "La technologie de base"
-    slide_picture "Confidential VM.png", 5%, 300
-    stepping
-
-    story
-        * "New hardware / firmware ABI with new features"       fr "Nouveau matériel avec de nouvelles fonctions"
-        * "Host kernel no longer trusted, exposes new devices"  fr "Le noyau hôte n'est plus fiable, mais expose le nouveau matériel"
-        * "Hypervisor no longer trusted, exposes new features"  fr "L'hyperviseur n'est plus fiable, mais expose des fonctions"
-        * "VM becomes a confidential enclave"                   fr "La machine virtuelle devient une enclave confidentielle"
-        * "Guest firmware and boot sequence is measured"        fr "La séquence de démarrage est mesurée"
-        * "Guest kernel can be measured"                        fr "Le noyau hébergé peut être mesuré"
-
-    right_picture
-        at_step 1
-        framed_box "#610",     0, -300, 400, 80, "Firmware / Hardware"  fr "Matériel / Microgiciel"
-        at_step 2
-        framed_box "#921",     0, -200, 400, 80, "Host Linux kernel"    fr "Noyau hôte"
-        at_step 3
-        framed_box "#E21",     0, -100, 400, 80, "Hypervisor (qemu)"    fr "Hyperviseur (qemu)"
-        at_step 4
-        framed_box "#3C6",     0,  160, 400, 400, "VM (Linux)"          fr "Enclave Linux"
-        at_step 5
-        framed_box "#386",     0,   20, 380, 80, "Guest firmware"       fr "Microgiciel hébergé"
-        at_step 6
-        framed_box "#386",     0,  120, 380, 80, "Guest kernel"         fr "Noyau hébergé"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Confidential Workloads",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Lightweight, quick, container-like" fr "Petit, rapide, léger, quasi-conteneurrs"
-    slide_picture "Heavy Workload.jpg", 5%, 300
-    stepping
-
-    story
-        * "VM as a library (libkrun)"           fr "La virtualisation en librairie"
-        * "Direct integration with Podman"      fr "Intégré à podman"
-        * "Got very early support for SEV"      fr "Support précoce de AMD SEV"
-        * "First working attestation"           fr "Première attestation fonctionnelle"
-
-    right_picture
-        on "pageexit",
-            movie_drop KRUNVM_MOVIE
-        movie -100, 0, 30%, 30%, KRUNVM_MOVIE
-
-KRUNVM_MOVIE -> "movies/krunvm.mov##input-repeat=-1"
-
-// ----------------------------------------------------------------------------
-base_slide "Confidential Containers with Kata" fr "La confidentialité avec Kata",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Using confidential VMs as a Kubernetes runtime" fr "Créer un runtime Kubernetes avec des VMs"
-    slide_picture "Confidential - Top Secret.png", 5%, 300
-    stepping
-
-    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
-    contents 0,
-        at_step CC_PLATFORM
-        talk_frame
-            color "#C22"
-            rectangle 0, 7, 50, 20
-            bold " Trusted platform: " fr " Plateforme sécurisée: "
-            color "black"
-            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
-            at_step CC_HOST
-            color "#24C"
-            rectangle 0, 7, 50, 20
-            bold " Host: " fr " Hébergeur: "
-            color "black"
-            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
-            at_step CC_TENANT
-            color "#2A2"
-            rectangle 0, 7, 50, 20
-            bold " Tenant: " fr " Locataire: "
-            color "black"
-            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Confidential Clusters" fr "Les grappes confidentielles",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Running an entire cluster inside confidential enclaves" fr "Démarer une grappe complète dans des CVMs"
-    slide_picture "Confidential VM.png", 5%, 300
-    stepping
-
-    story
-        * "Make the whole cluster confidential" fr "Rend toute la grappe confidentielle"
-        * "Works at the cloud provider level"   fr "Opère au niveau du fournisseur"
-        * "Generates confidential nodes"        fr "Crée des noeuds confidentiels"
-        * "Attested TLS (ATLS)"                 fr "TLS attesté (ATLS)"
-        * "JoinService: Attest nodes"           fr "Service d'attestation des noeuds"
-        * "VerificationService: User-facing"    fr "Vérifiable par l'utilisateur"
-
-
-    right_picture
-        on "pageexit",
-            movie_drop CONSTELLATION_MOVIE
-        movie -100, 0, 30%, 30%, CONSTELLATION_MOVIE
-
-CONSTELLATION_MOVIE -> "movies/Constellation.mp4##input-repeat=-1"
-
-
-
-
-// ============================================================================
-//
-section_slide "Building actual trust" fr "Construire la confiance",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Keeping the trust alive along the way" fr "Comment garder la confiance intacte tout au long de la chaîne"
-
-
-// ----------------------------------------------------------------------------
-base_slide "How does attestation work?" fr "Comment marche l'attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
-    slide_picture "Customs.jpg", 3%, 300
-    stepping
-
-    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
-    contents 0,
-        at_step 1
-        talk_frame
-            at_step MS_MEASURING
-            bold "Cryptographic measurement: " fr "Mesure cryptographique "
-            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
-            at_step MS_CHALLENGE
-            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
-            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
-
-            at_step MS_KEY_DELIVERY
-            bold "Secret delivery " fr "Révéler des secrets "
-            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
-
-            at_step MS_REMOTE
-            bold "Remote attestation: " fr "Attestation distante "
-            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Attestation flow" fr "Flux pendant l'attestation",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Unlock workloads by giving secrets" fr "Déverrouiller en révélant des secrets"
-    slide_picture "Water Flow.jpg", 5%, 300
-    stepping
-
-    story
-        * "Attester sends request"                      fr "Le candidat envoie sa demande"
-        * "Response is a cryptographic challenge"       fr "Interrogation cryptographique en retour"
-        * "Attester presents crypted evidence"          fr "Présentation des éléments de preuve"
-        * "Evidence relayed to verifier"                fr "Transmis pour vérification"
-        * "Attestation result returned"                 fr "Le résultat est rendu"
-        * "Secrets retrieved"                           fr "Pour révéler les secrets"
-        * "Response sent to attester"                   fr "Réponse au candidat"
-
-    right_picture
-        translate_y 100
-        scale 80%
-        framed_box "#C00", -150,   0,  290, 130, "Attester"             fr "Candidat"
-        framed_box "#00C",  300,   0,  290, 130, "Relying party"        fr "Tiers de confiance"
-        framed_box "#F80",  300, 200,   290, 130, "Verifier"            fr "Vérification"
-        framed_box "#04C",  300, -200,  290, 130, "Secrets Broker"      fr "Gardien des clefs"
-
-        only_at 1,
-            harrow_with_text    -30,    0,  180, "Request"              fr "Requête"
-        only_at 2,
-            harrow_with_text    180,    0,  -30, "Challenge"            fr "Question"
-        only_at 3,
-            harrow_with_text    -30,    0,  180, "Evidence"             fr "Éléments"
-        only_at 4,
-            varrow_with_text    230,   50,  150, "Evidence"             fr "Éléments"
-        only_at 5,
-            varrow_with_text    370,  150,   50, "Attestation result"   fr "Résultats"
-        only_at 6,
-            varrow_with_text    370,  -50,  -150, "Get secrets"         fr "Secrets"
-        only_at 7,
-            harrow_with_text    180,    0,  -30, "Give secrets"         fr "Divulgation"
-
-    picture
-        translate_y -250
-        scale 80%
-        at_step 8
-        root_of_trust   "Manufacturer root key"         fr "Clef crypto du fabricant"
-        endorsement     "Per-Chip endorsement"          fr "Endossement de la puce"
-        measurement     "Boot-time Memory"              fr "Mémoire au démarrage"
-        identity        "What is running"               fr "Qu'est-ce qui tourne?"
-        trust           "Relying party policies"        fr "Règles du tiers"
-        secrets         "Key to decrypt"                fr "Clef de déchiffrage"
-
-
-// ----------------------------------------------------------------------------
-base_slide "Who proves what to whom?" fr "Qui prouve quoi à qui?",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Different kinds of proof for different consumers" fr "Des preuves différentes pour des clients différents"
-    slide_picture "Proofs.jpg", 5%, 300
-    stepping
-
-    story
-        * "System-facing: System software building a trusted execution environment"     fr "Système: Construction d'un environnement fiable"
-        * "User-facing: User checking if a system is trusted"                           fr "Utilisateur: Vérifier qu'un système est fiable"
-        * "Workload-facing: Workload checking if runtime environment is trusted"        fr "Application: Vérifier si l'environnement d'exécution est fiable"
-        * "Peer-facing: Workloads checking of other workload is trusted"                fr "Pair à pair: Vérifier si mon voisin est fiable"
-        * "Cluster-facing: nodes in a cluster check each other"                         fr "Grappe: Vérifier si les noeuds d'une grappe sont fiables"
-
-
-
-// ============================================================================
-//
-section_slide "Conclusion" fr "Conclusion",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Attestation means many different things." fr "Le terme ""attestation"" est"
-        $ "" fr "à la fois ambigü et surchargé"
-
-
-// ---------------------------------------------------------------------------
-base_slide "Key takeaways" fr "Ce qu'il faut retenir",
-// ----------------------------------------------------------------------------
-    title page_label
-    subtitle "Attestation? We only scratched the surface!" fr "Nous n'avons fait que survoler"
-    slide_picture "Pile of Cash.png", 0%, 250
-    stepping
-    story
-        * "Confidential Computing is a large collection of technologies"                fr "L'informatique confidentielle, c'est beaucoup de technos"
-        * "Attestation can mean very different things even in a same context"           fr "Le sens du mot ""attestation"" dépend du contexte"
-        * "Preserving chains of trust requires careful thinking"                        fr "Préserver la chaîne de confience ne tolère pas l'approximation"
-        * "Technologies are not consistent"                                             fr "Les technologies ne sont pas toutes égales entre elles"
-        $
-        * "Please see blog for more details and links"                                  fr "Une série d'articles qui donne plus de détails"
-
-    right_picture
-        at_step 5
-        image 150, 0, 300%, 300%, "QRCode-CoCo-Primer.png"
-
-
-// ============================================================================
-//
-section_slide "Thank you" fr "Merci",
-//
-// ============================================================================
-    title page_label
-    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
-    stepping
-
-    contents 0,
-        text_box 200, -400, 600, 200,
-            style "story"
-            font_size 30
-            anchor
-                color "white"
-                image -80, -40, 10%, 10%, "Tao3D.png"
-            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
-            paragraph presentation_tao
-
-    translate_y -50
-    picture
-        color "white"
-        image 700, -80, 230%, 230%, "QRCode-CoCo-Primer.png"
-
-
-
-// ============================================================================
-//
-section_slide "Platform-specific details" fr "Détails pratiques",
-//
-// ============================================================================
-    title page_label
-    subtitle
-        $ "Beyond that point, there be zombies" fr "Au delà de cette ligne on trouve des dragons"
+    page_quote 3
 
 
 // ----------------------------------------------------------------------------
@@ -861,6 +238,1091 @@ base_slide "Intel TDX (and SGX)",
         images "", "", "", "", "TDX SEAM Modules.png", "TDX Quoting Enclave.png"
 
 
+// ============================================================================
+//
+section_slide "Brave New Secure World?",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "We are entirely protected now!"
+        $ "Nobody can harm us!"
+        $ { align 80% ; italic "Famous last words" }
+    stepping
+    page_quote 5
+
+// ---------------------------------------------------------------------------
+base_slide "Not a complete solution...",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "What do we really want to prove?"
+    slide_picture "Sherlock Holmes.jpg", 0%, 250
+    stepping
+    story
+        * "Using ""The Cloud"""
+        ** "a.k.a. a computer you don't own"
+        $
+        * { text "How do you check "; red { italic "transparent" }; text " memory encryption?" }
+        * "Is the stuff in that box any good?"
+        * "Any well-hidden insecure aspect in your setup?"
+        $
+        * { red "Attestation"; text " lets you "; italic { green "prove" }; text " such properties" }
+
+    right_picture
+        images "Cloud computing.png", "Datacenter rack.jpg", "The Matrix.jpg", "Right Stuff in the Box.jpg", "Men at Lunch.jpg", "Sherlock Holmes Evidence.jpg"
+
+
+
+
+// ============================================================================
+//
+intro_slide "Demo: Running a Confidential VM",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Using AMD Secure Encrypted Virtualization"
+        $ "in the worst possible way"
+    slide_picture "Happy Kids.jpg", 5%, 450
+    stepping
+    at_step 1
+
+movie_slide "Run a confidential VM", "movies/11-Secure VM encrypted.mp4"
+
+
+
+base_slide "Wat?!?",
+    title page_label
+    subtitle "Houston, we have a problem"
+    slide_picture "Wat.png", 5%, 350
+    stepping
+    picture
+        image 0, 30, 150%, 150%, "Road Rage.jpg"
+
+base_slide "Time to tell the boss",
+    title page_label
+    subtitle "Dear Boss, It Does Not Work™"
+    slide_picture "Dear Boss.jpg", 5%, 350
+    stepping
+    picture
+        only_at 1,
+            image 0, 30, 100%, 100%, "Dear Boss.png"
+        only_at 2,
+            image -500, 30, 80%, 80%, "Dear Boss 2.png"
+            image  500, 30, 80%, 80%, "Dear Boss 3.png"
+        at_step 3
+
+movie_slide "Only memory is encrypted", "movies/12-Memory is protected, not disk.mov"
+
+blank_slide "Encrypt your disks!",
+    title page_label
+    subtitle "or suffer the consequences, fool!"
+    stepping
+    contents -10000,
+        color "white"
+        image 0, 30, 260%, 260%, "Encrypt Your Disk.jpg"
+    contents 0,
+        light 0
+        light_position 1000, 1000, 1000
+        translate_z 5000 * sin (1.0 * time)^12 - 4000
+        rotate_y 20 * sin(0.41 * time)
+        rotate_z 4 * sin(0.217 * time)
+        font "Impact", 200
+        color_hsv 10 * time, 70%, 100%
+        extrude_depth 80
+        text_box 0, 0, 1000, 1000,
+            align_center
+            vertical_align_center
+            text "Encrypt your disks!"
+
+intro_slide "What did we prove here?",
+    title page_label
+    subtitle
+        $ "Confidential Computing is only as strong"
+        $ "as the weakest link in the chain"
+    slide_picture "Emoji=Thinking.png", 5%, 350
+    stepping
+    at_step 1
+
+
+
+// ============================================================================
+//
+section_slide "Tenancy",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "How can we own a system we don't own?"
+    stepping
+    at_step 1
+
+
+base_slide "A little bit of terminology",
+    title page_label
+    subtitle "Please try hard not to remember this"
+    slide_picture "Brain Overflow.png", 5%, 350
+    stepping
+    story
+        * "ARK: AMD Root Key"
+        * "ASK: AMD SEV Key"
+        * "CEK: Chip endorsement key"
+        * "OCA: Owner's Certificate Authority"
+        * "PEK: Platform Endorsement Key"
+        * "PDH: Platform Diffie-Hellman Key"
+        $
+        * "TIK: Transport Integrity Key"
+        * "TEK: Transport Encryption Key"
+        $
+        * "Resistance is futile"
+
+    right_picture
+        text_box -250, -200, 600, 400,
+            style "title"
+            font_size 40
+            text "SOF"
+            if smooth_step >= 8 then
+                text_span
+                    at_step 9
+                    text "(Show-Off Factor)"
+
+        at_step 9
+        text_box -250, 200, 600, 400,
+            style "title"
+            font_size 50
+            color "red"
+            $ "Resistance is futile"
+
+    right_picture
+        light 0
+        light_position 100, 100, 1000
+        color "green"
+        extrude_depth 175
+        extrude_radius 5
+        rotate_y 12 * sin (0.1 * time)
+        ellipse_sector -250, 0, 300, 300, 90, 5 + 354 * smooth_step / 10
+
+    picture
+        translate_x 150
+        scale 80%
+        talk_frame
+            color "darkgreen"
+            rectangle 0, 7, 50, 20
+            bold " Stuff "
+            color "black"
+            $ "TLAs I am now supposed to know, but still don't care about at all"
+
+            at_step 9
+            color "darkred"
+            rectangle 0, 7, 50, 20
+            bold " Assimilated "
+            color "black"
+            $ "What you have not assimilated has assimilated you"
+
+    picture
+        at_step 10
+        text_box 0, 380, 800, 170,
+            style "subtitle"
+            color "darkblue"
+            font_size 25
+            $ "https://github.com/confidential-containers/confidential-containers/"
+            font_size 60
+            $ "wiki/Acronyms"
+
+
+// ----------------------------------------------------------------------------
+intro_slide "Host setup",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle
+        $ { text "Adding your own "; code "OCA"; text ", "; code "PEK"; text " and "; code "PDH" }
+        $ "to endorse the host as your own"
+    slide_picture "I licked it so it's mine.png", 5%, 350
+    stepping
+    at_step 1
+
+movie_slide "SEV host setup", "movies/9-SEV host setup.mov"
+
+
+
+// ----------------------------------------------------------------------------
+intro_slide "Guest setup",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle
+        $ { text "Adding "; code "launchSecurity"; text " elements" }
+        $ "to certify a virtual machine as confidential"
+    slide_picture "It's all mine.jpg", 2%, 350
+    stepping
+    at_step 1
+
+movie_slide "Adding launch security section", "movies/10-SecuritySession.mp4"
+
+// ---------------------------------------------------------------------------
+base_slide "What did we prove so far?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "What are we measuring, and who does it?"
+    slide_picture "Sherlock Holmes Big Glass.jpg", 5%, 280
+    stepping
+    story
+        * "Trusting a computer are we?"
+        ** "Free Software and Open Source matter!"
+        ** "There are other CCCs in the field..."
+        $
+        * { text "We injected "; red { italic "our own OCA" }; text " in the system" }
+        ** { text "Remember: "; red { italic "Owner's" }; text " certificate authority" }
+        ** "Wait! What do I own now exactly?"
+        $
+        * "A tool for the other side to prove their identity"
+        ** "Proves that VM is encrypted (with AMD's signature)"
+        ** "Proves initial VM content (with crypto hash)"
+
+
+    right_picture
+        images "Secret Source Code.jpg", "Confidential Computing Consortium.jpg", "The other CCC.jpg", "Guest Owner Mark.jpg", "Certificate of Ownership.png", "Babbage Difference Engine.jpg", "One-Time Passwords.jpg", "ROT26-Twice as Secure.jpg", "Carl Sagan Pie From Scratch.jpg"
+
+
+// ============================================================================
+//
+section_slide "Making containers confidential",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "How to prove that we are running"
+        $ "the right container image"
+        $ "in the correct trusted runtime environment?"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Containers with Kata" fr "La confidentialité avec Kata",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Using confidential VMs as a Kubernetes runtime" fr "Créer un runtime Kubernetes avec des VMs"
+    slide_picture "Confidential - Top Secret.png", 5%, 300
+    stepping
+
+    kata_containers integer(KC_CONFIDENTIAL + smooth_step + 0.5)
+    contents 0,
+        at_step CC_PLATFORM
+        talk_frame
+            color "#C22"
+            rectangle 0, 7, 50, 20
+            bold " Trusted platform: " fr " Plateforme sécurisée: "
+            color "black"
+            $ "Offers confidentiality guarantees enforced by hardware cryptography" fr "Offre des garanties de sécurité à l'aide de cryptographie matérielle"
+            at_step CC_HOST
+            color "#24C"
+            rectangle 0, 7, 50, 20
+            bold " Host: " fr " Hébergeur: "
+            color "black"
+            $ "Manages and offers resources used to run containers (CPU, memory, I/O, etc)" fr "Gère et présente les resources pour les conteneurs (CPU, mémoire, E/S, etc)"
+            at_step CC_TENANT
+            color "#2A2"
+            rectangle 0, 7, 50, 20
+            bold " Tenant: " fr " Locataire: "
+            color "black"
+            $ "Confidential area, inaccessible to the host even when running on it" fr "Environnement confidentiel, inaccessible à l'hébergeur même lorsqu'elle l'utilise"
+
+
+// ----------------------------------------------------------------------------
+base_slide "A new security model for Linux?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "The host sysadmin is now considered hostile"
+    slide_picture "Cyber Security.png", 5%, 300
+    stepping
+
+    story
+        * "Confidential Computing changes the threat model"
+        ** "In platform we trust"
+        ** { text "We no longer trust the host user named "; code "root" }
+        $
+        * "Trusted platform provides new services"
+        ** { text "A trusted platform is only a "; red "tool"; text " to build trust" }
+        ** "Attacks can come from host and hypervisor"
+        * "This is almost similar to the hardware not working"
+        $
+        * "This change meets serious resistance"
+
+
+    right_picture
+        images "CC Threat Model.jpg", "Oil Platform.jpg", "Root is a Primary Threat.jpg", "CC Threat Model Diagram.jpg", "Trusted Platform.jpg", "", "GregKH1.jpg", "Greg KH.jpg"
+
+    right_picture
+        only_at 6,
+            locally
+                frame_texture 1600, 1200,
+                    confidential CNF_SANDBOX_IN
+                    time
+                scale 50%
+                texture_transform
+                    eye_attack_adjust fade_at(smooth_step, 6)
+                    eye_attack_adjust S:real ->
+                        translate 0, 0.1 * S, 0
+                        scale 1.0 - 0.4 * S
+                rectangle texture_width, texture_height
+
+
+// ----------------------------------------------------------------------------
+base_slide "Cryptographic measurements",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "What, who, when? So many design choices!"
+    slide_picture "Measuring.png", 3%, 300
+    stepping
+
+    kata_containers integer(KC_ATTEST + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step AT_PREATTEST
+            color "#C22"
+            bold "Preattestation: " fr "Pré-attestation: "
+            color "black"
+            $ "Measure the payload before allowing it to start (original SEV)" fr "Mesure le contenu avant d'autoriser l'exécution (SEV)"
+
+            at_step AT_POSTATTEST
+            color "#C62"
+            bold "Postattestation: " fr "Post-attestation: "
+            color "black"
+            $ "Code in the payload can confirm its identity using the measurement in order to get secrets" fr "Le code peut s'identifier à l'aide d'une mesure pour obtenir des secrets"
+
+            at_step AT_WORKLOAD
+            color "#2A2"
+            bold "Workload attestation" fr "Attestation de contenu"
+            color "black"
+            $ "The workload itself is attested, e.g. gets secrets from attestation" fr "L'application ne se lance qu'après attestation (par ex. parce qu'elle a reçoit des secrets de l'attestation)"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Another bit of terminology" fr "Un peu de terminologie",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "The RATS model (from IETF)" fr "Le modèle RATS de l'IETF"
+    slide_picture "Measuring.png", 3%, 300
+    stepping
+
+    picture
+        // image 0, 0, 100%, 100%, "RATS Model.png"
+        translate_y -120
+
+        at_step 1
+        framed_box "#F80",    0,    0,  890, 130, "Verifier"    fr "Vérification"
+
+        at_step 2
+        framed_box "#0C0", -300,  300,  290, 130, "Endorser"    fr "Signataire"
+        at_step 3
+        varrow_with_text   -300,  250,  50, "Endorsements"      fr "Endosse"
+
+        at_step 4
+        framed_box "#0C0",    0,  300,  290, 130, "Reference Value Provider" fr "Base de référence"
+        at_step 5
+        varrow_with_text      0,  250,  50, "Reference values"  fr "Valeurs de référence"
+
+        at_step 6
+        framed_box "#0C0",  300,  300,  290, 130, "Verifier owner" fr "Responsable de vérification"
+        at_step 7
+        varrow_with_text    300,  250,  50, "Appraisal policy (evidence)" fr "Politique d'évaluation des preuves"
+
+        at_step 8
+        framed_box "#C00", -750,    0,  290, 130, "Attester"    fr "Candidat"
+        at_step 9
+        harrow_with_text   -620,    0, -420,  "Evidence"        fr "Éléments de preuve"
+
+        at_step 10
+        framed_box "#00C",  750,    0,  290, 130, "Relying party"       fr "Tiers de confiance"
+        at_step 11
+        harrow_with_text    420,    0,  620,  "Attestation results"     fr "Résultat d'attestation"
+        at_step 12
+        framed_box "#00C",  750,  300,  290, 130, "Relying party owner" fr "Responsable"
+        at_step 13
+        varrow_with_text    750,  250,   50, "Appraisal policy (attestation results)" fr "Politique d'évaluation des résultats"
+
+
+// ----------------------------------------------------------------------------
+base_slide "How does attestation work?" fr "Comment marche l'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Challenge / response to deliver secrets" fr "Question / Réponse pour donner les secrets"
+    slide_picture "Customs.jpg", 3%, 300
+    stepping
+
+    kata_containers integer(KC_MSMTS + smooth_step + 0.5)
+    contents 0,
+        at_step 1
+        talk_frame
+            at_step MS_MEASURING
+            bold "Cryptographic measurement: " fr "Mesure cryptographique "
+            $ "Measurement of relevant memory performed by hardware / firmware" fr "Memory is measured by hardware / firmware"
+            at_step MS_CHALLENGE
+            bold "Cryptographic challenge: " fr "Vérification cryptogrpahique "
+            $ "Send proof of identity (salted)" fr "Envoi d'une preuve d'identité (avec nonce)"
+
+            at_step MS_KEY_DELIVERY
+            bold "Secret delivery " fr "Révéler des secrets "
+            $ "Ensure the workload cannot do harm if not attested" fr "Guarantir que le contenu est inoffensif avant attestation"
+
+            at_step MS_REMOTE
+            bold "Remote attestation: " fr "Attestation distante "
+            $ "Can invalidate workloads e.g. if compromized" fr "Peut invalider un contenu vulnérable"
+
+
+ // ----------------------------------------------------------------------------
+base_slide "Attestation as a proof",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Offering proofs about the configuration of a system" fr "Prouver une propriété de la configuration d'un système"
+    slide_picture "Attestation.jpg", 5%, 300
+    stepping
+
+    story
+        * { text "Attestation proves a "; red "property"; text " of a system" }
+        * "Remote attestation decouples evidence from verification"     fr "L'attestation à distance découple vérification et mesure"
+        $
+        * "Passport check model: present evidence"                      fr "Passeport: On présente les éléments de preuve"
+        * "Background check mode: validate evidence"                    fr "Antécédents: On valide les éléments de preuve"
+
+    right_picture
+        images "Attestation de déplacement.jpg", "Lock and Key.png"
+        only_at 3,
+            image -700, -200, 30%, 30%, "Passport model.jpg"
+
+            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
+            varrow_with_text   -200, -150,  150, "Evidence"             fr "Éléments"
+            varrow_with_text   -100,  150, -150, "ID"                   fr "Qui?"
+            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
+            framed_box "#F80", -150,  200,  290, 130, "Verifier"        fr "Vérification"
+            harrow_with_text    -30, -200,  180, "ID"                   fr "Qui?"
+
+
+        only_at 4,
+            image -700, -200, 20%, 20%, "Background check.jpg"
+
+            framed_box "#C00", -150, -200,  290, 130, "Attester"        fr "Candidat"
+            varrow_with_text    230, -150,  150, "Evidence"             fr "Éléments"
+            varrow_with_text    370,  150, -150, "OK?"                  fr "OK?"
+            framed_box "#00C",  300, -200,  290, 130, "Relying party"   fr "Tiers de confiance"
+            framed_box "#F80",  300, 200,   290, 130, "Verifier"        fr "Vérification"
+            harrow_with_text    -30, -200,  180, "Evidence"             fr "Éléments"
+
+ // ----------------------------------------------------------------------------
+base_slide "What does this prove now?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Proof by blocking forward progress"
+    slide_picture "Sherlock Holmes Evidence 3.jpg", 5%, 300
+    stepping
+
+    story
+        * "One-time challenge proves freshness"
+        $
+        * "Response contains cryptographic proofs"
+        ** "Platform identity, memory encryption"
+        ** "Endorsement by current owner"
+        ** "Initial guest software stack"
+        $
+        * "If proof fails, secrets are not delivered"
+        ** "Guest cannot descript private volumes"
+        ** "Guest cannot decrypt container images"
+
+
+    right_picture
+        images "Freshness.jpg", "Enigma.png", "Ancien Passeport.jpg", "I licked it so it's mine.png", "", "", "Disk Encryption.jpg", "Canal+ Scrambled.jpg"
+
+    right_picture
+        only_at 5..6,
+            frame_texture 1920, 1080,
+                kata_containers (if step = 5 then KC_POSTATTEST else KC_REMOTE)
+                refresh 0.0
+            scale 50%
+            texture_transform
+                postattest_adjust fade_at(smooth_step, 5), fade_at(smooth_step, 6)
+                postattest_adjust S:real, T:real->
+                    translate 0.20 * S, 0.10 * S + 0.10 * T, 0
+                    scale 1.0 - 0.48 * S
+            rectangle texture_width, texture_height
+
+
+
+// ============================================================================
+//
+section_slide "Building trust?",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "From root of trust to practical trust"
+    stepping
+    at_step 1
+
+
+// ----------------------------------------------------------------------------
+base_slide "Trust in which guarantees?" fr "Garanties",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "What does confidential computing really provide?" fr "Quelles garanties nous donnent ces technologies?"
+    slide_picture "Magic Smoke.jpg", 5%, 300
+    stepping
+
+    story
+        * "Confidential computing is about... confidentiality"  fr "On s'intéresse à la... confidentialité!"
+        * "Protect data in use from leaks or tampering"         fr "Éviter les fuites ou la corruption des données"
+        $
+        * "Does not protect against crashes"                    fr "On a le droit de planter"
+        * "Does not protect disk, network data, ..."            fr "Disques et réseaux sont considérés ""déjà fait""."
+        * "Does not offer any guarantee of service"             fr "Pas de garantie de service"
+        * "Hardware-based, real-time cryptography"              fr "Chiffrage matériel et en temps réel"
+        * "Is highly implementation-dependent"                  fr "Varie d'une plateforme à l'autre"
+        $
+        * "TL;DR: There is no automatic security"               fr "Bref: rien d'automatique ou de gratuit"
+
+    right_picture
+        images "Nosy Neighbour.jpg", "No SELinux.jpg", "MacOS Bomb.jpg", "Hard Disk Fail.jpg", "Customs.jpg", "Canal+ Scrambled.jpg", "SEV-SNP.jpg", "Road Rage.jpg"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Hardware Root of Trust" fr "Les bases de la confiance",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Once upon a time, the hardware TPM" fr "Ça commence par le matériel"
+    slide_picture "TPM_Asus.jpg", 5%, 350
+    stepping
+
+    picture
+        translate_x -250 * fade_at(smooth_step, 20)
+
+        tpm_step        1, "#F00", -300, "Root of Trust (TPM)"  fr "Racine de confiance (TPM)"
+        tpm_step        2, "#F40", -200, "ROM-based boot"       fr "Démarrage (Mémoire morte)"
+        tpm_step        3, "#444", -100, "BIOS Phase 1"         fr "Étape 1 du BIOS"
+        tpm_step        4, "#448",    0, "BIOS Phase 2"         fr "Étape 2 du BIOS"
+        tpm_step        5, "#24C",  100, "Boot Manager"         fr "Gestionnaire de démarrage"
+        tpm_step        6, "#00F",  200, "Linux Kernel"         fr "Noyau Linux"
+        tpm_step_final  7, "#080",  300, "Workload"             fr "Couches applicatives"
+
+        tpm_step Step, Color, Y, Label ->
+            locally
+                at_step 3*Step - 1
+                locally
+                    translate_y Y
+                    color "transparent"
+                    line_color Color
+                    line_width 8
+                    path
+                        move_to 300, 20
+                        line_to 350, 20
+                        line_to 350, 80
+                        line_to 300, 80
+                        endpoints_style "none", "arrowhead"
+                text_box 570, Y + 50, 400, 90,
+                    align 0%
+                    vertical_align 50%
+                    style "story"
+                    color Color
+                    font_size 30
+                    text "Measures and launches"        fr "Mesure, puis démarre"
+            locally
+                at_step 3*Step + 1
+                locally
+                    translate_y Y
+                    color "transparent"
+                    line_color Color
+                    line_width 8
+                    path
+                        move_to -300, 100
+                        line_to -350 - 30 * Step, 100
+                        line_to -350 - 30 * Step, -300 - Y - Y / 10
+                        line_to -300, -300 - Y - Y / 10
+                        endpoints_style "none", "arrowhead"
+                text_box -470, Y + 50, 400, 90,
+                    align 100%
+                    vertical_align 50%
+                    style "story"
+                    color Color
+                    font_size 30
+                    text "Records"      fr "Enregistre"
+            tpm_step_final Step, Color, Y, Label
+        tpm_step_final Step, Color, Y, Label ->
+            at_step 3 * Step - 3
+            framed_box Color, 0, Y, 600, 90, { render Label }
+
+    right_picture
+        frame_texture 600, 400,
+            rotate_y 720 * fade_out_at(smooth_step, 21) + 10*sin(0.2 * time)
+            light 0
+            light_position 200, 300, 500
+            extrude_depth 25
+            text_box 0, 0, 600, 400,
+                color "white"
+                font "Arial Rounded MT Bold", 80
+                vertical_align 0.3
+                align 0.5
+                $ "It's a "
+                $ { red "chain" }
+                $ "of trust"
+
+        at_step 21
+        translate_x 200
+        rectangle texture_width, texture_height
+
+
+// ----------------------------------------------------------------------------
+base_slide "REMITS pipeline" fr "La chaîne REMITS",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "A simplified (simplistic?) model of trust chains" fr "Un modèle simplifié des chaînes de confiance"
+    slide_picture "Oversimplified.png", 3%, 300
+    stepping
+
+    picture
+        at_step 1
+        trust_letter 0, 0, "R"
+        root_of_trust   { bold "Root of trust"  fr "Racine"; small "Certificates" fr "Certificats" }
+        at_step 2
+        trust_letter 1, 35, "E"
+        endorsement     { bold "Endorsement" fr "Endossement"   ; small "Signing keys" fr "Signature" }
+        at_step 3
+        trust_letter 2, 120, "M"
+        measurement     { bold "Measurement" fr "Mesure"        ; small "Hashes" fr "Hachage" }
+        at_step 4
+        trust_letter 3, 180, "I"
+        identity        { bold "Identity" fr "Identité"         ; small "Reference values" fr "Références" }
+        at_step 5
+        trust_letter 4, 210, "T"
+        trust           { bold "Trust" fr "Tenons"              ; small "Policies" fr "Politiques"}
+        at_step 6
+        trust_letter 5, 280, "S"
+        secrets         { bold "Secrets" fr "Secrets"           ; small "Encryption keys" fr "Clefs de chiffrage" }
+
+
+
+// ----------------------------------------------------------------------------
+base_slide "REMITS pipeline examples" fr "Examples de chaînes REMITS",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Some simple applications of the REMITS pipeline" fr "Quelques applications courantes"
+    slide_picture "Complex Installation.jpg", 3%, 300
+    stepping
+
+    picture
+        translate 120, 200, 0
+        scale 80%
+
+        at_step 1
+        category_label  "Secure Boot"
+        root_of_trust   "TPM"
+        endorsement     "Manufacturer"                  fr "Fabricant"
+        measurement     "Firmware, bootloader"          fr "Démarrage"
+        identity        "Signed attestation report"     fr "Rapport signé"
+        trust           "Attestation policies"          fr "Règles d'attestation"
+        secrets         "LUKS key"                      fr "Clefs d'accès"
+
+        at_step 2
+        translate_y -250
+        category_label  "Selling a property"            fr "Vendre un bien"
+        root_of_trust   "Notary"                        fr "Notaire"
+        endorsement     "Signed records"                fr "Mandat de vente"
+        measurement     "Deed or affidavit"             fr "Description du bien"
+        identity        "Property description"          fr "Cadastre"
+        trust           "I got your money"              fr "Chèque de banque"
+        secrets         "Handing the keys"              fr "Clefs"
+
+        at_step 3
+        translate_y -250
+        category_label  "Historical money"              fr "Monnaie"
+        root_of_trust   "Gold or silver"                fr "Métal précieux"
+        endorsement     "Government"                    fr "Gouvernement"
+        measurement     "Market value"                  fr "Valeur au marché"
+        identity        "Number of dollars"             fr "Valeur faciale"
+        trust           "Handing over cash"             fr "Donner un billet"
+        secrets         "Getting food or goods"         fr "Récupérer l'achat"
+
+    category_label Label ->
+        text_box -1100, 0, 300, 200,
+           style "boxtitle"
+           align 100%
+           vertical_align 50%
+           render Label
+
+
+// ----------------------------------------------------------------------------
+base_slide "Attestation flow" fr "Flux pendant l'attestation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Unlock workloads by giving secrets" fr "Déverrouiller en révélant des secrets"
+    slide_picture "Water Flow.jpg", 5%, 300
+    stepping
+
+    story
+        * "Attester sends request"                      fr "Le candidat envoie sa demande"
+        * "Response is a cryptographic challenge"       fr "Interrogation cryptographique en retour"
+        * "Attester presents crypted evidence"          fr "Présentation des éléments de preuve"
+        * "Evidence relayed to verifier"                fr "Transmis pour vérification"
+        * "Attestation result returned"                 fr "Le résultat est rendu"
+        * "Secrets retrieved"                           fr "Pour révéler les secrets"
+        * "Response sent to attester"                   fr "Réponse au candidat"
+
+    right_picture
+        translate_y 100
+        scale 80%
+        framed_box "#C00", -150,   0,  290, 130, "Attester"             fr "Candidat"
+        framed_box "#00C",  300,   0,  290, 130, "Relying party"        fr "Tiers de confiance"
+        framed_box "#F80",  300, 200,   290, 130, "Verifier"            fr "Vérification"
+        framed_box "#04C",  300, -200,  290, 130, "Secrets Broker"      fr "Gardien des clefs"
+
+        only_at 1,
+            harrow_with_text    -30,    0,  180, "Request"              fr "Requête"
+        only_at 2,
+            harrow_with_text    180,    0,  -30, "Challenge"            fr "Question"
+        only_at 3,
+            harrow_with_text    -30,    0,  180, "Evidence"             fr "Éléments"
+        only_at 4,
+            varrow_with_text    230,   50,  150, "Evidence"             fr "Éléments"
+        only_at 5,
+            varrow_with_text    370,  150,   50, "Attestation result"   fr "Résultats"
+        only_at 6,
+            varrow_with_text    370,  -50,  -150, "Get secrets"         fr "Secrets"
+        only_at 7,
+            harrow_with_text    180,    0,  -30, "Give secrets"         fr "Divulgation"
+
+    picture
+        translate_y -250
+        scale 80%
+        at_step 8
+        root_of_trust   "Manufacturer root key"         fr "Clef crypto du fabricant"
+        endorsement     "Per-Chip endorsement"          fr "Endossement de la puce"
+        measurement     "Boot-time Memory"              fr "Mémoire au démarrage"
+        identity        "What is running"               fr "Qu'est-ce qui tourne?"
+        trust           "Relying party policies"        fr "Règles du tiers"
+        secrets         "Key to decrypt"                fr "Clef de déchiffrage"
+
+
+// ----------------------------------------------------------------------------
+base_slide "What makes the proof solid?",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Actual trust comes from your relying party"
+    slide_picture "Sherlock Holmes Solid.jpg", 5%, 350
+    stepping
+
+    story
+        * { text "Secrets are safe in the "; green "owner's"; text " trust domain" }
+        * "Secrets are only delivered against cryptographic proof of identity"
+        * "Without secrets, the execution environment is rendered harmless"
+
+
+    right_picture
+        translate_x 100
+        scale 80%
+        images "Secrets in the cage.jpg", "Keys.png", "Harmless.jpg"
+
+
+disabled
+    // ----------------------------------------------------------------------------
+    base_slide "Who proves what to whom?" fr "Qui prouve quoi à qui?",
+    // ----------------------------------------------------------------------------
+        title page_label
+        subtitle "Different kinds of proof for different consumers" fr "Des preuves différentes pour des clients différents"
+        slide_picture "Proofs.jpg", 5%, 300
+        stepping
+
+        story
+            * "System-facing: System software testing execution environment"
+            * "User-facing: User checking if a system is trusted"                           fr "Utilisateur: Vérifier qu'un système est fiable"
+            * "Workload-facing: Application checking its runtime environment"
+            * "Peer-facing: Workloads checking other workloads"
+            * "Cluster-facing: nodes in a cluster checking each other"
+
+
+        right_picture
+            translate_x 150
+            scale 70%
+            images "Building a nest.jpg", "System Testing.jpg", "Checking the environment.jpg", "Checking Workload.jpg", "Cluster Facing.jpg"
+
+
+
+// ============================================================================
+//
+section_slide "Use Cases" fr "Applications",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "Various ways to deploy"      fr "Différentes façon de déployer"
+        $ "confidential computing"      fr "l'informatique confidentielle"
+    stepping
+    at_step 1
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Computing Use Cases",
+// ----------------------------------------------------------------------------
+    title "Use Cases" fr "Applications"
+    subtitle "From virtual machine to whole clusters" fr "Des machines virtuelles aux grappes"
+    slide_picture "container-vantaggi.png", 5%, 300
+    stepping
+
+    story
+        * "Base: Confidential Virtual Machines"         fr "Machines virtuelles confidentielles"
+        * "Functions: Confidential Workloads (krunvm)"  fr "Fonctions: ""Workloads"""
+        * "Orchestrated: Confidential Containers"       fr "Orchestration: Confidential Containers"
+        * "Enchilada: Confidential Clusters"            fr "La totale: Grappes confidentielles"
+
+    right_picture
+        images (if seconds / 2 mod 2 = 0 then "Confidential VM.png" else "Confidential VM.jpg"),"Confidential Workload.png","Confidential Containers.png","Confidential Cluster.png"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential VMs in the Cloud",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Run in the cloud as if it was on your own server"
+    slide_picture "Red Hat Confidential VM.jpg", 5%, 300
+    stepping
+
+    left_column
+        * "Virtual TPM as root of trust"
+        * "Pre-compute PCR register values"
+        * "Measure initial VM state"
+    right_column
+        * "PCR registers must hit predicted value"
+        * "LUKS unlocked from PCR"
+        * "Once disk is decrypted, boot can proceed"
+
+    picture
+        translate_y -250
+        scale 80%
+        category_label  "Confidential VM"
+        at_step 1
+        root_of_trust   "vTPM"
+        at_step 2
+        endorsement     "Predicted PCR"
+        at_step 3
+        measurement     "Boot state"
+        at_step 4
+        identity        "Actual PCR"
+        at_step 5
+        trust           "PCR unlocks LUKS"
+        at_step 6
+        secrets         "Decrypt disk"
+
+movie_slide "RHEL 9.3 Azure SEV instance", "movies/Azure SEV.mp4"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Workloads",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Lightweight, quick, container-like" fr "Petit, rapide, léger, quasi-conteneurrs"
+    slide_picture "VirTEE.png", 5%, 300
+    stepping
+
+    story
+        * "VM as a library (libkrun)"           fr "La virtualisation en librairie"
+        * "Direct integration with Podman"      fr "Intégré à podman"
+        * "Got very early support for SEV"      fr "Support précoce de AMD SEV"
+        * "First working attestation"           fr "Première attestation fonctionnelle"
+
+    right_picture
+        on "pageexit",
+            movie_drop KRUNVM_MOVIE
+        movie -100, 0, 30%, 30%, KRUNVM_MOVIE
+
+    picture
+        translate_y -250
+        scale 80%
+        category_label  "Confidential Workloads"
+        at_step 5
+        root_of_trust   "AMD PSP"
+        at_step 6
+        endorsement     "Encrypted disk image"
+        at_step 7
+        measurement     "Disk image"
+        at_step 8
+        identity        "SEV hash"
+        at_step 9
+        trust           "Remote key broker"
+        at_step 10
+        secrets         "Decrypt disk image"
+        at_step 11
+
+KRUNVM_MOVIE -> "movies/krunvm.mov##input-repeat=-1"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Edgeless Constellation",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Running an entire cluster inside confidential enclaves" fr "Démarer une grappe complète dans des CVMs"
+    slide_picture "Edgeless.png", 5%, 300
+    stepping
+
+    story
+        * "Make the whole cluster confidential" fr "Rend toute la grappe confidentielle"
+        * "Works at the cloud provider level"   fr "Opère au niveau du fournisseur"
+        * "Generates confidential nodes"        fr "Crée des noeuds confidentiels"
+        * "Attested TLS (ATLS)"                 fr "TLS attesté (ATLS)"
+        * "JoinService: Attest nodes"           fr "Service d'attestation des noeuds"
+        * "VerificationService: User-facing"    fr "Vérifiable par l'utilisateur"
+
+
+    right_picture
+        on "pageexit",
+            movie_drop CONSTELLATION_MOVIE
+        movie -100, 0, 30%, 30%, CONSTELLATION_MOVIE
+
+    picture
+        translate_y -250
+        scale 80%
+        only_at 3,
+            category_label  "Confidential Nodes"
+            root_of_trust   "Cloud H/W"
+            endorsement     "Master Secret"
+            measurement     "Root hash"
+            identity        "Known root hash"
+            trust           "Boot cmdline"
+            secrets         "Cluster ID"
+        only_at 4,
+            category_label  "Attested TLS"
+            root_of_trust   "Cloud H/W"
+            endorsement     "Constellation"
+            measurement     "Local & Remote states"
+            identity        "Node ID"
+            trust           "TLS"
+            secrets         "Session key"
+        only_at 5,
+            category_label  "Join Services"
+            root_of_trust   "Cloud H/W"
+            endorsement     "Master Secret"
+            measurement     "Root hash"
+            identity        "Known root hash"
+            trust           "Boot cmdline"
+            secrets         "Cluster ID"
+        only_at 6,
+            category_label  "Verification Services"
+            root_of_trust   "KubeConfig"
+            endorsement     "Cluster creation"
+            measurement     "Constellation"
+            identity        "Cluster ID"
+            trust           "User (visually)"
+            secrets         "User's"
+
+
+CONSTELLATION_MOVIE -> "movies/Constellation.mp4##input-repeat=-1"
+
+
+// ----------------------------------------------------------------------------
+base_slide "Confidential Clusters",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Bringing confidential computing to OpenShift"
+    slide_picture "Red Hat OpenShift.png", 5%, 300
+    stepping
+
+    story
+        * "Make CoreOS confidential"
+        * "Ignition server delivers secrets"
+        * "Disk is encrypted during installation"
+        * "Leverage work for RHEL"
+        * "CoreOS is already immutable"
+        * "Still a work in progress"
+
+
+    right_picture
+        on "pageexit",
+            movie_drop FCOS_MOVIE
+        movie -100, 0, 30%, 30%, FCOS_MOVIE
+
+    picture
+        translate_y -250
+        scale 80%
+        category_label  "Confidential Clusters"
+        at_step 1
+        root_of_trust   "vTPM"
+        at_step 2
+        endorsement     "Ignition file"
+        at_step 3
+        measurement     "Boot state"
+        at_step 4
+        identity        "Known hash"
+        at_step 5
+        trust           "vTPM key access"
+        at_step 6
+        secrets         "Disk key"
+
+
+FCOS_MOVIE -> "movies/FCOS.mp4"
+
+
+
+// ============================================================================
+//
+section_slide "Conclusion" fr "Conclusion",
+//
+// ============================================================================
+    title page_label
+    subtitle
+        $ "The proof of the pudding is that"
+        at_step 1
+        $ "there are so many different flavors"
+    stepping
+    at_step 1
+
+
+// ---------------------------------------------------------------------------
+base_slide "Key takeaways" fr "Ce qu'il faut retenir",
+// ----------------------------------------------------------------------------
+    title page_label
+    subtitle "Mathematical proofs, require your attention"
+    slide_picture "Pile of Cash.png", 0%, 350
+    stepping
+    story
+        * "Confidential Computing is a large collection of technologies"
+        * "Proofs are solid, but not sufficient to make a system secure"
+        * "Preserving chains of trust requires careful thinking"
+        * "Many variations from one technology to the next"
+        $
+        * "Please see blog for more details and links"
+
+    right_picture
+        translate_x 100
+        scale 80%
+        images "Confidential Computing Consortium.jpg", "Complex Mechanism.jpg", "Dear Boss.png", "Complex Installation.jpg", "QRCode-CoCo-Primer.png"
+
+
+// ============================================================================
+//
+section_slide "Thank you" fr "Merci",
+//
+// ============================================================================
+    title page_label
+    subtitle "Now is a good time for questions" fr "Il est l'heure de passer aux questions"
+    stepping
+
+    contents 0,
+        text_box 200, -400, 600, 200,
+            style "story"
+            font_size 30
+            anchor
+                color "white"
+                image -80, -40, 10%, 10%, "Tao3D.png"
+            paragraph "This Tao3D presentation is available at" fr "Cette présentation peut être téléchargée à "
+            paragraph presentation_tao
+
+    picture
+        color "white"
+        image 700, -130, 230%, 230%, "QRCode-CoCo-Primer.png"
+        translate -600, 120, 0
+        scale fade_at(smooth_step, 1)
+        locally
+            translate_z 10
+            image 550, 350, 50%, 50%, "QR C3D Github.png"
+        rotate_y 818 * fade_out_at (smooth_step, 1)
+        image 0, 0, 110%, 110%, "TIM Cover Page.jpg"
+
+
+    at_step 4
 
 
 // ============================================================================
@@ -1104,14 +1566,19 @@ confidential Step:integer ->
 
     locally
         light 0
-        light_position 50, 50, 120
+        light_position 50, 50, 500
+        per_pixel_lighting true
+        light_ambient "white"
+        light_diffuse "white"
+        light_specular "white"
 
-        rotate_x 10 + mouse_y * 0.01
+        translate 0, 50, 0
+        rotate_x 5 + mouse_y * 0.01
         rotate_y 10 * sin (0.3 * time) + mouse_x * 0.01
 
         locally
             color "lightgray"
-            scale fade_at(smooth_step, CNF_HOST)
+            scale fade_at(anim_smooth_step, CNF_HOST)
             cube 0, 0, -150, 1500, 400, 300
 
             color "black"
@@ -1124,7 +1591,7 @@ confidential Step:integer ->
         locally
             color safe_color CNF_ATTESTATION
             translate 0, -270, 0
-            scale fade_at(smooth_step, CNF_RESOURCES)
+            scale fade_at(anim_smooth_step, CNF_RESOURCES)
             cube 0, 0, -150, 1500, 100, 300
 
             color "black"
@@ -1171,7 +1638,7 @@ confidential Step:integer ->
             locally
                 color "red"
                 rotate_z -90
-                scale fade_between(smooth_step, CNF_SANDBOX_OUT, CNF_SANDBOX_IN)
+                scale fade_between(anim_smooth_step, CNF_SANDBOX_OUT, CNF_SANDBOX_IN)
                 arrow 0, 0, 100, 100, 50, 60%
                 translate_z 20
                 rotate_z 45
@@ -1182,7 +1649,7 @@ confidential Step:integer ->
                 translate 120, 0, 0
                 color "green"
                 rotate_z 90
-                scale fade_between(smooth_step, CNF_SANDBOX_IN, CNF_SANDBOX_IN)
+                scale fade_between(anim_smooth_step, CNF_SANDBOX_IN, CNF_SANDBOX_IN)
                 arrow 0, 0, 100, 100, 50, 60%
                 color "white"
                 rotate_z 90
@@ -1190,7 +1657,7 @@ confidential Step:integer ->
                 image 0, 90 + 50 * sin(1.1*time), 10%, 10%, "BlueEyeIcon.png"
 
         locally
-            show fade_between(smooth_step, CNF_TENANTS, CNF_TENANTS)
+            show fade_between(anim_smooth_step, CNF_TENANTS, CNF_TENANTS)
             translate -120, 0, 150
             for I in 0..3 loop
                 image I * -120 - 60, 0, 1%, 1%, "Apple.png"
@@ -1202,7 +1669,7 @@ confidential Step:integer ->
                 color Color
                 translate X, Y, Z
                 locally
-                scale fade_between(smooth_step, Start, Stop)
+                scale fade_between(anim_smooth_step, Start, Stop)
                 rotate_y 10 * sin (0.32 * time)
                 rotate_x 150
                 truncated_cone 0, 0, -200, 100, 100, 400, 0.0
@@ -1258,7 +1725,7 @@ confidential Step:integer ->
 
                 rotate_z -90
                 color "red"
-                scale fade_between(smooth_step, CNF_INTEGRITY, CNF_INTEGRITY)
+                scale fade_between(anim_smooth_step, CNF_INTEGRITY, CNF_INTEGRITY)
                 arrow 0, 0, 100, 100, 50, 60%
                 color "darkred"
                 translate_z 20
@@ -1282,9 +1749,9 @@ confidential Step:integer ->
             text_box 360,   80, 100, 100, { text "✓" }
 
      at_step CNF_LAST
-     if integer(smooth_step + 0.5) in CNF_MEMORY_VM..CNF_INTEGRITY then refresh 0
+     if integer(anim_smooth_step + 0.5) in CNF_MEMORY_VM..CNF_INTEGRITY then refresh 0
 
-     safe_color Limit ->  if integer(smooth_step + 0.5) < Limit then redhat_red1 else "darkgreen"
+     safe_color Limit ->  if integer(anim_smooth_step + 0.5) < Limit then redhat_red1 else "darkgreen"
 
 
 
@@ -1747,7 +2214,7 @@ kata_containers Step:integer ->
 // Position of the "Talk box"
 TALK_X          -> anim   650.0
 TALK_Y          -> anim  -70.0, KC_CONFIDENTIAL=-180
-TALK_W          -> anim  500.0
+TALK_W          -> anim  520.0
 TALK_H          -> anim  600.0, KC_CONFIDENTIAL= 540
 TALK_O          -> anim   50.0
 
@@ -1831,3 +2298,39 @@ trust_letter Step, Hue, Letter ->
             color_hsv Hue, 80%, 70%, 99%
             font "Arial", 180
             render Letter
+
+
+
+// ============================================================================
+//
+//    Other utilities
+//
+// ============================================================================
+
+varrow_with_text X, Y1, Y2, Label ->
+    locally
+        line_width 6
+        line_color "black"
+        color "transparent"
+        line_arrow X, Y1, none, X, Y2, arrowhead
+
+    text_box X - 160, (Y1+Y2)/2, 300, 90,
+        style "story"
+        font_size 30
+        align 100%
+        vertical_align 30%
+        render Label
+
+harrow_with_text X1, Y, X2, Label ->
+    locally
+        line_width 6
+        line_color "black"
+        color "transparent"
+        line_arrow X1, Y, none, X2, Y, arrowhead
+
+    text_box (X1+X2)/2, Y-50, 300, 90,
+        style "story"
+        font_size 30
+        align 50%
+        vertical_align 30%
+        render Label
